@@ -4,7 +4,7 @@
   "main": "./src/index.ts",
   "type": "module",
   "types": "./src/index.ts",
-  "scripts": {
-    "build": "tsc"
+  "dependencies": {
+    "next-themes": "^0.4.6"
   }
 }
