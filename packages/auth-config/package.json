@@ -1,0 +1,9 @@
+{
+  "name": "@repo/auth-config",
+  "version": "1.0.0",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "peerDependencies": {
+    "next-auth": "^4.24.11"
+  }
+}

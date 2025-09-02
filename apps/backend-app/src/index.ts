@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
+import authRouter from './routes/authRoute.js';
 
 dotenv.config();
 
@@ -7,9 +9,10 @@ const PORT = process.env.PORT || 4000;
 
 const app = express();
 
-app.get("/", (req: Request, res: Response) => {
-    res.send("Hey I am Backend");
-})
+app.use(cookieParser());
+app.use(express.json());
+
+app.use("/auth", authRouter);
 
 
 app.listen(PORT, () => {
