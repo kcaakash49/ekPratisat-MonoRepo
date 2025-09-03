@@ -16,8 +16,12 @@
     "next": "^15.5.0",
     "next-auth": "^4.24.11",
     "react": "^19.1.0",
+    "@tanstack/react-query": "^5.85.9",
     "react-dom": "^19.1.0",
-    "@repo/auth-config": "*"
+    "@repo/auth-config": "*",
+    "@repo/api-client": "*",
+    "@repo/validators": "*"
+    
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
