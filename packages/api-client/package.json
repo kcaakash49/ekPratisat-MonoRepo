@@ -10,6 +10,7 @@
     "@repo/typescript-config": "*"
   },
   "peerDependencies": {
-    "@repo/validators": "*"
+    "@repo/validators": "*",
+    "next-auth": "^4.24.11"
   }
 }
