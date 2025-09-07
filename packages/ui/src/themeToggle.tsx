@@ -19,13 +19,15 @@ export function ToggleTheme() {
 
   return (
     <Button
+      variant="ghost" // Use ghost variant for minimal styling
+      size="round"     // Use icon size for perfect circle
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="rounded-full p-2 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition"
+      className="rounded-3xl p-2"
     >
       {isDark ? (
-        <Sun className="w-5 h-5 text-yellow-400" />
+        <Sun className="text-yellow-400" />
       ) : (
-        <Moon className="w-5 h-5 text-blue-600" />
+        <Moon className="text-blue-600" />
       )}
     </Button>
   );

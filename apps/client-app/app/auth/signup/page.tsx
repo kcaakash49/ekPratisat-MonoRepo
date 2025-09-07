@@ -1,6 +1,7 @@
 "use client";
 
 import { authMutations } from "@repo/api-client";
+import { Button } from "@repo/ui/button";
 import { UserSingUpSchema } from "@repo/validators";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
@@ -108,12 +109,17 @@ export default function SignupPage (){
       </select>
     </label>
 
-    <button
+    {/* <button
       type="submit"
       className="w-full bg-blue-600 dark:bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 dark:hover:bg-blue-600 transition"
     >
       Sign Up
-    </button>
+    </button> */}
+    <Button className="w-full" variant="destructive" type="submit" disabled = {signupMutation.isPending}>
+      {
+        signupMutation.isPending ? "Submitting......" : "Submit"
+      }
+    </Button>
   </form>
 </div>
 
