@@ -27,6 +27,8 @@
   },
 
   "peerDependencies": {
-    "@repo/validators": "*"
+    "@repo/validators": "*",
+    "@tanstack/react-query": "^5.85.9"
+
   }
 }

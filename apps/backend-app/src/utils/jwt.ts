@@ -3,7 +3,8 @@ import jwt from 'jsonwebtoken';
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
 interface TokenPayload{
-    userId: string
+    userId: string,
+    role: string
 }
 
 export const generateToken = ({ userId }: TokenPayload) => {

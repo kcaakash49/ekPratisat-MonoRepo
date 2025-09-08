@@ -1,13 +1,11 @@
 "use client";
 
-import { categorySchema, CategorySchema } from "@repo/validators";
-import React from "react";
-import { useForm, Controller } from "react-hook-form";
-
-
+import { CategorySchema } from "@repo/validators";
+import { UseMutationResult } from "@tanstack/react-query";
+import React, { useState, ChangeEvent, FormEvent } from "react";
 
 type Props = {
-  onSubmit: (data: CategorySchema) => void;
+  onSubmit: (data:FormData) => void;
   onClose: () => void;
 };
 
@@ -24,92 +22,127 @@ const booleanFields: { key: keyof CategorySchema; label: string }[] = [
 ];
 
 export const CategoryModal: React.FC<Props> = ({ onSubmit, onClose }) => {
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<CategorySchema>({
-    resolver: zodResolver(categorySchema),
-    defaultValues: {
-      name: "",
-      image: undefined,
-      isLandAreaNeeded: false,
-      isNoOfFloorsNeeded: false,
-      isNoOfRoomsNeeded: false,
-      isAgeOfThePropertyNeeded: false,
-      isNoOfRestRoomsNeeded: false,
-      isFacingDirectionNeeded: false,
-      isFloorAreaNeeded: false,
-      isFloorLevelNeeded: false,
-      isRoadSizeNeeded: false,
-    },
+  const [formData, setFormData] = useState<CategorySchema>({
+    name: "",
+    image: undefined as unknown as File,
+    isLandAreaNeeded: false,
+    isNoOfFloorsNeeded: false,
+    isNoOfRoomsNeeded: false,
+    isAgeOfThePropertyNeeded: false,
+    isNoOfRestRoomsNeeded: false,
+    isFacingDirectionNeeded: false,
+    isFloorAreaNeeded: false,
+    isFloorLevelNeeded: false,
+    isRoadSizeNeeded: false,
   });
 
-  return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="bg-white p-6 rounded-lg w-full max-w-md"
-      >
-        <h2 className="text-xl font-bold mb-4">Add Category</h2>
+  const handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-        {/* Category Name */}
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, files } = e.target;
+    if (files && files[0]) {
+      setFormData((prev) => ({ ...prev, [name]: files[0] }));
+    }
+  };
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (!formData.name || !formData.image) {
+      alert("Please fill in all required fields");
+      return;
+    }
+    const data = new FormData();
+
+    data.append("name", formData.name.replace(/\s+/g, " ").trim());
+    data.append("image", formData.image);
+    Object.entries(formData).forEach(([key, value]) => {
+      if (typeof value === "boolean") {
+        data.append(key, String(value));
+      }
+    });
+    onSubmit(data);
+  };
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50 dark:bg-black/60 z-50">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white dark:bg-secondary-800 p-6 rounded-lg w-full max-w-md shadow-lg"
+      >
+        <h2 className="text-xl font-bold mb-4 text-secondary-900 dark:text-secondary-50">
+          Add Category
+        </h2>
+
+        {/* Name */}
         <div className="mb-4">
-          <label className="block font-medium mb-1">Category Name</label>
+          <label className="block font-medium mb-1 text-secondary-700 dark:text-secondary-200">
+            Category Name
+          </label>
           <input
             type="text"
-            {...register("name")}
-            className="w-full border px-3 py-2 rounded"
+            name="name"
+            value={formData.name}
+            onChange={handleTextChange}
+            className="w-full border border-secondary-300 dark:border-secondary-600 px-3 py-2 rounded bg-secondary-50 dark:bg-secondary-900 text-secondary-900 dark:text-secondary-50 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600"
+            required
           />
-          {errors.name && (
-            <p className="text-red-500 text-sm">{errors.name.message}</p>
-          )}
         </div>
 
-        {/* Category Image */}
+        {/* Image */}
         <div className="mb-4">
-          <label className="block font-medium mb-1">Category Image</label>
-          <input type="file" {...register("image" as any)} />
-          {errors.image && (
-            <p className="text-red-500 text-sm">{errors.image.message}</p>
-          )}
+          <label className="block font-medium mb-1 text-secondary-700 dark:text-secondary-200">
+            Category Image
+          </label>
+          <input
+            type="file"
+            name="image"
+            onChange={handleFileChange}
+            className="text-secondary-900 dark:text-secondary-50"
+            required
+          />
         </div>
 
         {/* Boolean Fields */}
         <div className="mb-4">
-          <p className="font-medium mb-2">Property Fields</p>
+          <p className="font-medium mb-2 text-secondary-800 dark:text-secondary-200">
+            Property Fields
+          </p>
           {booleanFields.map(({ key, label }) => (
             <div key={key} className="flex items-center mb-1">
-              <Controller
-                control={control}
-                name={key as any}
-                render={({ field }) => (
-                  <input
-                    type="checkbox"
-                    {...field}
-                    checked={field.value}
-                    className="mr-2"
-                  />
-                )}
+              <input
+                type="checkbox"
+                name={key}
+                checked={formData[key] as boolean}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    [key]: e.target.checked,
+                  }))
+                }
+                className="mr-2 accent-primary-500 dark:accent-primary-600"
               />
-              <label>{label}</label>
+              <label className="text-secondary-700 dark:text-secondary-200">
+                {label}
+              </label>
             </div>
           ))}
         </div>
 
         {/* Buttons */}
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-2 mt-4">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+            className="px-4 py-2 rounded bg-secondary-300 dark:bg-secondary-700 text-secondary-900 dark:text-secondary-50 hover:bg-secondary-400 dark:hover:bg-secondary-600"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+            className="px-4 py-2 rounded bg-primary-500 dark:bg-primary-600 text-white hover:bg-primary-600 dark:hover:bg-primary-700"
           >
             Save
           </button>

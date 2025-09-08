@@ -14,16 +14,112 @@ datasource db {
 }
 
 model User {
-  id       String @unique @default(uuid())
-  name     String
-  contact  String @unique
-  email    String @unique
-  password String
-  role     UserRole @default(client)
+  id                  String         @unique @default(uuid())
+  name                String
+  contact             String         @unique
+  email               String         @unique
+  password            String
+  role                UserRole       @default(client)
+  categoriesAdded     Category[]
+  properties          Property[]
+  districtAdded       District[]
+  municipalitiesAdded Municipality[]
+  wardAdded           Ward[]
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime?       @updatedAt
+}
+
+model Category {
+  id                       String     @unique @default(uuid())
+  name                     String
+  imageUrl                 String
+  properties               Property[]
+  isLandAreaNeeded         Boolean
+  isNoOfFloorsNeeded       Boolean
+  isNoOfRoomsNeeded        Boolean
+  isAgeOfThePropertyNeeded Boolean
+  isNoOfRestRoomsNeeded    Boolean
+  isFacingDirectionNeeded  Boolean
+  isFloorAreaNeeded        Boolean
+  isFloorLevelNeeded       Boolean
+  isRoadSizeNeeded         Boolean
+  addedBy                  User       @relation(fields: [addedById], references: [id])
+  addedById                String
+  createdAt                DateTime   @default(now())
+  updatedAt                DateTime   @updatedAt
+}
+
+model Property {
+  id              String   @unique @default(uuid())
+  title           String
+  description     String
+  price           String
+  type            SaleType
+  categoryId      String
+  category        Category @relation(fields: [categoryId], references: [id])
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  images          Image[]
+  noOfBedRooms    String?
+  noOfRestRooms   String?
+  landArea        String?
+  noOfFloors      String?
+  propertyAge     String?
+  facingDirection String?
+  floorArea       String?
+  roadSize        String?
+  verified        Boolean  @default(false)
+  locationId      String
+  location        Ward     @relation(fields: [locationId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model District {
+  id             String         @unique @default(uuid())
+  name           String
+  municipalities Municipality[]
+  addedById      String
+  addedBy        User           @relation(fields: [addedById], references: [id])
+  createdAt      DateTime       @default(now())
+}
+
+model Municipality {
+  id         String   @unique @default(uuid())
+  name       String
+  district   District @relation(fields: [districtId], references: [id])
+  districtId String
+  wards      Ward[]
+  addedById  String
+  addedBy    User     @relation(fields: [addedById], references: [id])
+  createdAt  DateTime @default(now())
+}
+
+model Ward {
+  id             String       @unique @default(uuid())
+  name           String
+  municipalityId String
+  municipality   Municipality @relation(fields: [municipalityId], references: [id])
+  properties     Property[]
+  addedById      String
+  addedBy        User         @relation(fields: [addedById], references: [id])
+  createdAt      DateTime     @default(now())
+}
+
+model Image {
+  id         String   @unique @default(uuid())
+  url        String
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
 }
 
 enum UserRole {
   admin
   partner
   client
+}
+
+enum SaleType {
+  rent
+  sale
 }

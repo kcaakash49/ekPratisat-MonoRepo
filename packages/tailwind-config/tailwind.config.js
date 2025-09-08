@@ -7,6 +7,15 @@ export default {
   ],
   theme: {
     extend: {
+      keyframes: {
+        bounceDelay: {
+          "0%, 80%, 100%": { transform: "scaleY(0.3)" },
+          "40%": { transform: "scaleY(1)" },
+        },
+      },
+      animation: {
+        bounceDelay: "bounceDelay 1s infinite ease-in-out",
+      },
       colors: {
         primary: {
           50: "#eff6ff",
