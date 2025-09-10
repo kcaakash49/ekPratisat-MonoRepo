@@ -12,16 +12,23 @@
   },
   "dependencies": {
     "@repo/api-client": "*",
+    "@repo/query-hook": "*",
     "@repo/auth-config": "*",
     "@repo/shared-provider": "*",
     "@repo/ui": "*",
     "@repo/validators": "*",
+    "@repo/database": "*",
+    "@repo/actions": "*",
+    "@repo/functions": "*",
+    "@repo/components": "*",
     "@tanstack/react-query": "^5.85.9",
     "lucide-react": "^0.542.0",
     "next": "^15.5.0",
     "next-auth": "^4.24.11",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "zustand": "^5.0.8",
+    "sonner": "^2.0.7"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",

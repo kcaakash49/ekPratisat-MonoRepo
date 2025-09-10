@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react";
 import { SearchBox } from "./SearchBox";
 import Link from "next/link";
 import Image from "next/image";
-import { ToggleTheme } from "@repo/ui/themeToggle";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import ProfileDropDown from "./dropdowns/ProfileDropDown";
 import BrowseCategories from "./dropdowns/BrowseCategories";
 import { Button } from "@repo/ui/button";
+import { ToggleTheme } from "@repo/components/toggleTheme";
 
 const Navbar = () => {
     const pathname = usePathname();
@@ -47,7 +47,7 @@ const Navbar = () => {
                 )}
 
                 <div className="flex-shrink-0 flex items-center gap-2">
-                    <ToggleTheme />
+                    <ToggleTheme/>
                     <BrowseCategories/>
                     {
                         session?.user ? <ProfileDropDown/> : <Button onClick={() => router.push("/api/auth/signin")} variant="destructive">Login</Button>

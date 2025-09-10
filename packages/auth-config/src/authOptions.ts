@@ -1,4 +1,5 @@
 import { NextAuthOptions } from "next-auth";
+import { encode } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions: NextAuthOptions = {
@@ -23,6 +24,7 @@ export const authOptions: NextAuthOptions = {
             body: JSON.stringify(credentials),
           }
         );
+        console.log("Response", response);
         if (!response.ok) return null;
         const user = await response.json();
         return user;

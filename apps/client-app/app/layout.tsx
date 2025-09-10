@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import "./globals.css";
 import { ClientProvider } from "./clientProvider";
-
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,12 +16,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="flex flex-col h-screen">
+      <body>
         <ClientProvider>
-          <main className="flex-grow">
-            {children}
-          </main>
-          
+          {children}
+          <Toaster richColors position="top-right" duration={1000}/>
         </ClientProvider>
       </body>
     </html>

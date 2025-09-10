@@ -1,9 +1,7 @@
 "use client";
 
-import { listingMutations } from "@repo/api-client";
-import CreateProperty from "@repo/ui/add-property";
+import CreateProperty from "@repo/components/addPropertyForm";
 import AnimateLoader from "@repo/ui/animateLoader";
-import { useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -13,6 +11,7 @@ import { useEffect } from "react";
 
 export default function AddProperty(){
     const { data:session, status } = useSession();
+    console.log(session);
     const router = useRouter();
     
     useEffect(() => {
@@ -21,17 +20,6 @@ export default function AddProperty(){
         }
     },[status,router]);
 
-    const addCategoryMutation = useMutation({
-        mutationFn: listingMutations.createCategory,
-        onSuccess: (data) => {
-            console.log(data);
-        },
-        onError: (data) => {
-            console.log(data)
-        }
-
-    })
-
     if (status === 'loading') {
         return <div className="min-h-screen flex items-center justify-center">
             <AnimateLoader/>
@@ -39,6 +27,6 @@ export default function AddProperty(){
     }
 
     return (
-        <div className="min-h-screen"><CreateProperty onAddCategory={addCategoryMutation}/></div>
+        <div className="min-h-screen"><CreateProperty/></div>
     )
 }

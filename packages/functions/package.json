@@ -1,0 +1,15 @@
+{
+  "name": "@repo/functions",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "files": ["src"],
+  "scripts": {
+    "build": "tsc"
+  },
+  "peerDependencies": {
+    "@repo/database" : "*",
+    "@repo/validators": "*"
+  }
+}

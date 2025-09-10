@@ -1,11 +1,14 @@
 import express from 'express';
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
+import 'dotenv/config'; 
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/authRoute.js';
 import listingRouter from './routes/listingRoute.js';
 
-dotenv.config();
+// dotenv.config();
+
+console.log(process.env.JWT_SECRET);
 
 const PORT = process.env.PORT || 4000;
 

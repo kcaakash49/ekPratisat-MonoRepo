@@ -1,2 +1,2 @@
-export * from "./mutations/authMutations";
-export * from "./mutations/listingMutations";
+export * from "./funtions/authFunctions";
+export * from "./funtions/listingFunctions";

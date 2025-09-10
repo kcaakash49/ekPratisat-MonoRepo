@@ -1,11 +1,10 @@
 "use client";
 
 import { CategorySchema } from "@repo/validators";
-import { UseMutationResult } from "@tanstack/react-query";
 import React, { useState, ChangeEvent, FormEvent } from "react";
 
+
 type Props = {
-  onSubmit: (data:FormData) => void;
   onClose: () => void;
 };
 
@@ -21,7 +20,7 @@ const booleanFields: { key: keyof CategorySchema; label: string }[] = [
   { key: "isRoadSizeNeeded", label: "Road Size" },
 ];
 
-export const CategoryModal: React.FC<Props> = ({ onSubmit, onClose }) => {
+export const CategoryModal: React.FC<Props> = ({ onClose }) => {
   const [formData, setFormData] = useState<CategorySchema>({
     name: "",
     image: undefined as unknown as File,
@@ -63,7 +62,8 @@ export const CategoryModal: React.FC<Props> = ({ onSubmit, onClose }) => {
         data.append(key, String(value));
       }
     });
-    onSubmit(data);
+    
+    
   };
 
   return (
@@ -144,7 +144,9 @@ export const CategoryModal: React.FC<Props> = ({ onSubmit, onClose }) => {
             type="submit"
             className="px-4 py-2 rounded bg-primary-500 dark:bg-primary-600 text-white hover:bg-primary-600 dark:hover:bg-primary-700"
           >
-            Save
+            {
+              "Save"
+            }
           </button>
         </div>
       </form>
