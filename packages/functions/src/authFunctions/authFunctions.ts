@@ -4,11 +4,25 @@ import { userSignupSchema, UserSingUpSchema } from "@repo/validators";
 import { AppError } from "../error.js";
 
 
-export async function addUser(credentials: UserSingUpSchema) {
+export async function addUser(credentials: UserSingUpSchema)  {
   const result = userSignupSchema.safeParse(credentials);
+  
+
   if (!result.success) {
-    throw new AppError(422, "Validation failed");
+    const fieldErrors = result.error.flatten().fieldErrors;
+    const firstErrorPerField: Record<string, string> = {};
+  
+    (Object.keys(fieldErrors) as Array<keyof typeof fieldErrors>).forEach((key) => {
+      const firstError = fieldErrors[key]?.[0];
+      if (firstError) {
+        firstErrorPerField[key] = firstError; // string only
+      }
+    });
+  
+    throw new AppError(422, "Validation failed", firstErrorPerField);
   }
+  
+  
 
   try {
     const response = await prisma.$transaction(async (tx) => {
@@ -20,10 +34,10 @@ export async function addUser(credentials: UserSingUpSchema) {
 
       if (ifExistingUser) {
         if (ifExistingUser.contact === result.data.contact) {
-          throw new AppError(400, "Contact already in use");
+          throw new AppError(400, "Contact already in use", { contact: "Contact already in use"});
         }
         if (ifExistingUser.email === result.data.email) {
-          throw new AppError(400, "Email already in use");
+          throw new AppError(400, "Email already in use", { email: "Email already in use"});
         }
       }
 
