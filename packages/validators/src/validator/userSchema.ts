@@ -2,7 +2,7 @@
 import { z } from "zod";
 
 export const userSignupSchema = z.object({
-    name: z.string().min(10),
+    name: z.string(),
     role: z.enum(['admin', 'partner','client']).default('client'),
     password: z.string(),
     email: z.email(),

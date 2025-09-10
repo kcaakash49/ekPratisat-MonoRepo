@@ -2,6 +2,7 @@
 import { prisma } from "@repo/database";
 import { userSignupSchema, UserSingUpSchema } from "@repo/validators";
 import { AppError } from "../error.js";
+import bcrypt from 'bcrypt';
 
 
 export async function addUser(credentials: UserSingUpSchema)  {
@@ -20,9 +21,7 @@ export async function addUser(credentials: UserSingUpSchema)  {
     });
   
     throw new AppError(422, "Validation failed", firstErrorPerField);
-  }
-  
-  
+  } 
 
   try {
     const response = await prisma.$transaction(async (tx) => {
@@ -41,8 +40,12 @@ export async function addUser(credentials: UserSingUpSchema)  {
         }
       }
 
+      const hashPassword = await bcrypt.hash(result.data.password, 9);
+
       const user = await tx.user.create({
-        data: result.data,
+        data: {
+          ...result.data, password: hashPassword
+        },
       });
 
       return {

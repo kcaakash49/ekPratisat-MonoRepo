@@ -10,6 +10,7 @@
   },
   "peerDependencies": {
     "@repo/database" : "*",
-    "@repo/validators": "*"
+    "@repo/validators": "*",
+    "bcrypt": "^6.0.0"
   }
 }

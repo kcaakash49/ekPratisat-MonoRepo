@@ -14,6 +14,15 @@ type UserRole = "admin" | "client" | "partner";
 type FormProps = {
     userRole?: string;
 }
+
+type ErrorType = {
+    name?: string;
+    contact?: string;
+    email?: string;
+    password?: string;
+
+}
+
 export default function SignupForm({ userRole }: FormProps) {
     const [form, setForm] = useState<UserSingUpSchema>({
         name: "",
@@ -24,7 +33,9 @@ export default function SignupForm({ userRole }: FormProps) {
     });
 
     const [showPassword, setShowPassword] = useState(false);
-    const signupMutation = useCreateUser();
+    const [error, setError] = useState<ErrorType>({});
+
+    const signupMutation = useCreateUser(setError);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -32,8 +43,8 @@ export default function SignupForm({ userRole }: FormProps) {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(form);
         signupMutation.mutate(form);
+
     };
 
     return (
@@ -45,7 +56,7 @@ export default function SignupForm({ userRole }: FormProps) {
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                     Welcome to{" "}
                     <span className="text-red-600 dark:text-red-400">
-                            <Link href="/">EkPratisat</Link>
+                        <Link href="/">EkPratisat</Link>
                     </span>
                 </h2>
                 <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
@@ -66,6 +77,7 @@ export default function SignupForm({ userRole }: FormProps) {
                     className="mt-1 block w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
                     required
                 />
+                {error.name && <FieldError message={error.name} />}
             </label>
 
             {/* Contact */}
@@ -81,6 +93,7 @@ export default function SignupForm({ userRole }: FormProps) {
                     className="mt-1 block w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
                     required
                 />
+                {error.contact && <FieldError message={error.contact} />}
             </label>
 
             {/* Email */}
@@ -96,6 +109,7 @@ export default function SignupForm({ userRole }: FormProps) {
                     className="mt-1 block w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
                     required
                 />
+                {error.email && <FieldError message={error.email} />}
             </label>
 
             {/* Password with toggle */}
@@ -120,6 +134,7 @@ export default function SignupForm({ userRole }: FormProps) {
                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                 </div>
+                {error.password && <FieldError message={error.password} />}
             </label>
 
             {/* Role */}
@@ -153,3 +168,11 @@ export default function SignupForm({ userRole }: FormProps) {
         </form>
     );
 }
+
+function FieldError({ message }: { message: string }) {
+    return (
+        <p className="text-red-600 text-sm mt-1 dark:text-red-400 text-center">
+            **{message}
+        </p>
+    )
+} 
