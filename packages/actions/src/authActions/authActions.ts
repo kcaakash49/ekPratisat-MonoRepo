@@ -1,10 +1,17 @@
-"use server"
+// @repo/actions/user.ts
+"use server";
 
-
-import { addUser } from "@repo/functions";
+import { addUser, AppError } from "@repo/functions";
 import { UserSingUpSchema } from "@repo/validators";
 
-
-export async function addUserAction(credentials: UserSingUpSchema){
-    return await addUser(credentials);
+export async function addUserAction(credentials: UserSingUpSchema) {
+  //   try {
+  //     return await addUser(credentials);
+  //   } catch (error) {
+  //     if (error instanceof AppError) {
+  //       return { status: error.status, error: error.message };
+  //     }
+  //     return { status: 500, error: "Unexpected error" };
+  //   }
+  return await addUser(credentials);
 }

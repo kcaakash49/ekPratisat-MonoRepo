@@ -1,11 +1,12 @@
 "use client";
 
-import { CategorySchema } from "@repo/validators";
+import { CategorySchema, SessionUser } from "@repo/validators";
 import React, { useState, ChangeEvent, FormEvent } from "react";
 
 
 type Props = {
   onClose: () => void;
+  user: SessionUser;
 };
 
 const booleanFields: { key: keyof CategorySchema; label: string }[] = [
@@ -20,7 +21,7 @@ const booleanFields: { key: keyof CategorySchema; label: string }[] = [
   { key: "isRoadSizeNeeded", label: "Road Size" },
 ];
 
-export const CategoryModal: React.FC<Props> = ({ onClose }) => {
+export const CategoryModal: React.FC<Props> = ({ onClose, user }) => {
   const [formData, setFormData] = useState<CategorySchema>({
     name: "",
     image: undefined as unknown as File,
@@ -34,7 +35,8 @@ export const CategoryModal: React.FC<Props> = ({ onClose }) => {
     isFloorLevelNeeded: false,
     isRoadSizeNeeded: false,
   });
-
+  
+  
   const handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -57,6 +59,7 @@ export const CategoryModal: React.FC<Props> = ({ onClose }) => {
 
     data.append("name", formData.name.replace(/\s+/g, " ").trim());
     data.append("image", formData.image);
+    data.append("addedById", user?.id || "" )
     Object.entries(formData).forEach(([key, value]) => {
       if (typeof value === "boolean") {
         data.append(key, String(value));

@@ -1,19 +1,19 @@
 "use client";
 
-import { useCreateUser } from "@repo/query-hook";
-
-import { Button } from "@repo/ui/button";
-import ButtonLoader from "@repo/ui/buttonLoader";
-import { UserSingUpSchema } from "@repo/validators";
-
 import { useState } from "react";
+import { useCreateUser } from "@repo/query-hook";
+import { UserSingUpSchema } from "@repo/validators";
+import { Button } from "@repo/ui/button";
+import AnimateLoader from "@repo/ui/animateLoader";
+
+import { User, Mail, Phone, Lock, Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 
 type UserRole = "admin" | "client" | "partner";
 
 type FormProps = {
-    userRole?: string
+    userRole?: string;
 }
-
 export default function SignupForm({ userRole }: FormProps) {
     const [form, setForm] = useState<UserSingUpSchema>({
         name: "",
@@ -23,105 +23,133 @@ export default function SignupForm({ userRole }: FormProps) {
         role: "client" as UserRole,
     });
 
+    const [showPassword, setShowPassword] = useState(false);
     const signupMutation = useCreateUser();
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-    ) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        console.log(form);
         signupMutation.mutate(form);
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 px-4">
-            <form
-                onSubmit={handleSubmit}
-                className="
-          w-full                /* take full width on small screens */
-          sm:max-w-md           /* from sm breakpoint, limit width */
-          md:max-w-lg
-          lg:max-w-xl
-          bg-white dark:bg-gray-800 
-          shadow-lg rounded-none sm:rounded-2xl 
-          px-6 sm:px-10 py-8 sm:py-12
-          border border-gray-200 dark:border-gray-700
-        "
-            >
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-center">
+        <form
+            onSubmit={handleSubmit}
+            className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl px-8 pt-6 pb-6 w-full max-w-md"
+        >
+            <div className="text-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                     Welcome to{" "}
-                    <span className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
-                        EkPratisat
+                    <span className="text-red-600 dark:text-red-400">
+                            <Link href="/">EkPratisat</Link>
                     </span>
                 </h2>
-                <p className="text-center text-gray-500 dark:text-gray-400 mb-6 text-sm sm:text-base">
-                    Join us and start your journey 🚀
+                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                    “Your trusted partner in building dreams through real estate.”
                 </p>
+            </div>
 
-                <div className="space-y-4">
-                    <InputField label="Full Name" name="name" value={form.name} onChange={handleChange} required />
-                    <InputField label="Contact" name="contact" value={form.contact} onChange={handleChange} required />
-                    <InputField label="Email" name="email" type="email" value={form.email} onChange={handleChange} required />
-                    <InputField label="Password" name="password" type="password" value={form.password} onChange={handleChange} required />
-
-                    {
-                        userRole === "admin" &&
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Role
-                            </label>
-                            <select
-                                name="role"
-                                value={form.role}
-                                onChange={handleChange}
-                                className="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                            >
-                                <option value="client">Client</option>
-                                <option value="partner">Partner</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                        </div>
-                    }
-
-                </div>
-
-                <Button
-                    className="mt-6 w-full rounded-lg py-3 font-medium shadow-md hover:shadow-lg transition disabled:opacity-70"
-                    variant="destructive"
-                    type="submit"
-                    disabled={signupMutation.isPending}
-                >
-                    {signupMutation.isPending ? <ButtonLoader /> : "Sign Up"}
-                </Button>
-
-                <p className="mt-4 text-sm sm:text-base text-center text-gray-500 dark:text-gray-400">
-                    Already have an account?{" "}
-                    <a href="/login" className="text-indigo-600 hover:underline dark:text-indigo-400">
-                        Login
-                    </a>
-                </p>
-            </form>
-        </div>
-    );
-}
-
-interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
-    label: string;
-}
-
-function InputField({ label, ...props }: InputFieldProps) {
-    return (
-        <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                {label}
+            {/* Name */}
+            <label className="block mb-4">
+                <span className="text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                    <User size={18} /> Name
+                </span>
+                <input
+                    type="text"
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange}
+                    className="mt-1 block w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
+                    required
+                />
             </label>
-            <input
-                {...props}
-                className="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-            />
-        </div>
+
+            {/* Contact */}
+            <label className="block mb-4">
+                <span className="text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                    <Phone size={18} /> Contact
+                </span>
+                <input
+                    type="text"
+                    name="contact"
+                    value={form.contact}
+                    onChange={handleChange}
+                    className="mt-1 block w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
+                    required
+                />
+            </label>
+
+            {/* Email */}
+            <label className="block mb-4">
+                <span className="text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                    <Mail size={18} /> Email
+                </span>
+                <input
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    className="mt-1 block w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
+                    required
+                />
+            </label>
+
+            {/* Password with toggle */}
+            <label className="block mb-4">
+                <span className="text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                    <Lock size={18} /> Password
+                </span>
+                <div className="relative">
+                    <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        value={form.password}
+                        onChange={handleChange}
+                        className="mt-1 block w-full border rounded px-3 py-2 pr-10 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
+                        required
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                    >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                </div>
+            </label>
+
+            {/* Role */}
+            {
+                userRole == "admin" &&
+                <label className="block mb-6">
+                    <span className="text-gray-700 dark:text-gray-300">Role</span>
+                    <select
+                        name="role"
+                        value={form.role}
+                        onChange={handleChange}
+                        className="mt-1 block w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
+                    >
+                        <option value="client">Client</option>
+                        <option value="partner">Partner</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </label>
+            }
+
+
+            {/* Submit */}
+            <Button
+                className="w-full"
+                variant="destructive"
+                type="submit"
+                disabled={signupMutation.isPending}
+            >
+                {signupMutation.isPending ? <AnimateLoader /> : "Sign Up"}
+            </Button>
+        </form>
     );
 }

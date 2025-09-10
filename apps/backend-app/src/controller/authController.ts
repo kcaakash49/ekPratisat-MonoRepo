@@ -3,40 +3,19 @@ import { userSigninSchema, userSignupSchema } from "@repo/validators";
 import { Request, Response } from "express";
 import { comparePassword, hashPassword } from "../utils/hash.js";
 import { generateToken } from "../utils/jwt.js";
+import { addUser, AppError } from "@repo/functions";
 
 export const signUp = async (req: Request, res: Response) => {
   try {
-    const result = userSignupSchema.safeParse(req.body);
-    if (!result.success) {
-      return res.status(400).json({ error: result.error.issues });
+    const result = await addUser(req.body);
+    res.status(result.status).json(result);
+  }catch(error) {
+    if (error instanceof AppError){
+      return res.status(error.status).json({error: error.message});
     }
-
-    const { email, password, name, role, contact } = result.data;
-
-    const existing = await prisma.user.findUnique({
-      where: { email, contact },
-    });
-    if (existing) {
-      return res.status(409).json({ error: "User already exists" });
-    }
-
-    const hashed = await hashPassword(password);
-    const user = await prisma.user.create({
-      data: { email, password: hashed, name, role, contact },
-    });
-
-    return res.status(201).json({
-      message: "User Created Successfully!!!",
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-      },
-    });
-  } catch (error) {
-    console.error("Signup error:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({
+      error: "Internal Server Error"
+    })
   }
 };
 
