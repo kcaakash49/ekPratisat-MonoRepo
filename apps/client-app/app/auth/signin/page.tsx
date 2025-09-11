@@ -1,12 +1,10 @@
-"use client";
+import SignInForm from "@repo/components/signInForm";
 
-import { useSession } from "next-auth/react";
 
-export default function SignInPage(){
-    const session = useSession();
-    console.log(session.data?.user?.id);
-
-    return <div>
-        SiginInPage
+export default function SignInPage() {
+    return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
+        <div className="w-full max-w-md">
+            <SignInForm/>
+        </div>
     </div>
 }

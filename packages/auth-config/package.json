@@ -5,7 +5,8 @@
   "types": "./src/index.ts",
   "files": ["src"],
   "peerDependencies": {
-    "next-auth": "^4.24.11"
+    "next-auth": "^4.24.11",
+    "@repo/actions": "*"
   },
   "devDependencies": {
     "@repo/typescript-config": "*"

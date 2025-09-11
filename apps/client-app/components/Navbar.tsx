@@ -50,7 +50,7 @@ const Navbar = () => {
                     <ToggleTheme/>
                     <BrowseCategories/>
                     {
-                        session?.user ? <ProfileDropDown/> : <Button onClick={() => router.push("/api/auth/signin")} variant="destructive">Login</Button>
+                        session?.user ? <ProfileDropDown/> : <Button onClick={() => router.push("/auth/signin")} variant="destructive">Login</Button>
                     }
                 </div>
 

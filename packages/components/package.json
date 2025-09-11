@@ -25,6 +25,6 @@
     "@repo/validators": "*",
     "@repo/query-hook": "*",
     "@repo/ui": "*",
-    "sonner": "^2.0.7"
+     "sonner": "^2.0.7"
   }
 }
