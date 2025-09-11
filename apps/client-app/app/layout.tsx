@@ -19,7 +19,7 @@ export default function RootLayout({
       <body>
         <ClientProvider>
           {children}
-          <Toaster richColors position="top-right" duration={1000}/>
+          <Toaster richColors position="top-center" duration={1500}/>
         </ClientProvider>
       </body>
     </html>

@@ -12,8 +12,6 @@ interface Props {
 
 export default function CreateProperty({ user }: Props){
     const [isModalOpen, setIsModal] = useState(false);
-    console.log(user);
-
     return (
         <div>
             <button onClick={() => setIsModal(true)}>Open Category</button>

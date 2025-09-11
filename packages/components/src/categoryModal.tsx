@@ -1,7 +1,10 @@
 "use client";
 
+import { addCategoryAction } from "@repo/actions";
+import { useCreateCategory } from "@repo/query-hook";
 import { CategorySchema, SessionUser } from "@repo/validators";
 import React, { useState, ChangeEvent, FormEvent } from "react";
+import { toast } from "sonner";
 
 
 type Props = {
@@ -49,23 +52,21 @@ export const CategoryModal: React.FC<Props> = ({ onClose, user }) => {
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (!formData.name || !formData.image) {
-      alert("Please fill in all required fields");
-      return;
-    }
-    const data = new FormData();
+  const createCategory = useCreateCategory();
 
-    data.append("name", formData.name.replace(/\s+/g, " ").trim());
-    data.append("image", formData.image);
-    data.append("addedById", user?.id || "" )
-    Object.entries(formData).forEach(([key, value]) => {
-      if (typeof value === "boolean") {
-        data.append(key, String(value));
+  const handleSubmit = async(e: FormEvent) => {
+    e.preventDefault();
+    const payload = {
+      ...formData, name: formData.name.replace(/\s+/g, " ").trim(), addedById: user.id
+    }
+    createCategory.mutate(payload, {
+      onSuccess: () => {
+        toast.success("Category Created Successfully!!!");
+        setTimeout(() => {
+          onClose();
+        }, 1000);
       }
-    });
-    
+    })
     
   };
 
@@ -148,7 +149,7 @@ export const CategoryModal: React.FC<Props> = ({ onClose, user }) => {
             className="px-4 py-2 rounded bg-primary-500 dark:bg-primary-600 text-white hover:bg-primary-600 dark:hover:bg-primary-700"
           >
             {
-              "Save"
+              createCategory.isPending ? "Adding...." : "Add"
             }
           </button>
         </div>

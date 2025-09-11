@@ -11,7 +11,8 @@ export const categorySchema = z.object({
     isFacingDirectionNeeded: z.boolean(),
     isFloorAreaNeeded: z.boolean(),
     isFloorLevelNeeded: z.boolean(),
-    isRoadSizeNeeded: z.boolean()
+    isRoadSizeNeeded: z.boolean(),
+    addedById: z.string().optional()
 })
 
 export type CategorySchema = z.infer<typeof categorySchema>;
