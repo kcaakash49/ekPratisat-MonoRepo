@@ -1,6 +1,6 @@
 // @repo/functions/user.ts
 import { prisma } from "@repo/database";
-import { userSignupSchema, UserSingUpSchema } from "@repo/validators";
+import { userSigninSchema, UserSigninSchema, userSignupSchema, UserSingUpSchema } from "@repo/validators";
 import { AppError } from "../error.js";
 import bcrypt from 'bcrypt';
 
@@ -64,5 +64,17 @@ export async function addUser(credentials: UserSingUpSchema)  {
       throw error; // already structured
     }
     throw new AppError(500, "Internal server errors");
+  }
+}
+
+export async function signInUser(credentials: UserSigninSchema){
+  try {
+    const result = userSigninSchema.safeParse(credentials);
+
+    if (!result.success) {
+      throw new AppError(422, "Validation Failed")
+    }
+  } catch {
+
   }
 }

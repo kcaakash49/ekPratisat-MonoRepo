@@ -1,27 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useCreateUser } from "@repo/query-hook";
 import { UserSingUpSchema } from "@repo/validators";
 import { Button } from "@repo/ui/button";
 import AnimateLoader from "@repo/ui/animateLoader";
-
 import { User, Mail, Phone, Lock, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+
+
 
 type UserRole = "admin" | "client" | "partner";
 
 type FormProps = {
     userRole?: string;
-}
+};
 
 type ErrorType = {
     name?: string;
     contact?: string;
     email?: string;
     password?: string;
-
-}
+};
 
 export default function SignupForm({ userRole }: FormProps) {
     const [form, setForm] = useState<UserSingUpSchema>({
@@ -31,20 +33,60 @@ export default function SignupForm({ userRole }: FormProps) {
         password: "",
         role: "client" as UserRole,
     });
-
+    const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState<ErrorType>({});
 
-    const signupMutation = useCreateUser(setError);
+    const signupMutation = useCreateUser();
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    // refs for each input
+    const nameRef = useRef<HTMLInputElement>(null);
+    const contactRef = useRef<HTMLInputElement>(null);
+    const emailRef = useRef<HTMLInputElement>(null);
+    const passwordRef = useRef<HTMLInputElement>(null);
+
+    // focus on the first error when error state changes
+    useEffect(() => {
+        if (error.name && nameRef.current) {
+            nameRef.current.focus();
+        } else if (error.contact && contactRef.current) {
+            contactRef.current.focus();
+        } else if (error.email && emailRef.current) {
+            emailRef.current.focus();
+        } else if (error.password && passwordRef.current) {
+            passwordRef.current.focus();
+        }
+    }, [error]);
+
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        signupMutation.mutate(form);
 
+        const payload = {
+            ...form,
+            name: form.name.replace(/\s+/g, " ").trim(),
+        };
+        console.log(payload);
+        signupMutation.mutate(payload, {
+            onSuccess: (data) => {
+                if (data.status === 200 && "user" in data) {
+                    toast.success("User created successfully!");
+                    setError({})
+                    router.replace("/");
+
+                } else if ("error" in data) {
+                    setError(data.fieldErrors || {});
+                    toast.error(data.error);
+                } else {
+                    toast.error("Something went wrong");
+                }
+            },
+        });
     };
 
     return (
@@ -70,9 +112,11 @@ export default function SignupForm({ userRole }: FormProps) {
                     <User size={18} /> Name
                 </span>
                 <input
+                    ref={nameRef}
                     type="text"
                     name="name"
                     value={form.name}
+                    max={10}
                     onChange={handleChange}
                     className="mt-1 block w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
                     required
@@ -86,10 +130,16 @@ export default function SignupForm({ userRole }: FormProps) {
                     <Phone size={18} /> Contact
                 </span>
                 <input
+                    ref={contactRef}
                     type="text"
+                    inputMode="numeric"
                     name="contact"
+                    pattern="\d*"
                     value={form.contact}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, "");
+                        setForm({ ...form, contact: value });
+                    }}
                     className="mt-1 block w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
                     required
                 />
@@ -102,6 +152,7 @@ export default function SignupForm({ userRole }: FormProps) {
                     <Mail size={18} /> Email
                 </span>
                 <input
+                    ref={emailRef}
                     type="email"
                     name="email"
                     value={form.email}
@@ -119,6 +170,7 @@ export default function SignupForm({ userRole }: FormProps) {
                 </span>
                 <div className="relative">
                     <input
+                        ref={passwordRef}
                         type={showPassword ? "text" : "password"}
                         name="password"
                         value={form.password}
@@ -138,8 +190,7 @@ export default function SignupForm({ userRole }: FormProps) {
             </label>
 
             {/* Role */}
-            {
-                userRole == "admin" &&
+            {userRole == "admin" && (
                 <label className="block mb-6">
                     <span className="text-gray-700 dark:text-gray-300">Role</span>
                     <select
@@ -153,8 +204,7 @@ export default function SignupForm({ userRole }: FormProps) {
                         <option value="admin">Admin</option>
                     </select>
                 </label>
-            }
-
+            )}
 
             {/* Submit */}
             <Button
@@ -171,8 +221,8 @@ export default function SignupForm({ userRole }: FormProps) {
 
 function FieldError({ message }: { message: string }) {
     return (
-        <p className="text-red-600 text-sm mt-1 dark:text-red-400 text-center">
+        <p className="text-red-600 text-sm mt-1 dark:text-red-400">
             **{message}
         </p>
-    )
-} 
+    );
+}
