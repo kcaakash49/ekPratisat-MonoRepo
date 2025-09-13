@@ -5,3 +5,9 @@ export type SessionUser = {
   email?: string | null;
   image?: string | null;
 };
+
+export type LocationSchema = {
+  name: string;
+  userId: string;
+  parentId?: string;
+}

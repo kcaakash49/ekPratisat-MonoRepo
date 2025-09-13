@@ -28,7 +28,7 @@ export async function addCategory(formData: CategorySchema){
         const file = parsed.data.image;
         const filename = Date.now() + "-" + file.name;
         const outputFormat = 'webp';
-        const filePath = path.join("/var/www/ekPratisatMonorepo/categoryImage", filename.replace(path.extname(filename), `.${outputFormat}`));
+        const filePath = path.join("/var/www/ekPratisatMonorepo/images/categoryImage", filename.replace(path.extname(filename), `.${outputFormat}`));
         const buffer = Buffer.from(await file.arrayBuffer());
         const optimizedBuffer = await sharp(buffer).resize(1200).toFormat(outputFormat, { quality: 100}).toBuffer();
 
@@ -150,3 +150,7 @@ export async function addCategory(formData: CategorySchema){
 //     throw new AppError(500, "Internal Server Error");
 //   }
 // }
+
+
+// fetching categories
+

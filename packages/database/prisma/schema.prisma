@@ -77,7 +77,7 @@ model Property {
 
 model District {
   id             String         @unique @default(uuid())
-  name           String
+  name           String         @unique
   municipalities Municipality[]
   addedById      String
   addedBy        User           @relation(fields: [addedById], references: [id])
@@ -97,7 +97,7 @@ model Municipality {
 
 model Ward {
   id             String       @unique @default(uuid())
-  name           String
+  name           String       
   municipalityId String
   municipality   Municipality @relation(fields: [municipalityId], references: [id])
   properties     Property[]

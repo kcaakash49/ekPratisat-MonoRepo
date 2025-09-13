@@ -1,5 +1,6 @@
 import { authOptions } from "@repo/auth-config";
-import CreateProperty from "@repo/components/addPropertyForm";
+import { AddPropertyForm } from "@repo/components/addPropertyForm";
+
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
@@ -12,6 +13,10 @@ export default async function AddProperty(){
     }
 
     return (
-        <CreateProperty user={session?.user}/>
+        <div className="px-4">
+      <div className="w-full max-w-7xl mx-auto ">
+        <AddPropertyForm user={session.user}/>
+      </div>
+    </div>
     )
 }

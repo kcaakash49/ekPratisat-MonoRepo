@@ -2,7 +2,9 @@
 
 import { addCategoryAction } from "@repo/actions";
 import { useCreateCategory } from "@repo/query-hook";
+import ButtonLoader from "@repo/ui/buttonLoader";
 import { CategorySchema, SessionUser } from "@repo/validators";
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { toast } from "sonner";
 
@@ -39,6 +41,8 @@ export const CategoryModal: React.FC<Props> = ({ onClose, user }) => {
     isRoadSizeNeeded: false,
   });
   
+  const queryClient = useQueryClient();
+  const createCategory = useCreateCategory();
   
   const handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -52,7 +56,6 @@ export const CategoryModal: React.FC<Props> = ({ onClose, user }) => {
     }
   };
 
-  const createCategory = useCreateCategory();
 
   const handleSubmit = async(e: FormEvent) => {
     e.preventDefault();
@@ -62,6 +65,9 @@ export const CategoryModal: React.FC<Props> = ({ onClose, user }) => {
     createCategory.mutate(payload, {
       onSuccess: () => {
         toast.success("Category Created Successfully!!!");
+        queryClient.invalidateQueries({
+          queryKey: ["categories"]
+        })
         setTimeout(() => {
           onClose();
         }, 1000);
@@ -71,89 +77,91 @@ export const CategoryModal: React.FC<Props> = ({ onClose, user }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 dark:bg-black/60 z-50">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white dark:bg-secondary-800 p-6 rounded-lg w-full max-w-md shadow-lg"
-      >
-        <h2 className="text-xl font-bold mb-4 text-secondary-900 dark:text-secondary-50">
-          Add Category
-        </h2>
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50 dark:bg-black/60 z-50 p-2 overflow-auto">
+  <form
+    onSubmit={handleSubmit}
+    className="bg-white dark:bg-secondary-800 rounded-lg shadow-lg w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl p-4 sm:p-6 md:p-8 m-auto"
+  >
+    <h2 className="text-xl sm:text-2xl font-bold mb-4 text-secondary-900 dark:text-secondary-50">
+      Add Category
+    </h2>
 
-        {/* Name */}
-        <div className="mb-4">
-          <label className="block font-medium mb-1 text-secondary-700 dark:text-secondary-200">
-            Category Name
-          </label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleTextChange}
-            className="w-full border border-secondary-300 dark:border-secondary-600 px-3 py-2 rounded bg-secondary-50 dark:bg-secondary-900 text-secondary-900 dark:text-secondary-50 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600"
-            required
-          />
-        </div>
-
-        {/* Image */}
-        <div className="mb-4">
-          <label className="block font-medium mb-1 text-secondary-700 dark:text-secondary-200">
-            Category Image
-          </label>
-          <input
-            type="file"
-            name="image"
-            onChange={handleFileChange}
-            className="text-secondary-900 dark:text-secondary-50"
-            required
-          />
-        </div>
-
-        {/* Boolean Fields */}
-        <div className="mb-4">
-          <p className="font-medium mb-2 text-secondary-800 dark:text-secondary-200">
-            Property Fields
-          </p>
-          {booleanFields.map(({ key, label }) => (
-            <div key={key} className="flex items-center mb-1">
-              <input
-                type="checkbox"
-                name={key}
-                checked={formData[key] as boolean}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    [key]: e.target.checked,
-                  }))
-                }
-                className="mr-2 accent-primary-500 dark:accent-primary-600"
-              />
-              <label className="text-secondary-700 dark:text-secondary-200">
-                {label}
-              </label>
-            </div>
-          ))}
-        </div>
-
-        {/* Buttons */}
-        <div className="flex justify-end gap-2 mt-4">
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-4 py-2 rounded bg-secondary-300 dark:bg-secondary-700 text-secondary-900 dark:text-secondary-50 hover:bg-secondary-400 dark:hover:bg-secondary-600"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 rounded bg-primary-500 dark:bg-primary-600 text-white hover:bg-primary-600 dark:hover:bg-primary-700"
-          >
-            {
-              createCategory.isPending ? "Adding...." : "Add"
-            }
-          </button>
-        </div>
-      </form>
+    {/* Name */}
+    <div className="mb-4">
+      <label className="block font-medium mb-1 text-secondary-700 dark:text-secondary-200">
+        Category Name
+      </label>
+      <input
+        type="text"
+        name="name"
+        value={formData.name}
+        onChange={handleTextChange}
+        className="w-full border border-secondary-300 dark:border-secondary-600 px-3 py-2 rounded bg-secondary-50 dark:bg-secondary-900 text-secondary-900 dark:text-secondary-50 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600"
+        required
+      />
     </div>
+
+    {/* Image */}
+    <div className="mb-4">
+      <label className="block font-medium mb-1 text-secondary-700 dark:text-secondary-200">
+        Category Image
+      </label>
+      <input
+        type="file"
+        name="image"
+        onChange={handleFileChange}
+        className="text-secondary-900 dark:text-secondary-50"
+        required
+      />
+    </div>
+
+    {/* Boolean Fields */}
+    <div className="mb-4">
+      <p className="font-medium mb-2 text-secondary-800 dark:text-secondary-200">
+        Property Fields
+      </p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+        {booleanFields.map(({ key, label }) => (
+          <label
+            key={key}
+            className="flex items-center gap-2 text-secondary-700 dark:text-secondary-200"
+          >
+            <input
+              type="checkbox"
+              name={key}
+              checked={formData[key] as boolean}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  [key]: e.target.checked,
+                }))
+              }
+              className="accent-primary-500 dark:accent-primary-600"
+            />
+            {label}
+          </label>
+        ))}
+      </div>
+    </div>
+
+    {/* Buttons */}
+    <div className="flex flex-col sm:flex-row justify-end gap-2 mt-4">
+      <button
+        type="button"
+        onClick={onClose}
+        className="px-4 py-2 rounded bg-secondary-300 dark:bg-secondary-700 text-secondary-900 dark:text-secondary-50 hover:bg-secondary-400 dark:hover:bg-secondary-600"
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        className="px-4 py-2 rounded bg-primary-500 dark:bg-primary-600 text-white hover:bg-primary-600 dark:hover:bg-primary-700"
+      >
+        {createCategory.isPending ? <ButtonLoader /> : "Add"}
+      </button>
+    </div>
+  </form>
+</div>
+
   );
 };
