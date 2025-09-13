@@ -6,6 +6,7 @@ import { SessionUser } from "@repo/validators";
 import { CategoryModal } from "./categoryModal";
 import { LocationModal } from "./locationModal";
 import { useGetCatgories, useGetLocationTree } from "@repo/query-hook";
+import { toast } from "sonner";
 
 
 
@@ -41,6 +42,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
     images: []
 
   });
+
 
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState<{
@@ -109,8 +111,10 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    // mutation or submission logic goes here
-    console.log("Submitted property:", formData);
+    if (formData.images.length === 0 || !formData.images) {
+      toast.error("Please add atleast 1 image");
+      return;
+    }
 
     const cleanedData = Object.fromEntries(
       Object.entries(formData).map(([key, value]) => [key, value === "" ? null : value])
@@ -167,9 +171,9 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
         </div>
 
         {/* Category */}
-        <div className="flex items-center gap-2">
-          <div className="flex-1">
-            <label className="block font-medium mb-1">Category</label>
+        <div>
+          <label className="block font-medium mb-1">Category</label>
+          <div className="flex gap-2">
             <select
               name="categoryId"
               value={formData.categoryId}
@@ -188,16 +192,16 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                 ))
               )}
             </select>
+            {user.role === "admin" && (
+              <button
+                type="button"
+                className="px-2 py-1 bg-primary-500 text-white rounded"
+                onClick={() => setShowCategoryModal(true)}
+              >
+                Add
+              </button>
+            )}
           </div>
-          {user.role === "admin" && (
-            <button
-              type="button"
-              className="px-2 py-1 bg-primary-500 text-white rounded"
-              onClick={() => setShowCategoryModal(true)}
-            >
-              Add
-            </button>
-          )}
         </div>
 
         {/* price */}
@@ -345,6 +349,19 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
               )}
             </div>
           </div>
+        </div>
+
+        <div>
+          <label className="block font-medium mb-1">Tole/Street</label>
+          <input
+            type="text"
+            name="tole"
+            value={formData.tole}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-900 text-secondary-900 dark:text-secondary-50"
+            required
+          />
         </div>
 
         {/* dynamic fields based on category */}
@@ -516,10 +533,30 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                 className="hidden"
                 onChange={(e) => {
                   const files = Array.from(e.target.files || []);
-                  setFormData((prev: any) => ({
-                    ...prev,
-                    images: [...(prev.images || []), ...files],
-                  }));
+
+                  // Check file size (1MB limit)
+                  const validFiles = files.filter((file) => {
+                    if (file.size > 1024 * 1024 * 2) {
+                      toast.error(`${file.name} is greater than 2MB and was skipped`)
+                      return false;
+                    }
+                    return true;
+                  });
+
+                  setFormData((prev: any) => {
+                    const currentImages = prev.images || [];
+
+                    // Prevent more than 5
+                    if (currentImages.length + validFiles.length > 5) {
+                      toast.error("You can add maximum upto 5 images!!!")
+                      return prev;
+                    }
+
+                    return {
+                      ...prev,
+                      images: [...currentImages, ...validFiles],
+                    };
+                  });
                 }}
               />
             </label>
@@ -550,7 +587,11 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
               ))}
             </div>
           </div>
+          <p className="text-sm text-gray-500 mt-1">
+            Max 5 images, each not more than 2MB.
+          </p>
         </div>
+
 
 
 
