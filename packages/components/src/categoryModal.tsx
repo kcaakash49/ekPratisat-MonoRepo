@@ -109,6 +109,7 @@ export const CategoryModal: React.FC<Props> = ({ onClose, user }) => {
       <input
         type="file"
         name="image"
+        accept="image/*"
         onChange={handleFileChange}
         className="text-secondary-900 dark:text-secondary-50"
         required

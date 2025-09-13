@@ -38,9 +38,14 @@ export const LocationModal: React.FC<Props> = ({ type, parentId, user, onClose }
     onClose();
   }
 
+  const handleblur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    e.preventDefault();
+    setName(name.trim().replace(/\s+/g, " "))
+  }
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    console.log(name);
     if (type === "district") {
       districtMutation.mutate({ name, userId: user.id }, {
         onSuccess: successHandler
@@ -71,7 +76,7 @@ export const LocationModal: React.FC<Props> = ({ type, parentId, user, onClose }
       <form
         onSubmit={handleSubmit}
         className="bg-white dark:bg-secondary-800 p-6 rounded-lg w-full max-w-sm shadow-lg"
-      >
+      > 
         <h2 className="text-xl font-bold mb-4 text-secondary-900 dark:text-secondary-50">
           {titleMap[type]}
         </h2>
@@ -85,6 +90,7 @@ export const LocationModal: React.FC<Props> = ({ type, parentId, user, onClose }
             type="text"
             value={name}
             onChange={handleChange}
+            onBlur={handleblur}
             className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-900 text-secondary-900 dark:text-secondary-50"
             required
           />
