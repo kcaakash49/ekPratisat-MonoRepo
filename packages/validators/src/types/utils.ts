@@ -8,6 +8,6 @@ export type SessionUser = {
 
 export type LocationSchema = {
   name: string;
-  userId: string;
+  userId?: string;
   parentId?: string;
 }

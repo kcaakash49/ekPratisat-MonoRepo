@@ -38,7 +38,7 @@ export async function addDistrict({name,userId} : LocationSchema){
         const district = await prisma.district.create({
             data: {
                 name,
-                addedById: userId
+                addedById: userId!
             }
         });
 
@@ -73,11 +73,11 @@ export async function addMunicipality({name, userId, parentId} : LocationSchema)
               if (ifMpExist) {
                 throw new AppError(409, "Municipality already exists");
               }
-              
+            
             const mp = await tx.municipality.create({
                 data: {
                     name,
-                    addedById: userId,
+                    addedById: userId!,
                     districtId: parentId!,
 
                 }
@@ -117,7 +117,7 @@ export async function addWard({ name, userId, parentId} : LocationSchema){
         
         const ward = await prisma.ward.create({
             data: {
-                name, addedById: userId, municipalityId: parentId!
+                name, addedById: userId!, municipalityId: parentId!
             }
         })
 

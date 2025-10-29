@@ -11,7 +11,7 @@ import { toast } from "sonner";
 
 type Props = {
   onClose: () => void;
-  user: SessionUser;
+  user: string;
 };
 
 const booleanFields: { key: keyof CategorySchema; label: string }[] = [
@@ -60,7 +60,7 @@ export const CategoryModal: React.FC<Props> = ({ onClose, user }) => {
   const handleSubmit = async(e: FormEvent) => {
     e.preventDefault();
     const payload = {
-      ...formData, name: formData.name.replace(/\s+/g, " ").trim(), addedById: user.id
+      ...formData, name: formData.name.replace(/\s+/g, " ").trim()
     }
     createCategory.mutate(payload, {
       onSuccess: () => {

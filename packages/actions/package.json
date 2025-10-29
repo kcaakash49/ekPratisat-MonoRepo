@@ -6,6 +6,8 @@
   "peerDependencies": {
     "@repo/validators": "*",
     "next": "^15.5.0",
-    "@repo/functions": "*"
+    "@repo/functions": "*",
+    "next-auth": "^4.24.11",
+    "@repo/auth-config": "*"
   }
 }

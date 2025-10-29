@@ -4,7 +4,7 @@ import { fetchCategoryAction, fetchLocationTreeAction } from "@repo/actions";
 import { useQuery } from "@tanstack/react-query";
 
 
-export const useGetCatgories = () => {
+export const useGetCategories = () => {
     return useQuery({
         queryKey: ["categories"],
         queryFn: fetchCategoryAction,

@@ -69,6 +69,7 @@ model Property {
   floorArea       String?
   roadSize        String?
   floorLevel      String?
+  tole            String
   verified        Boolean  @default(false)
   locationId      String
   location        Ward     @relation(fields: [locationId], references: [id])

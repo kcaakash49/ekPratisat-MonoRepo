@@ -1,18 +1,25 @@
 "use client";
 
 import React, { useState, ChangeEvent, FormEvent } from "react";
-import ButtonLoader from "@repo/ui/buttonLoader";
-import { SessionUser } from "@repo/validators";
 import { CategoryModal } from "./categoryModal";
 import { LocationModal } from "./locationModal";
-import { useGetCatgories, useGetLocationTree } from "@repo/query-hook";
+import { useCreateProperty, useGetCategories, useGetLocationTree } from "@repo/query-hook";
 import { toast } from "sonner";
+import { CreatePropertySchema } from "@repo/validators";
+import { Loader2 } from "lucide-react";
 
 
 
 type Props = {
-  user: SessionUser;
+  user: string;
 };
+
+interface FormSchema extends CreatePropertySchema {
+  districtId: string;
+  municipalityId: string;
+}
+
+type SaleType = "sale" | "rent"
 
 type DirectionType = "east" | "west" | "north" | "south" | "northeast" | "northwest" | "southeast" | "southwest";
 
@@ -20,29 +27,51 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
   const [formData, setFormData] = useState<any>({
     title: "",
     description: "",
-    type: "sale",
+    type: "sale" as SaleType,
     categoryId: "",
     districtId: "",
     municipalityId: "",
-    wardId: "",
     price: "",
-    userId: "",
     noOfBedRooms: "",
     noOfRestRooms: "",
     landArea: "",
     noOfFloors: "",
     propertyAge: "",
-    facingDirection: "" as DirectionType,
+    facingDirection: "east" as DirectionType,
     floorArea: "",
     roadSize: "",
     Verified: false,
-    locaitonId: "",
+    locationId: "",
     floorLevel: "",
     tole: "",
     images: []
 
   });
 
+  const resetForm = () => {
+    setFormData({
+      title: "",
+      description: "",
+      type: "sale" as SaleType,
+      categoryId: "",
+      districtId: "",
+      municipalityId: "",
+      price: "",
+      noOfBedRooms: "",
+      noOfRestRooms: "",
+      landArea: "",
+      noOfFloors: "",
+      propertyAge: "",
+      facingDirection: "east" as DirectionType,
+      floorArea: "",
+      roadSize: "",
+      Verified: false,
+      locationId: "",
+      floorLevel: "",
+      tole: "",
+      images: []
+    })
+  }
 
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState<{
@@ -50,8 +79,9 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
     parentId?: string;
   } | null>(null);
 
-  const { data: categories, isLoading: categoryLoading } = useGetCatgories();
+  const { data: categories, isLoading: categoryLoading } = useGetCategories();
   const { data: locations, isLoading: locationLoading, isSuccess } = useGetLocationTree();
+  const { mutate, isPending } = useCreateProperty();
 
 
   const selectedCategory = categories?.result.find(
@@ -117,10 +147,17 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
     }
 
     const cleanedData = Object.fromEntries(
-      Object.entries(formData).map(([key, value]) => [key, value === "" ? null : value])
-    );
+      Object.entries(formData)
+        .filter(([key]) => !["districtId", "municipalityId"].includes(key)) // 🧹 remove unnecessary
+        .map(([key, value]) => [key, value === "" ? null : value])
+    ) as CreatePropertySchema;
 
-    console.log("Cleaned Data", cleanedData);
+    mutate(cleanedData, {
+      onSuccess: (data) => {
+        toast.success(data.message || "Opeartion Successful!!!");
+        resetForm();
+      }
+    });
   };
 
   return (
@@ -192,7 +229,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                 ))
               )}
             </select>
-            {user.role === "admin" && (
+            {user === "admin" && (
               <button
                 type="button"
                 className="px-2 py-1 bg-primary-500 text-white rounded"
@@ -237,7 +274,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                 value={formData.districtId}
                 onChange={(e) => {
                   handleChange(e);
-                  setFormData((prev: any) => ({ ...prev, municipalityId: "", wardId: "" }));
+                  setFormData((prev: any) => ({ ...prev, municipalityId: "", locationId: "" }));
                 }}
                 className="flex-1 px-2 py-1 border rounded"
                 required
@@ -256,7 +293,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                 )}
               </select>
 
-              {user.role === "admin" && (
+              {user === "admin" && (
                 <button
                   type="button"
                   className="px-2 py-1 bg-primary-500 text-white rounded"
@@ -277,7 +314,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                 value={formData.municipalityId}
                 onChange={(e) => {
                   handleChange(e);
-                  setFormData((prev: any) => ({ ...prev, wardId: "" }));
+                  setFormData((prev: any) => ({ ...prev, locationId: "" }));
                 }}
                 className="flex-1 px-2 py-1 border rounded"
                 required
@@ -296,7 +333,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                     ))}
               </select>
 
-              {user.role === "admin" && formData.districtId && (
+              {user === "admin" && formData.districtId && (
                 <button
                   type="button"
                   className="px-2 py-1 bg-primary-500 text-white rounded"
@@ -315,8 +352,8 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
             <label className="font-medium mb-1">Ward</label>
             <div className="flex gap-2">
               <select
-                name="wardId"
-                value={formData.wardId}
+                name="locationId"
+                value={formData.locationId}
                 onChange={handleChange}
                 className="flex-1 px-2 py-1 border rounded"
                 required
@@ -336,7 +373,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                     ))}
               </select>
 
-              {user.role === "admin" && formData.municipalityId && (
+              {user === "admin" && formData.municipalityId && (
                 <button
                   type="button"
                   className="px-2 py-1 bg-primary-500 text-white rounded"
@@ -599,10 +636,13 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
         <div className="flex justify-end gap-2 mt-4">
           <button
             type="submit"
-            className="px-4 py-2 bg-primary-500 text-white rounded"
+            disabled={isPending}
+            className={`px-4 py-2 bg-primary-500 text-white rounded transition 
+    ${isPending ? "opacity-70 cursor-not-allowed" : "hover:bg-primary-600"}`}
           >
-            Add Property
+            {isPending ? <Loader2 className="animate-spin" /> : "Add Property"}
           </button>
+
         </div>
       </form>
 

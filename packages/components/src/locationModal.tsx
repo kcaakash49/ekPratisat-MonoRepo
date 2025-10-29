@@ -13,7 +13,7 @@ type LocationType = "district" | "municipality" | "ward";
 type Props = {
   type: LocationType;
   parentId?: string; // districtId for municipality, municipalityId for ward
-  user: SessionUser;
+  user: string;
   onClose: () => void;
 };
 
@@ -47,19 +47,19 @@ export const LocationModal: React.FC<Props> = ({ type, parentId, user, onClose }
     e.preventDefault();
     console.log(name);
     if (type === "district") {
-      districtMutation.mutate({ name, userId: user.id }, {
+      districtMutation.mutate({ name }, {
         onSuccess: successHandler
       })
     };
 
     if (type === "municipality") {
-      municpalityMutation.mutate({ name, userId: user.id, parentId: parentId! }, {
+      municpalityMutation.mutate({ name, parentId: parentId! }, {
         onSuccess: successHandler
       })
     }
 
     if (type === "ward") {
-      wardMutation.mutate({ name, userId: user.id, parentId: parentId! }, {
+      wardMutation.mutate({ name, parentId: parentId! }, {
         onSuccess: successHandler
       })
     }

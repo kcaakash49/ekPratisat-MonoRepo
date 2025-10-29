@@ -1,4 +1,4 @@
-import { addCategoryAction, addDistrictAction, addMunicipalityAction, addWardAction } from "@repo/actions"
+import { addCategoryAction, addDistrictAction, addMunicipalityAction, addWardAction, createListingAction } from "@repo/actions"
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
 
@@ -38,6 +38,16 @@ export const useCreateWard = () => {
         mutationFn: addWardAction,
         onError: (error) => {
             toast.error(error.message || "Couldn't add ward")
+        }
+    })
+}
+
+//add property
+export const useCreateProperty = () => {
+    return useMutation({
+        mutationFn: createListingAction,
+        onError: (error) => {
+            toast.error(error.message || "Couldn't add property!!!")
         }
     })
 }
