@@ -11,6 +11,7 @@ export default {
     
     // Shared packages content
     "../../packages/ui/**/*.{js,ts,jsx,tsx}",
+    "../../packages/components/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
     extend: {

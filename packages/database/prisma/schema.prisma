@@ -14,19 +14,60 @@ datasource db {
 }
 
 model User {
-  id                  String         @unique @default(uuid())
-  name                String
-  contact             String         @unique
-  email               String         @unique
-  password            String
-  role                UserRole       @default(client)
+  id       String @unique @default(uuid())
+  name     String
+  contact  String @unique
+  email    String @unique
+  password String
+
+  createdById  String? // who created this user (admin or staff)
+  createdBy    User?   @relation("UserCreatedBy", fields: [createdById], references: [id])
+  createdUsers User[]  @relation("UserCreatedBy") // users created by this admin/staff
+
+  verifiedById  String? // who verified the agent
+  verifiedBy    User?   @relation("UserVerifiedBy", fields: [verifiedById], references: [id])
+  verifiedUsers User[]  @relation("UserVerifiedBy") // users verified by this admin
+
+  isVerified Boolean  @default(false)
+  role       UserRole @default(client)
+
+  profileImageUrl  String?
+  documents        UserDocument[] @relation("UserDocument")
+  documentVerified UserDocument[] @relation("DocumentVerifiedBy")
+
   categoriesAdded     Category[]
   properties          Property[]
   districtAdded       District[]
   municipalitiesAdded Municipality[]
-  wardAdded           Ward[]
-  createdAt           DateTime       @default(now())
-  updatedAt           DateTime?       @updatedAt
+  wardAdded           Ward[]                  @relation("WardsAddedByAdmin")
+  assignedWards       PartnerWardAssignment[] @relation("UserWards")
+  // assignedWards       Ward[]         @relation("PartnerWards")
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime?               @updatedAt
+}
+
+model UserDocument {
+  id           String       @unique @default(uuid())
+  userId       String
+  user         User         @relation("UserDocument", fields: [userId], references: [id])
+  type         DocumentType
+  url          String
+  isVerified   Boolean      @default(false)
+  verifiedById String?
+  verifiedBy   User?        @relation("DocumentVerifiedBy", fields: [verifiedById], references: [id])
+  uploadedAt   DateTime     @default(now())
+}
+
+model PartnerWardAssignment {
+  id         String   @unique @default(uuid())
+  partnerId  String
+  wardId     String
+  partner    User     @relation("UserWards", fields: [partnerId], references: [id])
+  ward       Ward     @relation("WardPartners", fields: [wardId], references: [id])
+  assignedAt DateTime @default(now())
+
+  @@unique([wardId])
+  @@unique([wardId, partnerId])
 }
 
 model Category {
@@ -98,14 +139,17 @@ model Municipality {
 }
 
 model Ward {
-  id             String       @unique @default(uuid())
-  name           String       
+  id             String                  @unique @default(uuid())
+  name           String
   municipalityId String
-  municipality   Municipality @relation(fields: [municipalityId], references: [id])
+  municipality   Municipality            @relation(fields: [municipalityId], references: [id])
   properties     Property[]
   addedById      String
-  addedBy        User         @relation(fields: [addedById], references: [id])
-  createdAt      DateTime     @default(now())
+  addedBy        User                    @relation("WardsAddedByAdmin", fields: [addedById], references: [id])
+  partners       PartnerWardAssignment[] @relation("WardPartners")
+  // partnerId      String
+  // partner        User         @relation("PartnerWards", fields: [partnerId], references: [id])
+  createdAt      DateTime                @default(now())
 }
 
 model Image {
@@ -119,9 +163,19 @@ enum UserRole {
   admin
   partner
   client
+  staff
 }
 
 enum SaleType {
   rent
   sale
+}
+
+enum DocumentType {
+  CITIZENSHIP_FRONT
+  CITIZENSHIP_BACK
+  LICENSE
+  PAN
+  PASSPORT
+  OTHER
 }

@@ -1,0 +1,122 @@
+
+"use client";
+
+import React, { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
+import { ToggleTheme } from "@repo/components/toggleTheme";
+
+const navSections = [
+  { name: "Dashboard", path: "/dashboard" },
+  {
+    name: "Properties",
+    children: [
+      { name: "Add Property", path: "/add-property" },
+      { name: "List Properties", path: "/list-properties" },
+    ],
+  },
+  {
+    name: "Users",
+    children: [
+      { name: "Add Agent", path: "/agent/add-agent" },
+      { name: "List Agents", path: "/admin/list-agents" },
+    ],
+  },
+];
+
+export default function AdminSidebarClient({ userName }: { userName?: string }) {
+  const pathname = usePathname();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  return (
+    <>
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-30 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      <nav
+        className={`fixed inset-y-0 md:static top-0 left-0 w-64 bg-gray-100 dark:bg-gray-800 p-6 flex flex-col z-40
+          transform transition-transform duration-300 ease-in-out
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          md:translate-x-0`}
+      >
+        <h2 className="text-xl md:2xl font-bold mb-5 md:mb-8">Welcome, {userName?.split(" ")[0]}</h2>
+
+        <ul className="flex flex-col space-y-3">
+          {navSections.map((section) =>
+            section.children ? (
+              <li key={section.name}>
+                <div className="font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
+                  {section.name}
+                </div>
+                <ul className="ml-2 space-y-2">
+                  {section.children.map(({ name, path }) => (
+                    <li key={path}>
+                      <Link
+                        href={path}
+                        onClick={() => setSidebarOpen(false)}
+                        className={`block px-4 py-2 rounded ${pathname === path
+                          ? "bg-blue-600 text-white"
+                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700"
+                        } transition`}
+                      >
+                        {name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ) : (
+              <li key={section.path}>
+                <Link
+                  href={section.path!}
+                  onClick={() => setSidebarOpen(false)}
+                  className={`block px-4 py-2 rounded ${pathname === section.path
+                    ? "bg-blue-600 text-white"
+                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700"
+                  } transition`}
+                >
+                  {section.name}
+                </Link>
+              </li>
+            )
+          )}
+        </ul>
+
+        <div className="mt-auto flex flex-col space-y-3">
+          <button
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="px-4 py-2 rounded border border-gray-400 dark:border-gray-600 hover:bg-gray-300 dark:hover:bg-gray-700 transition"
+          >
+            Log Out
+          </button>
+
+          <ToggleTheme/>
+          
+        </div>
+
+        {/* Mobile header toggle */}
+        <div className="md:hidden mt-4">
+          <button
+            className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+          >
+            {sidebarOpen ? (
+              <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
+        </div>
+      </nav>
+    </>
+  );
+}

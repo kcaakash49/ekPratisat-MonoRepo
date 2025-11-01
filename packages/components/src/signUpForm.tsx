@@ -5,18 +5,11 @@ import { useCreateUser } from "@repo/query-hook";
 import { UserSingUpSchema } from "@repo/validators";
 import { Button } from "@repo/ui/button";
 import AnimateLoader from "@repo/ui/animateLoader";
-import { User, Mail, Phone, Lock, Eye, EyeOff } from "lucide-react";
+import { User, Mail, Phone, Lock, Eye, EyeOff, ImageIcon } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-
-
-type UserRole = "admin" | "client" | "partner";
-
-type FormProps = {
-    userRole?: string;
-};
 
 type ErrorType = {
     name?: string;
@@ -25,17 +18,18 @@ type ErrorType = {
     password?: string;
 };
 
-export default function SignupForm({ userRole }: FormProps) {
+export default function SignupForm() {
     const [form, setForm] = useState<UserSingUpSchema>({
         name: "",
         contact: "",
         email: "",
-        password: "",
-        role: "client" as UserRole,
+        password: ""
     });
     const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState<ErrorType>({});
+    const [profileImage, setProfileImage] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
     const signupMutation = useCreateUser();
 
@@ -72,27 +66,40 @@ export default function SignupForm({ userRole }: FormProps) {
             name: form.name.replace(/\s+/g, " ").trim(),
         };
         console.log(payload);
-        signupMutation.mutate(payload, {
-            onSuccess: (data) => {
-                if (data.status === 200 && "user" in data) {
-                    toast.success("User created successfully!");
-                    setError({})
-                    router.replace("/");
+        // signupMutation.mutate(payload, {
+        //     onSuccess: (data) => {
+        //         if (data.status === 200 && "user" in data) {
+        //             toast.success("User created successfully!");
+        //             setError({})
+        //             router.replace("/");
 
-                } else if ("error" in data) {
-                    setError(data.fieldErrors || {});
-                    toast.error(data.error);
-                } else {
-                    toast.error("Something went wrong");
-                }
-            },
-        });
+        //         } else if ("error" in data) {
+        //             setError(data.fieldErrors || {});
+        //             toast.error(data.error);
+        //         } else {
+        //             toast.error("Something went wrong");
+        //         }
+        //     },
+        // });
     };
 
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+            toast.error("Only image files are allowed")
+            return;
+        }
+
+        setProfileImage(file);
+        setPreviewUrl(URL.createObjectURL(file));
+
+    }
     return (
         <form
             onSubmit={handleSubmit}
-            className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl px-8 pt-6 pb-6 w-full max-w-md"
+            className="shadow-2xl rounded-2xl px-8 pt-6 pb-6 w-full"
         >
             <div className="text-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
@@ -105,6 +112,28 @@ export default function SignupForm({ userRole }: FormProps) {
                     “Your trusted partner in building dreams through real estate.”
                 </p>
             </div>
+
+            {/* ✅ Profile Image */}
+            <label className="block mb-4">
+                <span className="text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                    <ImageIcon size={18} /> Profile Image (optional)
+                </span>
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="mt-1 block w-full text-gray-700 dark:text-gray-300"
+                />
+                {previewUrl && (
+                    <div className="mt-2 flex justify-center">
+                        <img
+                            src={previewUrl}
+                            alt="Preview"
+                            className="h-24 w-24 object-cover rounded-full border"
+                        />
+                    </div>
+                )}
+            </label>
 
             {/* Name */}
             <label className="block mb-4">
@@ -189,32 +218,18 @@ export default function SignupForm({ userRole }: FormProps) {
                 {error.password && <FieldError message={error.password} />}
             </label>
 
-            {/* Role */}
-            {userRole == "admin" && (
-                <label className="block mb-6">
-                    <span className="text-gray-700 dark:text-gray-300">Role</span>
-                    <select
-                        name="role"
-                        value={form.role}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
-                    >
-                        <option value="client">Client</option>
-                        <option value="partner">Partner</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                </label>
-            )}
-
             {/* Submit */}
+
             <Button
-                className="w-full"
                 variant="destructive"
                 type="submit"
                 disabled={signupMutation.isPending}
+                className="w-full"
             >
                 {signupMutation.isPending ? <AnimateLoader /> : "Sign Up"}
             </Button>
+
+
         </form>
     );
 }

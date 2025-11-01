@@ -16,7 +16,12 @@ type SignInError = {
   password?: string;
 };
 
-export default function SignInForm() {
+interface SignInProps {
+  label?: string;
+}
+
+export default function SignInForm({ label }: SignInProps) {
+  console.log(label);
   const [form, setForm] = useState({ contact: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
 
@@ -31,14 +36,14 @@ export default function SignInForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    signinMutation.mutate(form , {
+    signinMutation.mutate(form, {
       onSuccess: (data) => {
-        if (data?.ok){
+        if (data?.ok) {
           toast.success("Login Successful!!!");
           router.replace("/");
-        }else if (data?.error){
+        } else if (data?.error) {
           toast.error(data.error || "Something Happened");
-        }else {
+        } else {
           toast.error("Unexpected Error")
         }
       }
@@ -53,7 +58,7 @@ export default function SignInForm() {
       <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 text-center pb-10">
         Welcome to{" "}
         <span className="text-red-600 dark:text-red-400">
-          <Link href="/">EkPratisat</Link>
+          {label ? label : <Link href="/">EkPratisat</Link>}
         </span>
       </h2>
 
@@ -69,7 +74,7 @@ export default function SignInForm() {
           onChange={(e) => {
             const value = e.target.value.replace(/\D/g, "");
             setForm({ ...form, contact: value });
-        }}
+          }}
           inputMode="numeric"
           className="mt-1 block w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
           required
@@ -105,7 +110,7 @@ export default function SignInForm() {
         className="w-full"
         variant="destructive"
         type="submit"
-        disabled = {signinMutation.isPending}
+        disabled={signinMutation.isPending}
       >
         {
           signinMutation.isPending ? "Signing in...." : "Sign In"

@@ -40,7 +40,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
     facingDirection: "east" as DirectionType,
     floorArea: "",
     roadSize: "",
-    Verified: false,
+    verified: false,
     locationId: "",
     floorLevel: "",
     tole: "",
@@ -65,7 +65,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
       facingDirection: "east" as DirectionType,
       floorArea: "",
       roadSize: "",
-      Verified: false,
+      verified: false,
       locationId: "",
       floorLevel: "",
       tole: "",
@@ -152,16 +152,18 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
         .map(([key, value]) => [key, value === "" ? null : value])
     ) as CreatePropertySchema;
 
+    console.log(cleanedData);
+    
     mutate(cleanedData, {
       onSuccess: (data) => {
-        toast.success(data.message || "Opeartion Successful!!!");
+        toast.success(data.message || "Operation Successful!!!");
         resetForm();
       }
     });
   };
 
   return (
-    <div className="w-full mx-auto p-4 bg-white dark:bg-secondary-800 rounded shadow-lg overflow-auto">
+    <div className="w-full mx-auto p-4 rounded shadow-lg overflow-auto">
       <h2 className="text-2xl font-bold mb-4">Add Property</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -174,10 +176,18 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
             value={formData.title}
             onChange={handleChange}
             onBlur={handleBlur}
-            className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-900 text-secondary-900 dark:text-secondary-50"
+            className={`w-full px-3 py-2 rounded-md 
+                bg-secondary-50 dark:bg-secondary-800 
+                text-secondary-900 dark:text-secondary-50
+                border border-secondary-300 dark:border-transparent 
+                focus:ring-2 focus:ring-primary-500 focus:outline-none
+                placeholder-secondary-400 transition`}
+            placeholder="Enter title"
             required
           />
         </div>
+
+
 
         {/* Description */}
         <div>
@@ -187,7 +197,13 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
             value={formData.description}
             onChange={handleChange}
             onBlur={handleBlur}
-            className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-900 text-secondary-900 dark:text-secondary-50"
+            className={`w-full px-3 py-2 rounded-md 
+              bg-secondary-50 dark:bg-secondary-800 
+              text-secondary-900 dark:text-secondary-50
+              border border-secondary-300 dark:border-transparent 
+              focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition`}
+            placeholder="Enter Description"
             required
           />
         </div>
@@ -199,7 +215,12 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
             name="type"
             value={formData.type}
             onChange={handleChange}
-            className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-900 text-secondary-900 dark:text-secondary-50"
+            className={`w-full px-3 py-2 rounded-md 
+              bg-secondary-50 dark:bg-secondary-800 
+              text-secondary-900 dark:text-secondary-50
+              border border-secondary-300 dark:border-transparent 
+              focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition`}
             required
           >
             <option value="sale">Sale</option>
@@ -215,7 +236,8 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
               name="categoryId"
               value={formData.categoryId}
               onChange={handleChange}
-              className="w-full px-3 py-2 rounded bg-secondary-50 dark:bg-secondary-900 text-secondary-900 dark:text-secondary-50"
+              className="w-full px-3 py-2 rounded-md bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition` dark:border-transparent"
               required
             >
               <option value="" hidden disabled>Select Category</option>
@@ -254,7 +276,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
               value={formData.price}
               inputMode="numeric"
               onChange={handleChange}
-              className="w-full pl-10 px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-900 text-secondary-900 dark:text-secondary-50"
+              className="w-full pl-10 px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 dark:border-transparent"
               required
             />
           </div>
@@ -276,7 +298,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                   handleChange(e);
                   setFormData((prev: any) => ({ ...prev, municipalityId: "", locationId: "" }));
                 }}
-                className="flex-1 px-2 py-1 border rounded"
+                className="flex-1 px-2 py-1 border rounded dark:border-transparent"
                 required
               >
                 <option value="" disabled hidden>
@@ -316,7 +338,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                   handleChange(e);
                   setFormData((prev: any) => ({ ...prev, locationId: "" }));
                 }}
-                className="flex-1 px-2 py-1 border rounded"
+                className="flex-1 px-2 py-1 border rounded dark:border-transparent"
                 required
                 disabled={!formData.districtId}
               >
@@ -355,7 +377,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                 name="locationId"
                 value={formData.locationId}
                 onChange={handleChange}
-                className="flex-1 px-2 py-1 border rounded"
+                className="flex-1 px-2 py-1 border rounded dark:border-transparent"
                 required
                 disabled={!formData.municipalityId}
               >
@@ -396,7 +418,9 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
             value={formData.tole}
             onChange={handleChange}
             onBlur={handleBlur}
-            className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-900 text-secondary-900 dark:text-secondary-50"
+            className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition dark:border-transparent"
+            placeholder="Enter tole/street"
             required
           />
         </div>
@@ -415,7 +439,8 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                   value={formData.landArea}
                   inputMode="numeric"
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded "
+                  className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition dark:border-transparent"
                   required
                 />
               </div>
@@ -430,7 +455,8 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                   value={formData.noOfFloors}
                   inputMode="numeric"
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded"
+                  className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition dark:border-transparent"
                   required
                 />
               </div>
@@ -445,7 +471,8 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                   value={formData.noOfBedRooms}
                   inputMode="numeric"
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded"
+                  className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition dark:border-transparent"
                   required
                 />
               </div>
@@ -460,7 +487,8 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                   value={formData.noOfRestRooms}
                   inputMode="numeric"
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded"
+                  className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition dark:border-transparent"
                   required
                 />
               </div>
@@ -475,7 +503,8 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                   value={formData.propertyAge}
                   inputMode="numeric"
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded"
+                  className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition dark:border-transparent"
                   required
                 />
               </div>
@@ -488,7 +517,8 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                   name="facingDirection"
                   value={formData.facingDirection}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded"
+                  className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition dark:border-transparent"
                   required
                 >
                   <option value="" disabled hidden>
@@ -516,7 +546,8 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                   value={formData.floorArea}
                   inputMode="numeric"
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded"
+                  className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition dark:border-transparent"
                   required
                 />
               </div>
@@ -531,7 +562,8 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                   value={formData.floorLevel}
                   inputMode="numeric"
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded"
+                  className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition dark:border-transparent"
                   placeholder="eg: 0 means GroundFloor"
                   required
                 />
@@ -547,7 +579,8 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                   value={formData.roadSize}
                   inputMode="numeric"
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded"
+                  className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition dark:border-transparent"
                   required
                 />
               </div>
@@ -628,6 +661,27 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
             Max 5 images, each not more than 2MB.
           </p>
         </div>
+        {user === "admin" && (
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              name="verified"
+              id="verified"
+              checked={formData.verified}
+              onChange={() =>
+                setFormData((prev: any) => ({
+                  ...prev,
+                  verified: !prev.verified,
+                }))
+              }
+              className="h-4 w-4 accent-primary-600 cursor-pointer"
+            />
+            <label htmlFor="verified" className="font-medium text-secondary-900 dark:text-secondary-50">
+              Verified
+            </label>
+          </div>
+        )}
+
 
 
 

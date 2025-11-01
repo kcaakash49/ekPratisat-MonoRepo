@@ -4,6 +4,11 @@ import baseConfig from '@repo/next-config'
 const nextConfig = {
   ...baseConfig,
   reactStrictMode: true, // 👈 example override
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '15mb',
+    }
+  }
 };
 
 export default nextConfig;

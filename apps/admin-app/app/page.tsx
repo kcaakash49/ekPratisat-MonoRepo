@@ -1,9 +1,15 @@
+import { authOptions } from "@repo/auth-config"
+import { getServerSession } from "next-auth"
+import { redirect } from "next/navigation";
 
 
-export default function Home(){
-  return (
-    <div className="text-7xl text-red-500 bg-primary-400">
-      HLEEEO ADMIN
-    </div>
-  )
+
+export default async function Home(){
+  const session = await getServerSession(authOptions);
+
+  if(!session){
+    redirect("/auth/signin")
+  }
+
+  redirect("/dashboard");
 }

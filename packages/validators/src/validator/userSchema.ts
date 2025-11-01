@@ -31,7 +31,18 @@ export const userSignupSchema = z.object({
     contact: z
       .string()
       .regex(/^\d{10}$/, "Contact must be exactly 10 digits"),
-  });
+    createdById: z.string().optional(),
+    verifiedById: z.string().optional(),
+    isVerified: z.boolean().default(false),
+    profileImage: z.file().optional(),
+    document: z.array(
+      z.object({
+        type: z.string(),
+        image: z.file()
+      })
+    ).optional()
+
+  }).partial({role: true, isVerified: true});
 
 export const userSigninSchema = z.object({
     contact: z.string(),

@@ -10,6 +10,7 @@ import ProfileDropDown from "./dropdowns/ProfileDropDown";
 import BrowseCategories from "./dropdowns/BrowseCategories";
 import { Button } from "@repo/ui/button";
 import { ToggleTheme } from "@repo/components/toggleTheme";
+// import { ToggleTheme } from "@repo/components/toggleTheme";
 
 const Navbar = () => {
     const pathname = usePathname();
