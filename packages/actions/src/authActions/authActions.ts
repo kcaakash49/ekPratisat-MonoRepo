@@ -1,12 +1,12 @@
 // @repo/actions/user.ts
 "use server";
 
-import { addUser, AppError, signInUser } from "@repo/functions";
+import { AppError, createUser, signInUser } from "@repo/functions";
 import { UserSigninSchema, UserSingUpSchema } from "@repo/validators";
 
-export async function addUserAction(credentials: UserSingUpSchema) {
+export async function addUserAction(formData: FormData) {
     try {
-      return await addUser(credentials);
+      return await createUser(formData);
     } catch (error) {
       if (error instanceof AppError) {
         return { status: error.status, error: error.message, fieldErrors: error.fieldErrors };

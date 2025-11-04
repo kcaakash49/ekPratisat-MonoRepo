@@ -11,6 +11,6 @@ export default async function AddAgent(){
     }
     
     return (
-        <SignupForm userRole={session.user.role}/>
+        <SignupForm/>
     )
 }

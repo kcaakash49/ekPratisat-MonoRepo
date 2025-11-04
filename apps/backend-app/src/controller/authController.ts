@@ -5,19 +5,19 @@ import { comparePassword, hashPassword } from "../utils/hash.js";
 import { generateToken } from "../utils/jwt.js";
 import { addUser, AppError } from "@repo/functions";
 
-export const signUp = async (req: Request, res: Response) => {
-  try {
-    const result = await addUser(req.body);
-    res.status(result.status).json(result);
-  }catch(error) {
-    if (error instanceof AppError){
-      return res.status(error.status).json({error: error.message});
-    }
-    return res.status(500).json({
-      error: "Internal Server Error"
-    })
-  }
-};
+// export const signUp = async (req: Request, res: Response) => {
+//   try {
+//     const result = await addUser(req.body);
+//     res.status(result.status).json(result);
+//   }catch(error) {
+//     if (error instanceof AppError){
+//       return res.status(error.status).json({error: error.message});
+//     }
+//     return res.status(500).json({
+//       error: "Internal Server Error"
+//     })
+//   }
+// };
 
 export const signIn = async (req: Request, res: Response) => {
   console.log("Sign IN called");
