@@ -3,7 +3,7 @@ import { userSigninSchema, userSignupSchema } from "@repo/validators";
 import { Request, Response } from "express";
 import { comparePassword, hashPassword } from "../utils/hash.js";
 import { generateToken } from "../utils/jwt.js";
-import { addUser, AppError } from "@repo/functions";
+import {  AppError } from "@repo/functions";
 
 // export const signUp = async (req: Request, res: Response) => {
 //   try {
