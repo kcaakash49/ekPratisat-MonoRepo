@@ -22,7 +22,12 @@ export async function createUser(formData: FormData) {
     password: formData.get("password") as string,
     email: formData.get("email") as string,
     role: (formData.get("role") as "client" | "partner" | "admin") ?? "client",
+    isVerified: (formData.get("isVerified") === "true"),
+    createdById: formData.get("createdById") as string ?? null,
+    verifiedById: formData.get("verifiedById") as string ?? null
   };
+
+  console.log(credentials);
 
   // --- 2️⃣ Handle profile image
   const profileImage = formData.get("profileImage");
@@ -142,7 +147,10 @@ export async function createUser(formData: FormData) {
           email: userData.email,
           password: hashPassword,
           role: userData.role,
+          isVerified: userData.isVerified,
           profileImageUrl: profileImageUrl ?? null,
+          verifiedById: userData.verifiedById,
+          createdById: userData.createdById,
           documents: documentUrls.length
             ? {
                 create: documentUrls.map((data) => ({
