@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { CategoryModal } from "./categoryModal";
 import { LocationModal } from "./locationModal";
 import { useCreateProperty, useGetCategories, useGetLocationTree } from "@repo/query-hook";
@@ -43,10 +43,11 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
     verified: false,
     locationId: "",
     floorLevel: "",
-    tole: "",
-    images: []
+    tole: ""
 
   });
+
+  const [images, setImages] = useState<{ file: File, preview: string }[]>([]);
 
   const resetForm = () => {
     setFormData({
@@ -69,9 +70,18 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
       locationId: "",
       floorLevel: "",
       tole: "",
-      images: []
     })
+    images.forEach((img) => URL.revokeObjectURL(img.preview));
+    setImages([]);
   }
+
+  //clean up blobURls on unmount
+  useEffect(() => {
+    return () => {
+      images.forEach((img) => URL.revokeObjectURL(img.preview));
+    };
+  }, [images]);
+
 
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState<{
@@ -132,6 +142,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
     }
   };
 
+
   const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev: any) => ({
@@ -139,9 +150,35 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
     }))
   }
 
+  const handleAddImages = (imageFiles: File[]) => {
+    const validFiles = imageFiles.filter((file) => {
+      if (file.size > 1024 * 1024 * 2) {
+        toast.error(`${file.name} is greater than 2MB and was skipped`)
+        return false;
+      }
+      return true;
+    });
+
+    setImages((prev: any) => {
+      const currentImages = prev;
+
+      // Prevent more than 5
+      if (currentImages.length + validFiles.length > 5) {
+        toast.error("You can add maximum upto 5 images!!!")
+        return prev;
+      }
+
+      const newImages = validFiles.map((file) => ({
+        file,
+        preview: URL.createObjectURL(file),
+      }));
+
+      return [...currentImages, ...newImages];
+    });
+  }
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (formData.images.length === 0 || !formData.images) {
+    if (images.length === 0) {
       toast.error("Please add atleast 1 image");
       return;
     }
@@ -151,9 +188,11 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
         .filter(([key]) => !["districtId", "municipalityId"].includes(key)) // 🧹 remove unnecessary
         .map(([key, value]) => [key, value === "" ? null : value])
     ) as CreatePropertySchema;
-
-    console.log(cleanedData);
     
+    const cleanedImages = images.map((img) => img.file);
+
+    cleanedData.images = cleanedImages;
+
     mutate(cleanedData, {
       onSuccess: (data) => {
         toast.success(data.message || "Operation Successful!!!");
@@ -162,6 +201,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
     });
   };
 
+  console.log(images);
   return (
     <div className="w-full mx-auto p-4 rounded shadow-lg overflow-auto">
       <h2 className="text-2xl font-bold mb-4">Add Property</h2>
@@ -603,52 +643,27 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                 className="hidden"
                 onChange={(e) => {
                   const files = Array.from(e.target.files || []);
-
-                  // Check file size (1MB limit)
-                  const validFiles = files.filter((file) => {
-                    if (file.size > 1024 * 1024 * 2) {
-                      toast.error(`${file.name} is greater than 2MB and was skipped`)
-                      return false;
-                    }
-                    return true;
-                  });
-
-                  setFormData((prev: any) => {
-                    const currentImages = prev.images || [];
-
-                    // Prevent more than 5
-                    if (currentImages.length + validFiles.length > 5) {
-                      toast.error("You can add maximum upto 5 images!!!")
-                      return prev;
-                    }
-
-                    return {
-                      ...prev,
-                      images: [...currentImages, ...validFiles],
-                    };
-                  });
+                  handleAddImages(files);
                 }}
               />
             </label>
 
             {/* Preview thumbnails */}
             <div className="flex gap-2 overflow-x-auto">
-              {formData.images?.map((file: File, idx: number) => (
+              {images?.map((img: any, idx: number) => (
                 <div key={idx} className="relative group">
                   <img
-                    src={URL.createObjectURL(file)}
+                    src={img.preview}
                     alt={`preview-${idx}`}
                     className="w-20 h-20 object-cover rounded border"
                   />
-                  {/* Remove button */}
                   <button
                     type="button"
-                    onClick={() =>
-                      setFormData((prev: any) => ({
-                        ...prev,
-                        images: prev.images.filter((_: File, i: number) => i !== idx),
-                      }))
-                    }
+                    onClick={() => {
+                      // revoke blob URL when removed
+                      URL.revokeObjectURL(img.preview);
+                      setImages((prev) => prev.filter((_, i) => i !== idx));
+                    }}
                     className="absolute top-0 right-0 bg-black/60 text-white text-xs px-1 rounded opacity-0 group-hover:opacity-100 transition"
                   >
                     ✕
@@ -656,6 +671,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                 </div>
               ))}
             </div>
+
           </div>
           <p className="text-sm text-gray-500 mt-1">
             Max 5 images, each not more than 2MB.
