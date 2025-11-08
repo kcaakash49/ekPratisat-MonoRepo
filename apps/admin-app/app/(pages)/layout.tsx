@@ -16,7 +16,7 @@ export default async function AdminLayout({ children }: Props) {
   const userName = session?.user?.name ?? "Admin";
 
   return (
-    <div className="min-h-screen flex bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+    <div className="min-h-screen flex bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <AdminSidebarClient userName={userName} />
       <div className="flex-1 flex flex-col">
         <main className="flex-grow overflow-auto flex flex-col">{children}</main>

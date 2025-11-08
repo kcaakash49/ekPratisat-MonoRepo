@@ -4,6 +4,6 @@ import CreatePartnerAdminUser from "../../../../components/CreatePartnerAdminUse
 
 export default async function AddAgent(){
      return (
-        <CreatePartnerAdminUser/>
+        <CreatePartnerAdminUser userRole="partner"/>
     )
 }

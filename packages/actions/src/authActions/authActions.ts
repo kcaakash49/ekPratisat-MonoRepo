@@ -24,7 +24,8 @@ export async function addUserAction(formData: FormData) {
         throw new AppError(401, "Unauthorized");
       }
       formData.append("createdById", session.user.id);
-      if (isVerified) {
+      if (isVerified === "true") {
+        if(session.user.role !== "admin") throw new AppError(401, "You cannot verify user!!!")
         formData.append("verifiedById", session.user.id);
       }
       return await createUser(formData);
