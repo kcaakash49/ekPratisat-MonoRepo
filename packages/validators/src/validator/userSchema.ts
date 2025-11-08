@@ -10,7 +10,7 @@ export const userSignupSchema = z.object({
         "Full name must include at least first and last name"
       ),
   
-    role: z.enum(["admin", "partner", "client"]).default("client"),
+    role: z.enum(["admin", "partner", "client", "staff"]).default("client"),
   
     password: z
     .string()

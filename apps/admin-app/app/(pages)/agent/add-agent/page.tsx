@@ -1,16 +1,9 @@
-import { authOptions } from "@repo/auth-config";
-import SignupForm from "@repo/components/signUpForm";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
+
+
+import CreatePartnerAdminUser from "../../../../components/CreatePartnerAdminUser";
 
 export default async function AddAgent(){
-    const session = await getServerSession(authOptions);
-
-    if(!session){
-        redirect("/");
-    }
-    
-    return (
-        <SignupForm/>
+     return (
+        <CreatePartnerAdminUser/>
     )
 }

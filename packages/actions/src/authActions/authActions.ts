@@ -18,7 +18,7 @@ export async function addUserAction(formData: FormData) {
   try {
     const userRole = formData.get("role");
     const isVerified = formData.get("isVerified");
-    if (userRole === "partner") {
+    if (userRole === "partner" || userRole === "admin" || userRole === "staff") {
       const session = await getServerSession(authOptions);
       if (!session || !(session.user.role === "admin")) {
         throw new AppError(401, "Unauthorized");

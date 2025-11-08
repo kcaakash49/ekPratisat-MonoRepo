@@ -93,12 +93,12 @@ export default function SignupForm() {
         signupMutation.mutate(formData, {
             onSuccess: (data) => {
                 console.log(data);
-                if (data!.status === 200 && "user" in data!) {
+                if (data.status === 200 && "user" in data) {
                     toast.success("User created successfully!");
                     setError({})
                     // router.replace("/");
 
-                } else if ("error" in data!) {
+                } else if ("error" in data) {
                     setError(data.fieldErrors || {});
                     setStep(1);
                     toast.error(data.error);
