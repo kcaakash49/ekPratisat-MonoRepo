@@ -21,7 +21,7 @@ interface SignInProps {
 }
 
 export default function SignInForm({ label }: SignInProps) {
-  console.log(label);
+  
   const [form, setForm] = useState({ contact: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
 
