@@ -12,6 +12,7 @@ export async function getAgentDetai(id: string) {
                 name: true,
                 contact: true,
                 profileImageUrl:true,
+                isVerified: true,
                 createdAt: true,
                 email: true,
                 createdBy: {
@@ -24,7 +25,8 @@ export async function getAgentDetai(id: string) {
                     select: {
                         id: true,
                         isVerified:true,
-                        url:true
+                        url:true,
+                        type:true
                     }
                 }
             }

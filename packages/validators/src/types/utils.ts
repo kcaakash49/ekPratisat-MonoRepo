@@ -16,7 +16,8 @@ export interface AgentType {
   id: string;
   name: string;
   contact: string;
-  isVerified: boolean
+  isVerified: boolean;
+  createdAt: Date;
   createdBy : {
     id: string;
     name: string;
@@ -26,9 +27,10 @@ export interface AgentType {
 export interface AgentDetailType extends AgentType{
   profileImageUrl: string | null;
   email: string;
-  document: {
+  documents: {
     id: string;
     isVerified: boolean;
     url: string;
+    type: string;
   }[];
 }

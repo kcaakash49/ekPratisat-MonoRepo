@@ -6,7 +6,7 @@ import { AgentDetailType } from "@repo/validators";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 
-export default function AgentDetail() {
+export default function AgentDetailOption() {
     const param = useParams();
     const { data, isLoading, isError, error } = useGetAgentDetail(param.id as string);
 
@@ -32,8 +32,8 @@ export default function AgentDetail() {
 
             {/* Header */}
             <div className="flex flex-col md:flex-row items-center md:justify-between gap-6 md:gap-14 max-w-4xl mx-auto">
-                {/* Profile Image - Clean without tick */}
-                <div className="flex-shrink-0">
+                {/* Profile Image with Enhanced Verified Badge */}
+                <div className="flex-shrink-0 relative">
                     <div className="relative w-36 h-36 sm:w-40 sm:h-40 md:w-44 md:h-44 rounded-full overflow-hidden border-4 border-primary-500 dark:border-primary-dark-500">
                         {agent.profileImageUrl ? (
                             <Image
@@ -48,6 +48,26 @@ export default function AgentDetail() {
                             </div>
                         )}
                     </div>
+
+                    {/* Enhanced Verified Badge - More like social media */}
+                    {agent.isVerified && (
+                        <div className="absolute -bottom-2 -right-2 bg-white dark:bg-gray-900 rounded-full p-1 shadow-lg border border-gray-200 dark:border-gray-700">
+                            <div className="bg-blue-500 rounded-full p-1.5 flex items-center justify-center">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-4 w-4 sm:h-5 sm:w-5 text-white"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                >
+                                    <path 
+                                        fillRule="evenodd" 
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" 
+                                        clipRule="evenodd" 
+                                    />
+                                </svg>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Basic Info */}
@@ -56,9 +76,9 @@ export default function AgentDetail() {
                         <h1 className="text-2xl sm:text-3xl font-bold text-primary-600 dark:text-primary-500">
                             {agent.name}
                         </h1>
-                        {/* Keep verification badge next to name only */}
+                        {/* Optional: Add verified badge next to name as well */}
                         {agent.isVerified && (
-                            <div className="flex items-center justify-center w-6 h-6 bg-blue-500 rounded-full" title="Verified Agent">
+                            <div className="flex items-center justify-center w-6 h-6 bg-blue-500 rounded-full">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="h-3 w-3 text-white"

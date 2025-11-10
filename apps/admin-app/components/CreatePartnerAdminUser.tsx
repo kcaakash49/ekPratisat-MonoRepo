@@ -141,7 +141,7 @@ export default function CreatePartnerAdminUser({ userRole }: PropType) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="shadow-lg rounded-2xl p-8 space-y-6 transition-colors">
+    <form onSubmit={handleSubmit} className="shadow-lg rounded-2xl p-8 space-y-6 transition-colors max-w-7xl">
       <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
         Create {userRole.charAt(0).toUpperCase() + userRole.slice(1)} User
       </h2>
