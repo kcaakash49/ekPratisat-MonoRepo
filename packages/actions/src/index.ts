@@ -3,3 +3,5 @@ export * from "./listingActions/addCategoryAction";
 export * from "./listingActions/fethCategoryAction";
 export * from "./listingActions/locationActions";
 export * from "./listingActions/createListingAction";
+export * from "./agentActions/getAgentListActiont";
+export * from "./agentActions/getAgentDetailAction";

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import React, { useState, ChangeEvent, FormEvent, useEffect, useRef } from "react";
 import { CategoryModal } from "./categoryModal";
 import { LocationModal } from "./locationModal";
 import { useCreateProperty, useGetCategories, useGetLocationTree } from "@repo/query-hook";
@@ -48,6 +48,8 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
   });
 
   const [images, setImages] = useState<{ file: File, preview: string }[]>([]);
+  //to track all blobUrls
+  const allBlobUrls = useRef<string[]>([]); 
 
   const resetForm = () => {
     setFormData({
@@ -71,16 +73,18 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
       floorLevel: "",
       tole: "",
     })
-    images.forEach((img) => URL.revokeObjectURL(img.preview));
+    allBlobUrls.current.forEach(URL.revokeObjectURL);
+    allBlobUrls.current = [];
     setImages([]);
   }
 
   //clean up blobURls on unmount
   useEffect(() => {
     return () => {
-      images.forEach((img) => URL.revokeObjectURL(img.preview));
+      allBlobUrls.current.forEach(URL.revokeObjectURL);
+      allBlobUrls.current = [];
     };
-  }, [images]);
+  }, []);
 
 
   const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -168,11 +172,11 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
         return prev;
       }
 
-      const newImages = validFiles.map((file) => ({
-        file,
-        preview: URL.createObjectURL(file),
-      }));
-
+      const newImages = validFiles.map((file) => {
+        const preview = URL.createObjectURL(file);
+        allBlobUrls.current.push(preview); // Track blob URL
+        return { file, preview };
+      });
       return [...currentImages, ...newImages];
     });
   }
@@ -663,6 +667,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
                       // revoke blob URL when removed
                       URL.revokeObjectURL(img.preview);
                       setImages((prev) => prev.filter((_, i) => i !== idx));
+                      allBlobUrls.current = allBlobUrls.current.filter((url) => url !== img.preview);
                     }}
                     className="absolute top-0 right-0 bg-black/60 text-white text-xs px-1 rounded opacity-0 group-hover:opacity-100 transition"
                   >

@@ -4,4 +4,6 @@ export * from "./listFunctions/createCateogryFunction.js";
 export * from "./listFunctions/locationFunctions.js";
 export * from "./listFunctions/fetchCategories.js";
 export * from "./listFunctions/createListingFunction.js"
-export * from "./authFunctions/addUserFunction.js"
+export * from "./authFunctions/addUserFunction.js";
+export * from "./agentFunctions/getAgentList.js";
+export * from "./agentFunctions/getAgentDetail.js";

@@ -20,7 +20,7 @@ const navSections = [
     name: "Users",
     children: [
       { name: "Add Agent", path: "/agent/add-agent" },
-      { name: "List Agents", path: "/admin/list-agents" },
+      { name: "List Agents", path: "/agent/list-agents" },
     ],
   },
 ];
