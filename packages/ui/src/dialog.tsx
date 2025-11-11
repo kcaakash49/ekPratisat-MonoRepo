@@ -45,12 +45,12 @@ interface DialogContentProps extends React.HTMLAttributes<HTMLDivElement> {
 export function DialogContent({
   children,
   onClose,
-  className = "",
+  className = "max-w-lg",
 }: DialogContentProps) {
   return (
     <div
       className={`relative w-full max-w-md rounded-2xl bg-white dark:bg-neutral-900 shadow-xl p-6 ${className}`}
-      onClick={(e) => e.stopPropagation()} // prevent background close
+      onClick={(e) => e.stopPropagation()}
     >
       {onClose && (
         <button
@@ -60,7 +60,9 @@ export function DialogContent({
           <X className="w-5 h-5" />
         </button>
       )}
-      {children}
+      <div className="break-words overflow-wrap-anywhere"> {/* Add this wrapper */}
+        {children}
+      </div>
     </div>
   );
 }

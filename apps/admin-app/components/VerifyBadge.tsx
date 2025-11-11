@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@repo/ui/dialog";
 import { Button } from "@repo/ui/button";
 import { useVerifyAgent } from "@repo/query-hook";
-import { useQueryClient } from "@tanstack/react-query";
 
 interface VerifyBadgeProps {
   userId: string;
@@ -17,18 +16,11 @@ interface VerifyBadgeProps {
 export function VerifyBadge({ userId, isVerified }: VerifyBadgeProps) {
   const [open, setOpen] = useState(false);
   const { mutate: verifyAgent, isPending } = useVerifyAgent();
-  const queryClient = useQueryClient();
 
   const handleVerify = () => {
     verifyAgent(userId, {
       onSuccess: () => {
         toast.success("User verified successfully!");
-        queryClient.invalidateQueries({
-          queryKey: ["agent-detail", userId]
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["agents-list"]
-        })
         setOpen(false);
       }
     });
@@ -61,7 +53,8 @@ export function VerifyBadge({ userId, isVerified }: VerifyBadgeProps) {
             <DialogTitle>Verify User</DialogTitle>
           </DialogHeader>
 
-          <p className="text-secondary-600 dark:text-secondary-300 text-sm overflow-hidden">
+          {/* FIX: Add proper text wrapping classes here */}
+          <p className="text-secondary-600 dark:text-secondary-300 text-sm break-words whitespace-normal max-w-full">
             Are you sure you want to verify this user? This action cannot be undone.
           </p>
 
