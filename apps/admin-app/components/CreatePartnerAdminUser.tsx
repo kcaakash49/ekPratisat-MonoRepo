@@ -5,6 +5,7 @@ import { UserSingUpSchema } from "@repo/validators";
 import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import Image from "next/image";
+import { useQueryClient } from "@tanstack/react-query";
 
 type UserType = "admin" | "partner" | "staff";
 
@@ -37,6 +38,8 @@ export default function CreatePartnerAdminUser({ userRole }: PropType) {
     password: "",
     isVerified: false,
   });
+
+  const queryClient = useQueryClient();
 
   const resetForm = () => {
     setForm({
@@ -129,6 +132,9 @@ export default function CreatePartnerAdminUser({ userRole }: PropType) {
         if (data.status === 200 && "user" in data) {
           toast.success(`${userRole} user created successfully!`);
           setErrors({});
+          queryClient.invalidateQueries({
+            queryKey: ["agents-list"]
+          })
           resetForm();
         } else if ("error" in data) {
           setErrors(data.fieldErrors || {});
@@ -361,7 +367,7 @@ export default function CreatePartnerAdminUser({ userRole }: PropType) {
       <button
         type="submit"
         disabled={isPending}
-        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white py-2.5 rounded-lg font-medium transition"
+        className=" bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white p-2.5 rounded-lg font-medium transition"
       >
         {isPending ? `Creating ${userRole}...` : `Create ${userRole}`}
       </button>

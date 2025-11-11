@@ -7,3 +7,4 @@ export * from "./listFunctions/createListingFunction.js"
 export * from "./authFunctions/addUserFunction.js";
 export * from "./agentFunctions/getAgentList.js";
 export * from "./agentFunctions/getAgentDetail.js";
+export * from "./agentFunctions/verifyAgent.js";

@@ -155,7 +155,9 @@ export async function createUser(formData: FormData) {
             ? {
                 create: documentUrls.map((data) => ({
                     type: data.type as DocType,
-                    url: data.imageUrl
+                    url: data.imageUrl,
+                    isVerified:userData.isVerified,
+                    verifiedById: userData.isVerified ? userData.verifiedById : null
                 }))
                 
               }

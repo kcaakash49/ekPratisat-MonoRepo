@@ -5,6 +5,7 @@ import AnimateLoader from "@repo/ui/animateLoader";
 import { AgentDetailType } from "@repo/validators";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import { VerifyBadge } from "../../../../components/VerifiedBadge";
 
 export default function AgentDetail() {
     const param = useParams();
@@ -28,7 +29,7 @@ export default function AgentDetail() {
     const agent = data?.result as AgentDetailType;
 
     return (
-        <div className="max-w-7xl mx-auto p-6 space-y-6 rounded-xl shadow-md">
+        <div className="max-w-7xl p-6 space-y-6 rounded-xl shadow-md">
 
             {/* Header */}
             <div className="flex flex-col md:flex-row items-center md:justify-between gap-6 md:gap-14 max-w-4xl mx-auto">
@@ -65,10 +66,10 @@ export default function AgentDetail() {
                                     viewBox="0 0 20 20"
                                     fill="currentColor"
                                 >
-                                    <path 
-                                        fillRule="evenodd" 
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" 
-                                        clipRule="evenodd" 
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                        clipRule="evenodd"
                                     />
                                 </svg>
                             </div>
@@ -79,14 +80,7 @@ export default function AgentDetail() {
                     <p className="text-secondary-600 dark:text-secondary-300">
                         Created By: {agent.createdBy?.name || "Unknown"}
                     </p>
-                    <span
-                        className={`inline-block px-3 py-1 text-sm sm:text-base rounded-full font-medium ${agent.isVerified
-                            ? "bg-primary-100 text-primary-700 dark:bg-primary-dark-500 dark:text-primary-200"
-                            : "bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200"
-                            }`}
-                    >
-                        {agent.isVerified ? "Verified" : "Not Verified"}
-                    </span>
+                    <VerifyBadge isVerified = {agent.isVerified} userId={agent.id}/>
                 </div>
             </div>
 

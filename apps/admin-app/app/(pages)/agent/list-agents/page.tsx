@@ -5,6 +5,9 @@ import AnimateLoader from "@repo/ui/animateLoader";
 import { AgentType } from "@repo/validators";
 import Link from "next/link";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
+import { UserPlus } from "lucide-react";
+import { VerifyBadge } from "../../../../components/VerifiedBadge";
 
 export default function ListAgents() {
   const { data, isLoading, isError, error } = useGetAgents();
@@ -24,7 +27,44 @@ export default function ListAgents() {
   }
 
   const agents = data?.result || [];
-  console.log(agents);
+  
+  if (agents.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[60vh] text-center space-y-6">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="flex flex-col items-center"
+        >
+          <div className="w-20 h-20 bg-primary-100 dark:bg-primary-dark-600 text-primary-600 dark:text-primary-300 rounded-full flex items-center justify-center shadow-inner animate-pulse">
+            <UserPlus className="w-10 h-10" />
+          </div>
+  
+          <h2 className="mt-6 text-2xl font-semibold text-secondary-700 dark:text-secondary-200">
+            No agents found
+          </h2>
+          <p className="text-secondary-500 dark:text-secondary-400 max-w-sm">
+            You haven’t added any agents yet. Get started by adding your first one!
+          </p>
+        </motion.div>
+  
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <Link
+            href="/agent/add-agent"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors shadow-md"
+          >
+            <UserPlus className="w-4 h-4" />
+            Add Agent
+          </Link>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="overflow-x-auto p-4">
@@ -58,15 +98,7 @@ export default function ListAgents() {
                 {agent.createdBy?.name || "Unknown"}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    agent.isVerified
-                      ? "bg-primary-100 text-primary-700 dark:bg-primary-dark-500 dark:text-primary-100"
-                      : "bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200"
-                  }`}
-                >
-                  {agent.isVerified ? "Verified" : "Not Verified"}
-                </span>
+                <VerifyBadge isVerified = {agent.isVerified} userId={agent.id}/>
               </td>
             </tr>
           ))}
