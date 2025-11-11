@@ -191,6 +191,7 @@ export default function CreatePartnerAdminUser({ userRole }: PropType) {
           <input
             type="text"
             value={form.contact}
+            inputMode="numeric"
             required
             onChange={(e) => {
               const value = e.target.value.replace(/\D/g, "");

@@ -5,7 +5,8 @@ import AnimateLoader from "@repo/ui/animateLoader";
 import { AgentDetailType } from "@repo/validators";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import { VerifyBadge } from "./VerifyBadge";
+import VerifyBadge from "./VerifyBadge";
+
 
 
 export default function AgentDetail() {

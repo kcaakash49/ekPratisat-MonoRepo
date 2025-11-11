@@ -20,7 +20,7 @@ const generateConfirmationText = () => {
   return `Type "${randomWord}" to verify`;
 };
 
-export function VerifyBadge({ userId, isVerified }: VerifyBadgeProps) {
+export default function VerifyBadge({ userId, isVerified }: VerifyBadgeProps) {
   const [open, setOpen] = useState(false);
   const [confirmationText, setConfirmationText] = useState("");
   const [userInput, setUserInput] = useState("");
