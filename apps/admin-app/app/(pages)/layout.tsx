@@ -20,8 +20,9 @@ export default async function AdminLayout({ children }: Props) {
         <main className="flex-1 overflow-auto pt-16 md:pt-0">
           {children}
         </main>
-        <footer className="flex-shrink-0">
+        <footer className="flex-shrink-0 text-center border-t p-2  border-secondary-200 dark:border-secondary-700">
           {/* <Footer /> */}
+          <br></br>
           <span>&copy; 2025 StackHook Pvt. Ltd.</span>
           <span className="hidden sm:inline">|</span>
           <span>All Rights Reserved</span>

@@ -118,9 +118,9 @@ export default function ListAgents() {
                   <th className="px-6 py-4 text-left text-xs font-semibold text-secondary-700 dark:text-secondary-300 uppercase tracking-wider">
                     Verification Status
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-secondary-700 dark:text-secondary-300 uppercase tracking-wider">
+                  {/* <th className="px-6 py-4 text-left text-xs font-semibold text-secondary-700 dark:text-secondary-300 uppercase tracking-wider">
                     Actions
-                  </th>
+                  </th> */}
                 </tr>
               </thead>
               <tbody className="divide-y divide-secondary-200 dark:divide-secondary-700 bg-white dark:bg-secondary-900">
@@ -167,7 +167,7 @@ export default function ListAgents() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <VerifyBadge isVerified={agent.isVerified} userId={agent.id}/>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    {/* <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-3 opacity-0 group-hover:opacity-100 transition-opacity">
                         <Link
                           href={`/agent/${agent.id}`}
@@ -182,7 +182,7 @@ export default function ListAgents() {
                           Edit
                         </Link>
                       </div>
-                    </td>
+                    </td> */}
                   </motion.tr>
                 ))}
               </tbody>
