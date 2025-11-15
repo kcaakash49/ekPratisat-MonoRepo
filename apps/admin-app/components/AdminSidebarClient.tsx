@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { ToggleTheme } from "@repo/components/toggleTheme";
+import { SidebarDropdownSection } from "@repo/ui/sideBarDropdownSection";
 
 const navSections = [
   { name: "Dashboard", path: "/dashboard" },
@@ -31,6 +32,11 @@ interface Props {
 export default function AdminSidebarClient({ userName }: Props) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Check if any child link is active to show dropdown as active
+  const isSectionActive = (children: { path: string }[]) => {
+    return children.some(child => pathname === child.path);
+  };
 
   return (
     <>
@@ -84,60 +90,59 @@ export default function AdminSidebarClient({ userName }: Props) {
         className={`fixed inset-y-0 md:static top-0 left-0 w-64 bg-gray-100 dark:bg-gray-800 p-6 flex flex-col z-40
           transform transition-transform duration-300 ease-in-out
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-          md:translate-x-0 md:mt-0 mt-16`} // Added mt-16 for mobile to account for navbar height
+          md:translate-x-0 md:mt-0 mt-16`}
       >
         {/* Hidden on mobile since we have the mobile navbar */}
         <h2 className="hidden md:block text-lg sm:text-xl md:text-2xl font-bold mb-5 md:mb-8">
           Welcome, {userName?.split(" ")[0]}
         </h2>
 
-        <ul className="flex flex-col space-y-3 text-sm sm:text-base">
+        <div className="flex flex-col space-y-2 text-sm sm:text-base">
           {navSections.map((section) =>
             section.children ? (
-              <li key={section.name}>
-                <div className="font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1 text-xs sm:text-sm">
-                  {section.name}
-                </div>
-                <ul className="ml-2 space-y-2">
-                  {section.children.map(({ name, path }) => (
-                    <li key={path}>
-                      <Link
-                        href={path}
-                        onClick={() => setSidebarOpen(false)}
-                        className={`block px-4 py-2 rounded transition ${
-                          pathname === path
-                            ? "bg-blue-600 text-white"
-                            : "text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700"
-                        }`}
-                      >
-                        {name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </li>
+              <SidebarDropdownSection 
+                key={section.name}
+                title={section.name}
+                defaultOpen={isSectionActive(section.children)}
+                isActive={isSectionActive(section.children)}
+                className="mb-2"
+              >
+                {section.children.map(({ name, path }) => (
+                  <Link
+                    key={path}
+                    href={path}
+                    onClick={() => setSidebarOpen(false)}
+                    className={`block px-3 py-2 rounded-lg transition-all duration-200 text-xs ${
+                      pathname === path
+                        ? "bg-primary-500 text-white shadow-sm"
+                        : "text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 dark:hover:text-primary-400"
+                    }`}
+                  >
+                   - {name}
+                  </Link>
+                ))}
+              </SidebarDropdownSection>
             ) : (
-              <li key={section.path}>
-                <Link
-                  href={section.path!}
-                  onClick={() => setSidebarOpen(false)}
-                  className={`block px-4 py-2 rounded transition ${
-                    pathname === section.path
-                      ? "bg-blue-600 text-white"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700"
-                  }`}
-                >
-                  {section.name}
-                </Link>
-              </li>
+              <Link
+                key={section.path}
+                href={section.path!}
+                onClick={() => setSidebarOpen(false)}
+                className={`block px-4 py-3 rounded-lg transition-all duration-200 ${
+                  pathname === section.path
+                    ? "bg-primary-500 text-white shadow-sm"
+                    : "text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 dark:hover:text-primary-400"
+                }`}
+              >
+                {section.name}
+              </Link>
             )
           )}
-        </ul>
+        </div>
 
         <div className="mt-auto flex flex-col space-y-3 text-sm">
           <button
             onClick={() => signOut({ callbackUrl: "/" })}
-            className="px-4 py-2 rounded border border-gray-400 dark:border-gray-600 hover:bg-gray-300 dark:hover:bg-gray-700 transition"
+            className="px-4 py-2 rounded-lg border border-gray-400 dark:border-gray-600 hover:bg-gray-300 dark:hover:bg-gray-700 transition-all duration-200"
           >
             Log Out
           </button>

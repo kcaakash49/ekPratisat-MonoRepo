@@ -21,7 +21,7 @@ export function DropdownSection({
     <Disclosure defaultOpen={defaultOpen}>
       {({ open }) => (
         <div className={`border border-secondary-200 dark:border-secondary-700 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 ${className}`}>
-          <DisclosureButton className="flex w-full justify-between items-center p-6 bg-white dark:bg-secondary-800 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-all duration-300 group">
+          <DisclosureButton className="flex w-full justify-between items-center p-6 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-all duration-300 group">
             <h2 className="text-xl font-semibold text-secondary-900 dark:text-secondary-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300">
               {title}
             </h2>
