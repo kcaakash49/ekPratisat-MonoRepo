@@ -31,14 +31,14 @@ export default function Footer() {
             </a>
             <a
               href="https://stackhook.com"
-              target="_blank"
+              
               className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
             >
               <Globe size={18} />
             </a>
             <a
               href="https://github.com/stackhook"
-              target="_blank"
+              
               className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
             >
               <Github size={18} />

@@ -36,7 +36,7 @@ export default function ListAgents() {
   }
 
   const agents = data?.result || [];
-  
+
   if (agents.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6 p-6">
@@ -49,15 +49,16 @@ export default function ListAgents() {
           <div className="w-20 h-20 bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-300 rounded-full flex items-center justify-center shadow-inner">
             <UserPlus className="w-10 h-10" />
           </div>
-  
+
           <h2 className="mt-6 text-2xl font-semibold text-secondary-800 dark:text-secondary-200">
             No agents found
           </h2>
           <p className="text-secondary-600 dark:text-secondary-400 max-w-sm mt-2">
-            You haven't added any agents yet. Get started by adding your first one!
+            {"You haven’t added any agents yet. Get started by adding your first one!"}
+
           </p>
         </motion.div>
-  
+
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -108,6 +109,7 @@ export default function ListAgents() {
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-secondary-700 dark:text-secondary-300 uppercase tracking-wider">
                     Agent Name
+
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-secondary-700 dark:text-secondary-300 uppercase tracking-wider">
                     Contact Information
@@ -125,7 +127,7 @@ export default function ListAgents() {
               </thead>
               <tbody className="divide-y divide-secondary-200 dark:divide-secondary-700 bg-white dark:bg-secondary-900">
                 {agents.map((agent: AgentType, index: number) => (
-                  <motion.tr 
+                  <motion.tr
                     key={agent.id}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -140,7 +142,7 @@ export default function ListAgents() {
                           </span>
                         </div>
                         <div className="ml-4">
-                          <Link 
+                          <Link
                             href={`/agent/${agent.id}`}
                             className="text-lg font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 hover:underline transition-colors"
                           >
@@ -165,7 +167,7 @@ export default function ListAgents() {
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <VerifyBadge isVerified={agent.isVerified} userId={agent.id}/>
+                      <VerifyBadge isVerified={agent.isVerified} userId={agent.id} />
                     </td>
                     {/* <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-3 opacity-0 group-hover:opacity-100 transition-opacity">
