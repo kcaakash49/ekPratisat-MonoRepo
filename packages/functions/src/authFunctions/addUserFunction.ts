@@ -27,7 +27,7 @@ export async function createUser(formData: FormData) {
     verifiedById: formData.get("verifiedById") as string ?? null
   };
 
-  console.log(credentials);
+ 
 
   // --- 2️⃣ Handle profile image
   const profileImage = formData.get("profileImage");

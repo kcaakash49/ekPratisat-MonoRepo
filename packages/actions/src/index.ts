@@ -6,3 +6,4 @@ export * from "./listingActions/createListingAction";
 export * from "./agentActions/getAgentListActiont";
 export * from "./agentActions/getAgentDetailAction";
 export * from "./agentActions/verifyAgentAction";
+export * from "./agentActions/editBasicInfoAction";

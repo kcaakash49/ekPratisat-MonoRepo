@@ -205,7 +205,6 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
     });
   };
 
-  console.log(images);
   return (
     <div className="max-w-7xl p-4 rounded shadow-lg overflow-auto">
       <h2 className="text-2xl font-bold mb-4">Add Property</h2>
