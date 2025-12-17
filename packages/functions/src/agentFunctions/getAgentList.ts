@@ -12,6 +12,7 @@ export async function getAgentList() {
             contact: true,
             isVerified: true,
             createdAt:true,
+            secondContact: true,
             createdBy: {
                 select: {
                     id: true,

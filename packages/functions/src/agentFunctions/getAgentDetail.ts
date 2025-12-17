@@ -15,6 +15,7 @@ export async function getAgentDetai(id: string) {
                 isVerified: true,
                 createdAt: true,
                 email: true,
+                secondContact:true,
                 createdBy: {
                     select: {
                         id:true,

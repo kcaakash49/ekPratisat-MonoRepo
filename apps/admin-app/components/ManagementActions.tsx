@@ -153,10 +153,6 @@ export default function ManagementActions({ agent }: { agent: AgentDetailType })
                 agent={agent}
                 open={isEditOpen}
                 onClose={() => setIsEditOpen(false)}
-                onSubmit={(data) => {
-                    console.log("Update basic profile", data);
-                    setIsEditOpen(false);
-                }}
             />
         </>
     )
