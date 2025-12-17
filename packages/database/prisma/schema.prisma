@@ -17,6 +17,7 @@ model User {
   id       String @unique @default(uuid())
   name     String
   contact  String @unique
+  secondContact String?  
   email    String @unique
   password String
 

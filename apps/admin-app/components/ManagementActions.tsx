@@ -1,8 +1,12 @@
 "use client";
 
 import { AgentDetailType } from "@repo/validators";
+import { Image } from "lucide-react";
+import { useState } from "react";
+import { EditAgentBasicProfileModal } from "./EditBasicAgentProfile";
 
-export default function ManagementActions({agent}: {agent: AgentDetailType}) {
+export default function ManagementActions({ agent }: { agent: AgentDetailType }) {
+    const [isEditOpen, setIsEditOpen] = useState(false);
     return (
         <>
             <div className="mt-6 max-w-7xl">
@@ -22,7 +26,7 @@ export default function ManagementActions({agent}: {agent: AgentDetailType}) {
                         </div>
                         <div className="space-y-3">
                             <button
-                                // onClick={() => handleEditUser(agent.id)}
+                                onClick={() => setIsEditOpen(true)}
                                 className="w-full flex items-center gap-3 p-3 text-left hover:bg-secondary-50 dark:hover:bg-secondary-700 rounded-lg transition-colors group"
                             >
                                 <svg className="w-5 h-5 text-blue-500 group-hover:text-blue-600 dark:group-hover:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -31,6 +35,18 @@ export default function ManagementActions({agent}: {agent: AgentDetailType}) {
                                 <div>
                                     <div className="font-medium text-secondary-700 dark:text-secondary-300">Edit Profile</div>
                                     <div className="text-sm text-secondary-500 dark:text-secondary-400">Update user information and details</div>
+                                </div>
+                            </button>
+
+                            <button
+                                // onClick={() => handleEditUser(agent.id)}
+                                className="w-full flex items-center gap-3 p-3 text-left hover:bg-secondary-50 dark:hover:bg-secondary-700 rounded-lg transition-colors group"
+                            >
+
+                                <Image size={20} color="green" />
+                                <div>
+                                    <div className="font-medium text-secondary-700 dark:text-secondary-300">Change Profile Picture</div>
+                                    <div className="text-sm text-secondary-500 dark:text-secondary-400">Update user profle image</div>
                                 </div>
                             </button>
 
@@ -133,7 +149,15 @@ export default function ManagementActions({agent}: {agent: AgentDetailType}) {
                     </div>
                 </div>
             </div>
-
+            <EditAgentBasicProfileModal
+                agent={agent}
+                open={isEditOpen}
+                onClose={() => setIsEditOpen(false)}
+                onSubmit={(data) => {
+                    console.log("Update basic profile", data);
+                    setIsEditOpen(false);
+                }}
+            />
         </>
     )
 }

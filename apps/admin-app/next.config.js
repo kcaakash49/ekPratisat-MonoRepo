@@ -5,11 +5,11 @@ const nextConfig = {
   ...baseConfig,
   reactStrictMode: true, // 👈 example override
   images: {
-    domains: ['192.168.1.75', 'localhost'], // add your file server host
+    domains: ['192.168.2.237', 'localhost'], // add your file server host
     remotePatterns: [
       {
         protocol: 'http',
-        hostname: '192.168.1.75',
+        hostname: '192.168.2.237',
         port: '3001', // optional if not default
         pathname: '/**',
       },
