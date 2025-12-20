@@ -1,6 +1,7 @@
+import ListProperties from "../../../components/ListProperties";
 
-export default function ListProperties(){
+export default function ListPropertiesPage(){
     return (
-        <div>List</div>
+      <ListProperties/>
     )
 }

@@ -41,7 +41,7 @@ export async function createListingFunction({ formData, userId }: CreateListingA
           .toFormat("webp", { quality: 90 })
           .toFile(filePath);
 
-        return `/images/propertyImage/${finalFilename}`;
+        return `/image/propertyImage/${finalFilename}`;
       })
     )
   );

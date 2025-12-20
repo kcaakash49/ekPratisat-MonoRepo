@@ -7,3 +7,4 @@ export * from "./agentActions/getAgentListActiont";
 export * from "./agentActions/getAgentDetailAction";
 export * from "./agentActions/verifyAgentAction";
 export * from "./agentActions/editBasicInfoAction";
+export * from "./listingActions/fetchListingsAction";

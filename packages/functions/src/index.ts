@@ -9,3 +9,4 @@ export * from "./agentFunctions/getAgentList.js";
 export * from "./agentFunctions/getAgentDetail.js";
 export * from "./agentFunctions/verifyAgent.js";
 export * from "./agentFunctions/editBasicInfo.js"
+export * from "./listFunctions/fetchListings.js"

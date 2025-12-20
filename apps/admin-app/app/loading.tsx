@@ -1,8 +1,10 @@
-// import AnimateLoader from "@repo/ui/animateLoader";
+
+
+import AnimateLoader from "@repo/ui/animateLoader";
 
 
 export default function Loading(){
-    return <div className="flex flex-1 justify-center items-center">
-       Loading.............
+    return <div className="flex justify-center items-center h-full w-full">
+       <AnimateLoader/>
     </div>
-}
+}                                   
