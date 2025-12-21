@@ -7,6 +7,7 @@ import { useCreateProperty, useGetCategories, useGetLocationTree } from "@repo/q
 import { toast } from "sonner";
 import { CreatePropertySchema } from "@repo/validators";
 import { Loader2 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 
@@ -96,7 +97,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
   const { data: categories, isLoading: categoryLoading } = useGetCategories();
   const { data: locations, isLoading: locationLoading, isSuccess } = useGetLocationTree();
   const { mutate, isPending } = useCreateProperty();
-
+  const queryClient = useQueryClient();
 
   const selectedCategory = categories?.result.find(
     (c) => c.id === formData.categoryId
@@ -200,6 +201,9 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
     mutate(cleanedData, {
       onSuccess: (data) => {
         toast.success(data.message || "Operation Successful!!!");
+        queryClient.invalidateQueries({
+          queryKey: ["listings","1"]
+        })
         resetForm();
       }
     });

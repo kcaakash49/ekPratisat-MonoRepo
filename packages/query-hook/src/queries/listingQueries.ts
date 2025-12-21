@@ -1,5 +1,5 @@
 
-import { fetchCategoryAction, fetchListingAction, fetchLocationTreeAction } from "@repo/actions";
+import { fetchCategoryAction, fetchListingAction, fetchLocationTreeAction, fetchPropertyDetailAction } from "@repo/actions";
 
 import { useQuery } from "@tanstack/react-query";
 
@@ -42,6 +42,21 @@ export const useFetchListings = ({page, pageSize}: {
         },
         retry: 1,
         staleTime:10 * 60 * 1000,
+        refetchOnWindowFocus: true
+    })
+}
+
+export const useFetchPropertyDetail = (id:string) => {
+    return useQuery({
+        queryKey: ["property-detail", id],
+        queryFn: async() => {
+            const res = await fetchPropertyDetailAction(id);
+            if (res.status === 200) {
+                return res.result;
+            }
+        },
+        retry: 1,
+        staleTime: 10 * 60 * 1000,
         refetchOnWindowFocus: true
     })
 }

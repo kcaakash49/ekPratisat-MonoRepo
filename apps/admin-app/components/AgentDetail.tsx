@@ -24,7 +24,7 @@ export default function AgentDetail() {
     if (isError) {
         const message = error.message || "Couldn't fetch data";
         return (
-            <div className="flex flex-1 items-center justify-center text-red-500 text-lg md:text-xl">{message}</div>
+            <div className="flex flex-1 items-center justify-center text-red-500 text-lg md:text-xl h-full">{message}</div>
         );
     }
 

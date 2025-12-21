@@ -12,8 +12,8 @@ const navSections = [
   {
     name: "Properties",
     children: [
-      { name: "Add Property", path: "/add-property" },
-      { name: "List Properties", path: "/list-properties" },
+      { name: "Add Property", path: "/property/add-property" },
+      { name: "List Properties", path: "/property/list-properties" },
     ],
   },
   {
@@ -118,7 +118,7 @@ export default function AdminSidebarClient({ userName }: Props) {
                         : "text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 dark:hover:text-primary-400"
                     }`}
                   >
-                   - {name}
+                    {name}
                   </Link>
                 ))}
               </SidebarDropdownSection>
