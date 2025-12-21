@@ -78,7 +78,7 @@ export default function ListProperties() {
           transition={{ delay: 0.3 }}
         >
           <Link
-            href="/add-property"
+            href="/property/add-property"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors shadow-md font-medium"
           >
             <Plus className="w-5 h-5" />
