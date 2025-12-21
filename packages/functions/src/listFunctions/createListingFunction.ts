@@ -11,7 +11,7 @@ interface CreateListingArgs {
   userId: string;
 }
 
-const IMAGE_DIR = "/var/www/ekPratisatMonorepo/images/propertyImage";
+const IMAGE_DIR = "/var/www/ekPratisat/image/propertyImage";
 const MAX_CONCURRENT_IMAGES = 5; // limit parallel Sharp processes
 
 export async function createListingFunction({ formData, userId }: CreateListingArgs) {

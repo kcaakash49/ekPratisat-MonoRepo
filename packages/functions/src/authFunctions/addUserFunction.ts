@@ -7,8 +7,8 @@ import pLimit from "p-limit";
 import { AppError } from "../error.js";
 import { userSignupSchema, UserSingUpSchema } from "@repo/validators";
 
-const PROFILE_IMAGE_DIR = "/var/www/ekPratisatMonorepo/images/profileImage";
-const DOCUMENT_IMAGE_DIR = "/var/www/ekPratisatMonorepo/images/idDocument";
+const PROFILE_IMAGE_DIR = "/var/www/ekPratisat/image/profileImage";
+const DOCUMENT_IMAGE_DIR = "/var/www/ekPratisat/image/idDocument";
 
 
 
