@@ -76,7 +76,7 @@ export default function PropertyTableDropdown({
                     </td>
 
                     <td className="px-6 py-4">
-                      {property.location?.municipality?.district?.name},{" "}
+                      {property.location?.name},{" "}
                       {property.location?.municipality?.name}
                     </td>
 
@@ -93,9 +93,8 @@ export default function PropertyTableDropdown({
                         className="inline-flex items-center justify-center w-8 h-8 rounded hover:bg-secondary-200 dark:hover:bg-secondary-700"
                       >
                         <ChevronDown
-                          className={`w-4 h-4 transition-transform ${
-                            isOpen ? "rotate-180" : ""
-                          }`}
+                          className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""
+                            }`}
                         />
                       </button>
                     </td>
@@ -105,10 +104,14 @@ export default function PropertyTableDropdown({
                   {isOpen && (
                     <tr className="bg-secondary-50 dark:bg-secondary-800">
                       <td colSpan={5} className="px-6 py-4">
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
                           <div>
                             <p className="text-secondary-500">Type</p>
                             <p className="font-medium">{property.type}</p>
+                          </div>
+                          <div>
+                            <p className="text-secondary-500">District</p>
+                            <p className="font-medium">{property.location?.municipality?.district?.name}</p>
                           </div>
 
                           <div>
@@ -123,19 +126,23 @@ export default function PropertyTableDropdown({
                             </p>
                           </div>
 
-                          <div className="flex gap-3">
-                            <Link
-                              href={`/property/${property.id}`}
-                              className="text-primary-600 hover:underline"
-                            >
-                              View
-                            </Link>
-                            <Link
-                              href={`/property/${property.id}/edit`}
-                              className="text-secondary-600 hover:underline"
-                            >
-                              Edit
-                            </Link>
+                          <div>
+                          <p className="text-secondary-500">Actions</p>
+                            <div className="flex gap-3">
+                              <Link
+                                href={`/property/${property.id}`}
+                                className="text-primary-600 hover:underline"
+                              >
+                                View
+                              </Link>
+                              <Link
+                                href={`/property/${property.id}/edit`}
+                                className="text-secondary-600 hover:underline"
+                              >
+                                Edit
+                              </Link>
+                            </div>
+
                           </div>
                         </div>
                       </td>
