@@ -4,6 +4,7 @@ import { useFetchPropertyDetail } from "@repo/query-hook";
 import PageLoading from "@repo/ui/pageloading";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import PropertyMap from "./propertyMap";
 
 function SpecItem({ label, value }: { label: string; value?: string | null }) {
   if (!value) return null;
@@ -120,6 +121,15 @@ export default function PropertyDetailComponent() {
           </p>
         </div>
       </div>
+      {/* Location Map */}
+      {typeof (property as any).lat === "number" && typeof (property as any).lng === "number" ? (
+        <div className="space-y-2">
+          <h2 className="text-xl font-semibold text-secondary-900 dark:text-secondary-100">
+            Location
+          </h2>
+          <PropertyMap lat={(property as any).lat} lng={(property as any).lng} />
+        </div>
+      ) : null}
     </div>
   );
 }
