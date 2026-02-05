@@ -63,6 +63,7 @@ export async function createListingFunction({ formData, userId }: CreateListingA
     return {
       message: "Listing added successfully",
       listing,
+      status:200
     };
   } catch (error) {
     console.error("Error creating listing:", error);

@@ -113,6 +113,7 @@ model Property {
   floorLevel      String?
   tole            String
   verified        Boolean  @default(false)
+  geoPoint        Unsupported("geometry(Point, 4326)")
   locationId      String
   location        Ward     @relation(fields: [locationId], references: [id])
   createdAt       DateTime @default(now())

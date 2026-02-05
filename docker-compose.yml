@@ -1,0 +1,20 @@
+services:
+  ekpratisat-postgres:
+    image: postgis/postgis:16-3.4
+    restart: unless-stopped
+
+    ports:
+      - "127.0.0.1:5436:5432"
+
+    environment:
+      POSTGRES_DB: ekPratisat-database
+      POSTGRES_USER: aakash
+      POSTGRES_PASSWORD: kriss012
+
+    volumes:
+      - ekpratisat:/var/lib/postgresql/data
+
+volumes:
+  ekpratisat:
+    external: true
+
