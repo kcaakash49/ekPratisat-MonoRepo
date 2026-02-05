@@ -5,16 +5,20 @@ import sharp from "sharp";
 import pLimit from "p-limit";
 import { createPropertySchema, CreatePropertySchema } from "@repo/validators";
 import { AppError } from "../error.js";
+import { randomUUID } from "crypto";
 
 interface CreateListingArgs {
   formData: CreatePropertySchema;
   userId: string;
 }
 
-const IMAGE_DIR = "/var/www/ekPratisat/image/propertyImage";
+const IMAGE_DIR = "/var/www/ekPratisatMonorepo/images/propertyImage";
 const MAX_CONCURRENT_IMAGES = 5; // limit parallel Sharp processes
 
-export async function createListingFunction({ formData, userId }: CreateListingArgs) {
+export async function createListingFunction({
+  formData,
+  userId,
+}: CreateListingArgs) {
   if (!userId) throw new AppError(401, "Unauthorized");
 
   const parsed = createPropertySchema.safeParse(formData);
@@ -46,24 +50,104 @@ export async function createListingFunction({ formData, userId }: CreateListingA
     )
   );
 
-  try {
-    // Create listing and images in a single transaction
-    const listing = await prisma.$transaction(async (tx) => {
-      return await tx.property.create({
-        data: {
-          ...parsed.data,
-          userId,
-          images: {
-            create: imageUrls.map((url) => ({ url })),
-          },
-        },
-      });
-    });
+  const { images: _images, lat, lng, ...data } = parsed.data;
 
+  try {
+    const listing = await prisma.$transaction(async (tx) => {
+      // Generate id in app (since we're doing raw insert)
+      const propertyId = randomUUID();
+      // Insert property with geoPoint using PostGIS
+      // NOTE: ST_MakePoint takes (lng, lat)
+      const inserted = await tx.$queryRaw<any[]>`
+  INSERT INTO "public"."Property" (
+    "id",
+    "title",
+    "description",
+    "price",
+    "type",
+    "categoryId",
+    "userId",
+    "noOfBedRooms",
+    "noOfRestRooms",
+    "landArea",
+    "noOfFloors",
+    "propertyAge",
+    "facingDirection",
+    "floorArea",
+    "roadSize",
+    "verified",
+    "locationId",
+    "createdAt",
+    "updatedAt",
+    "floorLevel",
+    "tole",
+    "geoPoint"
+  )
+  VALUES (
+    ${propertyId},
+    ${data.title},
+    ${data.description},
+    ${data.price},
+    ${data.type}::"SaleType",
+    ${data.categoryId},
+    ${userId},
+    ${data.noOfBedRooms},
+    ${data.noOfRestRooms},
+    ${data.landArea},
+    ${data.noOfFloors},
+    ${data.propertyAge},
+    ${data.facingDirection},
+    ${data.floorArea},
+    ${data.roadSize},
+    ${data.verified ?? false},
+    ${data.locationId},
+    NOW(),
+    NOW(),
+    ${data.floorLevel},
+    ${data.tole},
+    ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)
+  )
+  RETURNING
+    "id",
+    "title",
+    "description",
+    "price",
+    "type",
+    "categoryId",
+    "userId",
+    "noOfBedRooms",
+    "noOfRestRooms",
+    "landArea",
+    "noOfFloors",
+    "propertyAge",
+    "facingDirection",
+    "floorArea",
+    "roadSize",
+    "verified",
+    "locationId",
+    "createdAt",
+    "updatedAt",
+    "floorLevel",
+    "tole";
+`;
+      const propertyRow = inserted[0];
+
+      // Insert images referencing the new property
+      if (imageUrls.length) {
+        await tx.image.createMany({
+          data: imageUrls.map((url) => ({
+            url,
+            propertyId: propertyRow.id,
+          })),
+        });
+      }
+
+      return propertyRow;
+    });
     return {
       message: "Listing added successfully",
       listing,
-      status:200
+      status: 200,
     };
   } catch (error) {
     console.error("Error creating listing:", error);
