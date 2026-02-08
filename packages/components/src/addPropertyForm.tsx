@@ -34,7 +34,14 @@ type DirectionType =
   | "southeast"
   | "southwest";
 
+
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+
+// Nepal bbox: [minLng, minLat, maxLng, maxLat]
+const NEPAL_BBOX: [number, number, number, number] = [80.058, 26.347, 88.201, 30.447];
+
+// Kathmandu fallback
+const KATHMANDU: [number, number] = [85.324, 27.7172];
 
 function MapPicker({
   value,
@@ -50,76 +57,103 @@ function MapPicker({
   const markerRef = useRef<mapboxgl.Marker | null>(null);
 
   useEffect(() => {
-    if (!MAPBOX_TOKEN) {
-      console.error("Missing NEXT_PUBLIC_MAPBOX_TOKEN");
-      return;
-    }
+    if (!MAPBOX_TOKEN) return;
     if (!mapContainerRef.current) return;
-    if (mapRef.current) return; // init once
+    if (mapRef.current) return;
 
     (mapboxgl as any).accessToken = MAPBOX_TOKEN;
 
-    // Default center: Kathmandu (can change anytime)
-    const defaultCenter: [number, number] = [85.324, 27.7172]; // [lng, lat]
+    const startCenter: [number, number] =
+      value.lng != null && value.lat != null ? [value.lng, value.lat] : KATHMANDU;
 
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: "mapbox://styles/mapbox/streets-v12",
-      center: value.lng != null && value.lat != null ? [value.lng, value.lat] : defaultCenter,
-      zoom: value.lng != null && value.lat != null ? 14 : 11,
+      center: startCenter,
+      zoom: value.lng != null && value.lat != null ? 15 : 11,
+      maxBounds: NEPAL_BBOX,
     });
 
     map.addControl(new mapboxgl.NavigationControl(), "top-right");
 
-    // Geocoder (search)
+    // ✅ Current location button
+    const geolocate = new mapboxgl.GeolocateControl({
+      positionOptions: { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 },
+      trackUserLocation: true,
+      showUserHeading: true,
+    });
+    map.addControl(geolocate, "top-right");
+
+    geolocate.on("geolocate", (e: any) => {
+      const lat = e.coords.latitude as number;
+      const lng = e.coords.longitude as number;
+      const accuracy = e.coords.accuracy as number; // meters
+    
+      placeOrMoveMarker(lng, lat);
+      onChange({ lat, lng });
+      map.flyTo({ center: [lng, lat], zoom: accuracy <= 50 ? 17 : 15 });
+    
+      if (accuracy > 150) {
+        // big warning for user
+        toast.warning(`Low GPS accuracy (~${Math.round(accuracy)}m). Please drag marker to correct.`);
+      } else {
+        toast.success(`Location detected (~${Math.round(accuracy)}m accuracy)`);
+      }
+    });
+
+    // ✅ Nepal-biased search
     if (geocoderContainerRef.current) {
       const geocoder = new MapboxGeocoder({
         accessToken: MAPBOX_TOKEN,
-        mapboxgl,
+        mapboxgl: mapboxgl as any,
         marker: false,
-        placeholder: "Search address / place",
+        placeholder: "Search in Nepal (place / area / address)",
+        countries: "np",
+        bbox: NEPAL_BBOX,
+        proximity: { longitude: startCenter[0], latitude: startCenter[1] },
+        types: "country,region,place,locality,neighborhood,address,poi",
+        limit: 6,
       });
 
       geocoderContainerRef.current.innerHTML = "";
       geocoderContainerRef.current.appendChild(geocoder.onAdd(map));
 
-      geocoder.on("result", (e:any) => {
-        const coords = e?.result?.center as [number, number] | undefined; // [lng, lat]
+      geocoder.on("result", (ev:any) => {
+        const coords = ev?.result?.center as [number, number] | undefined;
         if (!coords) return;
 
         const [lng, lat] = coords;
-        placeOrMoveMarker(map, lng, lat);
+        placeOrMoveMarker(lng, lat);
         onChange({ lat, lng });
-        map.flyTo({ center: [lng, lat], zoom: 15 });
+        map.flyTo({ center: [lng, lat], zoom: 16 });
+
+        geocoder.setProximity({ longitude: lng, latitude: lat });
+      });
+
+      map.on("moveend", () => {
+        const c = map.getCenter();
+        geocoder.setProximity({ longitude: c.lng, latitude: c.lat });
       });
     }
 
-    // Click to set marker
+    // Click-to-place
     map.on("click", (e) => {
       const { lng, lat } = e.lngLat;
-      placeOrMoveMarker(map, lng, lat);
+      placeOrMoveMarker(lng, lat);
       onChange({ lat, lng });
     });
 
     mapRef.current = map;
 
-    // If initial value exists, place marker
     if (value.lng != null && value.lat != null) {
-      placeOrMoveMarker(map, value.lng, value.lat);
+      placeOrMoveMarker(value.lng, value.lat);
     }
 
-    return () => {
-      markerRef.current?.remove();
-      markerRef.current = null;
-      mapRef.current?.remove();
-      mapRef.current = null;
-    };
-
-    function placeOrMoveMarker(_map: mapboxgl.Map, lng: number, lat: number) {
+    function placeOrMoveMarker(lng: number, lat: number) {
       if (!markerRef.current) {
         markerRef.current = new mapboxgl.Marker({ draggable: true })
           .setLngLat([lng, lat])
-          .addTo(_map);
+          .addTo(map);
 
         markerRef.current.on("dragend", () => {
           const pos = markerRef.current?.getLngLat();
@@ -130,12 +164,19 @@ function MapPicker({
         markerRef.current.setLngLat([lng, lat]);
       }
     }
+
+    return () => {
+      markerRef.current?.remove();
+      markerRef.current = null;
+      mapRef.current?.remove();
+      mapRef.current = null;
+    };
   }, []);
 
-  // If parent value changes later (e.g., reset), remove marker visually
+  // When form resets, remove marker
   useEffect(() => {
     if (!mapRef.current) return;
-    if (value.lng == null || value.lat == null) {
+    if (value.lat == null || value.lng == null) {
       markerRef.current?.remove();
       markerRef.current = null;
     }
@@ -144,7 +185,7 @@ function MapPicker({
   if (!MAPBOX_TOKEN) {
     return (
       <div className="p-3 rounded border border-red-300 bg-red-50 text-red-700">
-        Map is not configured. Please set <code>NEXT_PUBLIC_MAPBOX_TOKEN</code>.
+        Map is not configured. Set <code>NEXT_PUBLIC_MAPBOX_TOKEN</code>.
       </div>
     );
   }
@@ -153,10 +194,8 @@ function MapPicker({
     <div className="space-y-2">
       <label className="block font-medium">Pin Location on Map</label>
 
-      {/* Geocoder */}
       <div ref={geocoderContainerRef} />
 
-      {/* Map */}
       <div
         ref={mapContainerRef}
         className="w-full h-[320px] rounded-md border border-secondary-300 dark:border-transparent overflow-hidden"
@@ -184,12 +223,11 @@ function MapPicker({
       </div>
 
       <p className="text-xs text-secondary-500">
-        Search a place, then click the map or drag the marker to fine-tune.
+        Use search (Nepal-biased), click the map, drag the marker, or use the current-location button.
       </p>
     </div>
   );
 }
-
 export const AddPropertyForm: React.FC<Props> = ({ user }) => {
   const [formData, setFormData] = useState<any>({
     title: "",
