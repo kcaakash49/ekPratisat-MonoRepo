@@ -9,3 +9,4 @@ export * from "./agentActions/verifyAgentAction";
 export * from "./agentActions/editBasicInfoAction";
 export * from "./listingActions/fetchListingsAction";
 export * from "./listingActions/fetchPropertyDetailAction";
+export * from "./geoZoneActions/geoZoneAction";

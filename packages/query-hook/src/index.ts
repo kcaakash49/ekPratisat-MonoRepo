@@ -4,3 +4,4 @@ export * from "./mutationHooks/listingHooks";
 export * from "./queries/listingQueries";
 export * from "./queries/agentQueries";
 export * from "./mutationHooks/agentMutation";
+export * from "./mutationHooks/geoZoneMutation";
