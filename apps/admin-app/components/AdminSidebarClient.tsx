@@ -9,6 +9,7 @@ import { SidebarDropdownSection } from "@repo/ui/sideBarDropdownSection";
 
 const navSections = [
   { name: "Dashboard", path: "/dashboard" },
+  { name: "Geozones", path: "/geo-zones" },
   {
     name: "Properties",
     children: [

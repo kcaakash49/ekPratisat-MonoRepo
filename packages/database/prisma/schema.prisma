@@ -42,9 +42,47 @@ model User {
   municipalitiesAdded Municipality[]
   wardAdded           Ward[]                  @relation("WardsAddedByAdmin")
   assignedWards       PartnerWardAssignment[] @relation("UserWards")
+  assignedZones       AgentGeoZone[]
+  geoZonesCreated     GeoZone[]
   // assignedWards       Ward[]         @relation("PartnerWards")
   createdAt           DateTime                @default(now())
   updatedAt           DateTime?               @updatedAt
+  
+}
+
+model AgentGeoZone {
+  agentId   String
+  zoneId    String
+
+  agent     User    @relation(fields: [agentId], references: [id])
+  zone      GeoZone @relation(fields: [zoneId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@id([agentId, zoneId])
+  @@index([zoneId])
+  @@index([agentId])
+}
+
+model GeoZone {
+  id          String   @id @default(uuid())
+  name        String
+  notes       String?
+  isActive    Boolean  @default(true)
+
+  // PostGIS geometry
+  geom        Unsupported("geometry(MultiPolygon, 4326)")
+
+  // optional ownership / audit
+  createdById String?
+  createdBy   User?     @relation(fields: [createdById], references: [id])
+
+  // link to agents (many-to-many)
+  agents      AgentGeoZone[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@index([geom], type: Gist)
 }
 
 model UserDocument {
@@ -118,6 +156,7 @@ model Property {
   location        Ward     @relation(fields: [locationId], references: [id])
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  @@index([geoPoint], type: Gist)
 }
 
 model District {
