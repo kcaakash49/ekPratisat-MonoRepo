@@ -1,5 +1,4 @@
 // @repo/query-hook/src/hooks/useCreateUser.ts
-import { addUserAction } from "@repo/actions";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -11,12 +10,29 @@ type Credentials = {
 
 export const useCreateUser = () => {
   return useMutation({
-    mutationFn: addUserAction,
-    onError: () => {
-      toast.error("Unexpected error");
+    mutationFn: async (formData: FormData) => {
+      const res = await fetch("http://localhost:5000/auth/create-agent", {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw data;
+      }
+
+      return data;
+    },
+
+    onError: (err: any) => {
+      if (err.fieldErrors) {
+        console.log(err.fieldErrors); // use in form
+      }
+      toast.error(err.error || "Unexpected error");
     },
   });
-      
 };
 
 export const useSignInUser = () => {

@@ -128,21 +128,20 @@ export default function CreatePartnerAdminUser({ userRole }: PropType) {
     });
 
     mutate(formData, {
-      onSuccess: (data) => {
-        if (data.status === 200 && "user" in data) {
+      onSuccess: () => {
           toast.success(`${userRole} user created successfully!`);
           setErrors({});
           queryClient.invalidateQueries({
             queryKey: ["agents-list"]
           })
           resetForm();
-        } else if ("error" in data) {
-          setErrors(data.fieldErrors || {});
-          toast.error(data.error);
-        } else {
-          toast.error("Something went wrong");
-        }
       },
+      onError: (err) => {        
+        if (err.fieldErrors) {
+          setErrors(err.fieldErrors);
+        }
+        toast.error(err.error || "Failed to create user");
+      }
     });
   };
 

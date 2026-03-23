@@ -34,13 +34,8 @@ export const userSignupSchema = z.object({
     createdById: z.string().optional().nullable(),
     verifiedById: z.string().optional().nullable(),
     isVerified: z.boolean().default(false),
-    profileImage: z.file().optional().nullable(),
-    document: z.array(
-      z.object({
-        type: z.string(),
-        image: z.file()
-      })
-    ).optional()
+    profileImage: z.any().optional().nullable(),
+    document: z.any().optional().nullable(),
 
   }).partial({role: true, isVerified: true});
 
