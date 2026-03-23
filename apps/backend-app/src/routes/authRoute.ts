@@ -1,10 +1,13 @@
 
 import { Router } from "express";
-import { signIn } from "../controller/authController.js";
+import { createAgentAdminStaff, signIn } from "../controller/authController.js";
+import { checkAuthentication, requireAdminOrStaff } from "../middleware/checkAuthentication.js";
+import { uploadUserFiles } from "../middleware/userUpload.js";
 
 const authRouter = Router();
 
 // authRouter.post('/signup', signUp);
 authRouter.post("/signin", signIn);
+authRouter.post("/create-agent",checkAuthentication,requireAdminOrStaff,uploadUserFiles.any(),createAgentAdminStaff);
 
 export default authRouter;

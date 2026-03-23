@@ -6,42 +6,34 @@ import { AppError, createUser, signInUser } from "@repo/functions";
 import { UserSigninSchema, UserSingUpSchema } from "@repo/validators";
 import { getServerSession } from "next-auth";
 
-export async function addUserAction(formData: FormData) {
-  // try {
-  //   return await createUser(formData);
-  // } catch (error) {
-  //   if (error instanceof AppError) {
-  //     return { status: error.status, error: error.message, fieldErrors: error.fieldErrors };
-  //   }
-  //   return { status: 500, error: "Unexpected error" };
-  // }
-  try {
-    const userRole = formData.get("role");
-    const isVerified = formData.get("isVerified");
-    if (userRole === "partner" || userRole === "admin" || userRole === "staff") {
-      const session = await getServerSession(authOptions);
-      if (!session || !(session.user.role === "admin")) {
-        throw new AppError(401, "Unauthorized");
-      }
-      formData.append("createdById", session.user.id);
-      if (isVerified === "true") {
-        if(session.user.role !== "admin") throw new AppError(401, "You cannot verify user!!!")
-        formData.append("verifiedById", session.user.id);
-      }
-      return await createUser(formData);
-    }
-    return await createUser(formData);
-  } catch (error) {
-    if (error instanceof AppError) {
-      return {
-        status: error.status,
-        error: error.message,
-        fieldErrors: error.fieldErrors,
-      };
-    }
-    return { status: 500, error: "Unexpected error" };
-  }
-}
+// export async function addUserAction(formData: FormData) {
+//   try {
+//     const userRole = formData.get("role");
+//     const isVerified = formData.get("isVerified");
+//     if (userRole === "partner" || userRole === "admin" || userRole === "staff") {
+//       const session = await getServerSession(authOptions);
+//       if (!session || !(session.user.role === "admin")) {
+//         throw new AppError(401, "Unauthorized");
+//       }
+//       formData.append("createdById", session.user.id);
+//       if (isVerified === "true") {
+//         if(session.user.role !== "admin") throw new AppError(401, "You cannot verify user!!!")
+//         formData.append("verifiedById", session.user.id);
+//       }
+//       return await createUser(formData);
+//     }
+//     return await createUser(formData);
+//   } catch (error) {
+//     if (error instanceof AppError) {
+//       return {
+//         status: error.status,
+//         error: error.message,
+//         fieldErrors: error.fieldErrors,
+//       };
+//     }
+//     return { status: 500, error: "Unexpected error" };
+//   }
+// }
 
 export async function signinAction(credentials: UserSigninSchema) {
   // try {
