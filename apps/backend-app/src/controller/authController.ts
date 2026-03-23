@@ -3,7 +3,8 @@ import { userSigninSchema, userSignupSchema } from "@repo/validators";
 import { Request, Response } from "express";
 import { comparePassword, hashPassword } from "../utils/hash.js";
 import { generateToken } from "../utils/jwt.js";
-import {  AppError } from "@repo/functions";
+import {  AppError, createUser } from "@repo/functions";
+import { ok } from "assert";
 
 
 export const signIn = async (req: Request, res: Response) => {
@@ -34,17 +35,14 @@ export const signIn = async (req: Request, res: Response) => {
     console.log("Token", token);
     res.cookie("accessToken", token, {
       httpOnly: true,
-      secure: false, // secure only in production
-      sameSite: "none", // or "strict", adjust as per your needs
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 24 * 30 * 60 * 60 * 1000,
       path: "/", // cookie available for entire domain
     });
 
     return res.status(201).json({
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role,
+      ok: true,
     });
   } catch(err) {
     return res.status(500).json({
@@ -53,3 +51,21 @@ export const signIn = async (req: Request, res: Response) => {
     });
   }
 };
+
+
+export const signUp = async (req: Request, res: Response) => {
+  try {
+    const result = await createUser(req.body);
+    if (result instanceof AppError) {
+      return res.status(result.status).json({ error: result.message });
+    }
+    return res.status(201).json({
+      ok: true,
+    });
+  }catch(err) {
+    return res.status(500).json({
+      error: "Internal Server Error!!!",
+      err
+    });
+  }
+}

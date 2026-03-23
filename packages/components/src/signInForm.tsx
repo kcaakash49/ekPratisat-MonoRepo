@@ -38,13 +38,14 @@ export default function SignInForm({ label }: SignInProps) {
     e.preventDefault();
     signinMutation.mutate(form, {
       onSuccess: (data) => {
+        console.log("Data from signin mutation:", data);
         if (data?.ok) {
           toast.success("Login Successful!!!");
           router.replace("/");
         } else if (data?.error) {
           toast.error(data.error || "Something Happened");
         } else {
-          toast.error("Unexpected Error")
+          toast.error("Unexpected error")
         }
       }
     });
