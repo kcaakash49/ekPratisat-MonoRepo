@@ -1,7 +1,6 @@
 // @repo/query-hook/src/hooks/useCreateUser.ts
 import { addUserAction } from "@repo/actions";
 import { useMutation } from "@tanstack/react-query";
-import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 
 
@@ -21,17 +20,28 @@ export const useCreateUser = () => {
 };
 
 export const useSignInUser = () => {
-  return useMutation ({
-    mutationFn: async(form: Credentials) => {
-      const result = await signIn("credentials", {
-        redirect:false,
-        contact: form.contact,
-        password: form.password
-      })
-      return result;
+  return useMutation({
+    mutationFn: async (form: Credentials) => {
+      const res = await fetch("http://localhost:5000/auth/signin", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
+      
+      if (!res.ok) {
+        const err = await res.json();
+        console.log(err)
+        throw new Error(err.error || "Login failed");
+      }
+      const response = await res.json();
+      
+      return response;
     },
-    onError: () => {
-      toast.error("Unexpected Error");
-    }
-  })
-}
+    onError: (err: any) => {
+      toast.error(err.message || "Unexpected Error");
+    },
+  });
+};

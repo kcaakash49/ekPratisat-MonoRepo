@@ -1,7 +1,5 @@
 // File: app/admin/layout.tsx
 import React from "react";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@repo/auth-config";
 import AdminSidebarClient from "../../components/AdminSidebarClient";
 
 
@@ -10,8 +8,8 @@ type Props = {
 };
 
 export default async function AdminLayout({ children }: Props) {
-  const session = await getServerSession(authOptions);
-  const userName = session?.user?.name ?? "Admin";
+  // const session = await getServerSession(authOptions);
+  const userName = "Admin"; // session?.user?.name ?? "Admin";
 
   return (
     <div className="min-h-screen flex bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
