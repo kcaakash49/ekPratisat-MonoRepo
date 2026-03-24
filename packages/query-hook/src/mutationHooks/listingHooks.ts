@@ -1,11 +1,23 @@
-import { addCategoryAction, addDistrictAction, addMunicipalityAction, addWardAction, createListingAction } from "@repo/actions"
+import { addDistrictAction, addMunicipalityAction, addWardAction, createListingAction } from "@repo/actions"
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
 
 //add category hook
 export const useCreateCategory = () => {
     return useMutation({
-        mutationFn: addCategoryAction,
+        mutationFn: async(formData: FormData) => {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/add-category`, {
+                method: "POST",
+                credentials: "include",
+                body: formData,
+            });
+            const data = await res.json();
+            if (!res.ok) {
+               throw data
+;            }
+
+            return data;
+        },
         onError: (error) => {
             toast.error(error.message || "Couldn't add category!!!")
         }

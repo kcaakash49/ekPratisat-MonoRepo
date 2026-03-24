@@ -1,10 +1,11 @@
 
 import { Router } from "express";
-import { checkAuthentication } from "../middleware/checkAuthentication.js";
-import { addCategory, uploadCategoryImageFile } from "../controller/listingController.js";
+import { checkAuthentication, requireAdmin } from "../middleware/checkAuthentication.js";
+import {  createCategory, uploadCategoryImageFile } from "../controller/listingController.js";
+import { uploadUserFiles } from "../middleware/userUpload.js";
 
 const listingRouter = Router();
 
-listingRouter.post("/add-category", checkAuthentication,uploadCategoryImageFile, addCategory);
+listingRouter.post("/add-category", checkAuthentication,requireAdmin,uploadUserFiles.single("image"),createCategory);
 
 export default listingRouter;

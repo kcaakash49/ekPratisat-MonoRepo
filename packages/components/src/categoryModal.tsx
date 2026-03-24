@@ -1,6 +1,5 @@
 "use client";
 
-import { addCategoryAction } from "@repo/actions";
 import { useCreateCategory } from "@repo/query-hook";
 import ButtonLoader from "@repo/ui/buttonLoader";
 import { CategorySchema, SessionUser } from "@repo/validators";
@@ -62,7 +61,22 @@ export const CategoryModal: React.FC<Props> = ({ onClose, user }) => {
     const payload = {
       ...formData, name: formData.name.replace(/\s+/g, " ").trim()
     }
-    createCategory.mutate(payload, {
+    const form = new FormData();
+    form.append("name", payload.name);
+    form.append("addedById", user);
+    form.append("isLandAreaNeeded", String(payload.isLandAreaNeeded));
+    form.append("isNoOfFloorsNeeded", String(payload.isNoOfFloorsNeeded));
+    form.append("isNoOfRoomsNeeded", String(payload.isNoOfRoomsNeeded));
+    form.append("isAgeOfThePropertyNeeded", String(payload.isAgeOfThePropertyNeeded));
+    form.append("isNoOfRestRoomsNeeded", String(payload.isNoOfRestRoomsNeeded));
+    form.append("isFacingDirectionNeeded", String(payload.isFacingDirectionNeeded));
+    form.append("isFloorAreaNeeded", String(payload.isFloorAreaNeeded));
+    form.append("isFloorLevelNeeded", String(payload.isFloorLevelNeeded));
+    form.append("isRoadSizeNeeded", String(payload.isRoadSizeNeeded));
+    if (payload.image) {
+      form.append("image", payload.image);
+    }
+    createCategory.mutate(form, {
       onSuccess: () => {
         toast.success("Category Created Successfully!!!");
         queryClient.invalidateQueries({
