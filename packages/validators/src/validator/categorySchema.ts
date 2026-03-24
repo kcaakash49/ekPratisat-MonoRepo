@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const categorySchema = z.object({
     name: z.string().min(2, "Please give valid category"),
-    image: z.file(),
+    image: z.file().optional(),
     isLandAreaNeeded: z.boolean(),
     isNoOfFloorsNeeded: z.boolean(),
     isNoOfRoomsNeeded: z.boolean(),
