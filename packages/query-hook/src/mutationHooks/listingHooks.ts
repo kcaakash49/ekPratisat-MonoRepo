@@ -57,7 +57,18 @@ export const useCreateWard = () => {
 //add property
 export const useCreateProperty = () => {
     return useMutation({
-        mutationFn: createListingAction,
+        mutationFn: async(formData: FormData) => {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/add-property`, {
+                method: "POST",
+                credentials: "include",
+                body: formData,
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                throw data;
+            }
+            return data;
+        },
         onError: (error) => {
             toast.error(error.message || "Couldn't add property!!!")
         }

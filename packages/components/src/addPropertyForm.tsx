@@ -88,11 +88,11 @@ function MapPicker({
       const lat = e.coords.latitude as number;
       const lng = e.coords.longitude as number;
       const accuracy = e.coords.accuracy as number; // meters
-    
+
       placeOrMoveMarker(lng, lat);
       onChange({ lat, lng });
       map.flyTo({ center: [lng, lat], zoom: accuracy <= 50 ? 17 : 15 });
-    
+
       if (accuracy > 150) {
         // big warning for user
         toast.warning(`Low GPS accuracy (~${Math.round(accuracy)}m). Please drag marker to correct.`);
@@ -118,7 +118,7 @@ function MapPicker({
       geocoderContainerRef.current.innerHTML = "";
       geocoderContainerRef.current.appendChild(geocoder.onAdd(map));
 
-      geocoder.on("result", (ev:any) => {
+      geocoder.on("result", (ev: any) => {
         const coords = ev?.result?.center as [number, number] | undefined;
         if (!coords) return;
 
@@ -401,15 +401,39 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
     ) as CreatePropertySchema;
 
     const cleanedImages = images.map((img) => img.file);
-    cleanedData.images = cleanedImages;
 
-    mutate(cleanedData, {
+
+    const form = new FormData();
+
+    Object.entries(cleanedData).forEach(([key, value]) => {
+      if (value === null || value === undefined) {
+        form.append(key, "");
+        return;
+      };
+
+      if (typeof value === "boolean" || typeof value === "number") {
+        form.append(key, String(value));
+      } else if (typeof value === "string") {
+        form.append(key, value);
+      }
+    });
+    cleanedImages.forEach((file) => form.append("images", file));
+
+
+    mutate(form, {
       onSuccess: (data) => {
-        toast.success(data.message || "Operation Successful!!!");
+        toast.success(data.message || "Property added successfully!!!");
         queryClient.invalidateQueries({ queryKey: ["listings"] });
         resetForm();
-      },
+      }
     });
+    // mutate(cleanedData, {
+    //   onSuccess: (data) => {
+    //     toast.success(data.message || "Operation Successful!!!");
+    //     queryClient.invalidateQueries({ queryKey: ["listings"] });
+    //     resetForm();
+    //   },
+    // });
   };
 
   return (
@@ -739,9 +763,8 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
           <button
             type="submit"
             disabled={isPending}
-            className={`px-4 py-2 bg-primary-500 text-white rounded transition ${
-              isPending ? "opacity-70 cursor-not-allowed" : "hover:bg-primary-600"
-            }`}
+            className={`px-4 py-2 bg-primary-500 text-white rounded transition ${isPending ? "opacity-70 cursor-not-allowed" : "hover:bg-primary-600"
+              }`}
           >
             {isPending ? <Loader2 className="animate-spin" /> : "Add Property"}
           </button>
