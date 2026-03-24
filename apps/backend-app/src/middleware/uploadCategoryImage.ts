@@ -5,7 +5,7 @@ import { Request } from 'express';
 // Configure storage with unique filenames
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, '/var/www/images/epPratisatMonorepo/category'); // Save in uploads/categories/
+    cb(null, '/var/www/images/epPratisatMonorepo/images/category'); // Save in uploads/categories/
   },
   filename: (req, file, cb) => {
     // Add timestamp + random string to ensure unique names

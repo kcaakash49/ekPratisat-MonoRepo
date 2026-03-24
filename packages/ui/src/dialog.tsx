@@ -60,7 +60,7 @@ export function DialogContent({
           <X className="w-5 h-5" />
         </button>
       )}
-      <div className="flex flex-col space-y-4"> {/* Ensure vertical stacking */}
+      <div className="flex flex-col space-y-4">
         {children}
       </div>
     </div>

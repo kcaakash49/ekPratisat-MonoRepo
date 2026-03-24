@@ -92,7 +92,7 @@ export const createAgentAdminStaff = async (req: Request, res: Response) => {
       ok: true,
       result,
     });
-  } catch (err) {
+  } catch (err:any) {
     // 🔥 HANDLE VALIDATION ERRORS (from Zod)
     if (err instanceof AppError) {
       return res.status(err.status).json({
@@ -106,3 +106,38 @@ export const createAgentAdminStaff = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const verifyAgent = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+
+    const { userId } = req.body;
+    
+    const result = await prisma.user.update({
+      where: { id: userId },
+      data : {
+        isVerified: true,
+        verifiedById: user.id,
+        documents: { 
+          updateMany: {
+            where: {userId},
+            data: {
+              isVerified: true,
+              verifiedById: user.id
+            }
+          } 
+        }
+      }
+    })  
+
+    return res.status(200).json({
+      ok: true,
+      result
+    });
+  } catch (err) {
+    console.error("Error verifying agent:", err);
+    return res.status(500).json({
+      message: "Internal Server Error!!!",
+    });
+  }
+}

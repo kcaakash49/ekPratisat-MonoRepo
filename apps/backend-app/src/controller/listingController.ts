@@ -36,7 +36,7 @@ export async function addCategory(req: Request, res: Response) {
       // 3. Handle file upload if present
       if (req.file) {
         // Construct public URL for the image
-        imageUrl = `/var/www/images/ekPratisatMonorepo/${req.file.filename}`;
+        imageUrl = `/image/category/${req.file.filename}`;
         
         // You might want to upload to cloud storage instead:
         // imageUrl = await uploadToCloudStorage(req.file);
