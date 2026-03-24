@@ -26,6 +26,18 @@ const documentTypeOptions: { label: string; value: DocumentType }[] = [
   { label: "Other", value: "OTHER" },
 ];
 
+type FieldErrorType = {
+  email?: string;
+  name?: string;
+  contact?: string;
+  password?: string;
+};
+
+type ErrorType = {
+  error?: string;
+  fieldErrors?: FieldErrorType;
+}
+
 interface PropType {
   userRole: UserType;
 }
@@ -136,11 +148,11 @@ export default function CreatePartnerAdminUser({ userRole }: PropType) {
           })
           resetForm();
       },
-      onError: (err) => {        
-        if (err.fieldErrors) {
-          setErrors(err.fieldErrors);
+      onError: (error:ErrorType) => {        
+        if (error.fieldErrors) {
+          setErrors(error.fieldErrors);
         }
-        toast.error(err.error || "Failed to create user");
+        toast.error(error.error || "Failed to create user");
       }
     });
   };

@@ -8,8 +8,21 @@ type Credentials = {
   password: string;
 };
 
+type FieldErrorType = {
+  email?: string;
+  name?: string;
+  contact?: string;
+  password?: string;
+};
+
+type ErrorType = {
+  error?: string;
+  fieldErrors?: FieldErrorType;
+}
+
+
 export const useCreateUser = () => {
-  return useMutation({
+  return useMutation<any,ErrorType,FormData>({
     mutationFn: async (formData: FormData) => {
       const res = await fetch("http://localhost:5000/auth/create-agent", {
         method: "POST",
@@ -20,18 +33,12 @@ export const useCreateUser = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw data;
+        throw data as ErrorType;
       }
 
       return data;
     },
-
-    onError: (err: any) => {
-      if (err.fieldErrors) {
-        console.log(err.fieldErrors); // use in form
-      }
-      toast.error(err.error || "Unexpected error");
-    },
+  
   });
 };
 

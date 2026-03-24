@@ -43,13 +43,6 @@ export async function createUser({
     verifiedById: body.verifiedById ?? null,
   };
 
-  // --- 2️⃣ Extract files
-
-  console.log("BODY:", body);
-  console.log(
-    "FILES:",
-    files.map((f) => f.fieldname),
-  );
   // profile image
   const profileImageFile = files.find((f) => f.fieldname === "profileImage");
 
@@ -78,7 +71,7 @@ export async function createUser({
   if (documentEntries.length) {
     credentials.document = documentEntries as any;
   }
-  console.log("docuement entries", documentEntries);
+ 
 
   // --- 3️⃣ Validate
   const result = userSignupSchema.safeParse(credentials);
@@ -219,9 +212,9 @@ export async function createUser({
     return response;
   } catch (error) {
     await Promise.allSettled(uploadedFiles.map((f) => fs.promises.unlink(f)));
-
+    console.log("Error in DB transaction:", error);
     if (error instanceof AppError) throw error;
 
-    throw new AppError(500, "Internal server error");
+    throw new AppError(500, "Internal server error!!!");
   }
 }
