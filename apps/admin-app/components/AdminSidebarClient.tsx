@@ -2,26 +2,26 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 import { ToggleTheme } from "@repo/components/toggleTheme";
 import { SidebarDropdownSection } from "@repo/ui/sideBarDropdownSection";
+import { toast } from "sonner";
 
 const navSections = [
-  { name: "Dashboard", path: "/dashboard" },
-  { name: "Geozones", path: "/geo-zones" },
+  { name: "Dashboard", path: "/admin/dashboard" },
+  { name: "Geozones", path: "/admin/geo-zones" },
   {
     name: "Properties",
     children: [
-      { name: "Add Property", path: "/property/add-property" },
-      { name: "List Properties", path: "/property/list-properties" },
+      { name: "Add Property", path: "/admin/property/add-property" },
+      { name: "List Properties", path: "admin/property/list-properties" },
     ],
   },
   {
     name: "Users",
     children: [
-      { name: "Add Agent", path: "/agent/add-agent" },
-      { name: "List Agents", path: "/agent/list-agents" },
+      { name: "Add Agent", path: "/admin/agent/add-agent" },
+      { name: "List Agents", path: "/admin/agent/list-agents" },
     ],
   },
 ];
@@ -33,7 +33,7 @@ interface Props {
 export default function AdminSidebarClient({ userName }: Props) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const router = useRouter();
   // Check if any child link is active to show dropdown as active
   const isSectionActive = (children: { path: string }[]) => {
     return children.some(child => pathname === child.path);
@@ -142,7 +142,20 @@ export default function AdminSidebarClient({ userName }: Props) {
 
         <div className="mt-auto flex flex-col space-y-3 text-sm">
           <button
-            onClick={() => signOut({ callbackUrl: "/" })}
+            onClick={async () => {
+              const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signout`, {
+                method: "POST",
+                credentials: "include",
+              });
+              const data = await res.json();
+              if (!res.ok) {
+                toast.error(data.message || "Failed to log out");
+                return;
+              }
+
+              toast.success(data.message || "Logged out successfully");
+              router.replace("/auth/signin");
+            }}
             className="px-4 py-2 rounded-lg border border-gray-400 dark:border-gray-600 hover:bg-gray-300 dark:hover:bg-gray-700 transition-all duration-200"
           >
             Log Out

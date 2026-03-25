@@ -2,7 +2,7 @@ import { prisma } from "@repo/database";
 import { userSigninSchema, userSignupSchema } from "@repo/validators";
 import { Request, Response } from "express";
 import { comparePassword, hashPassword } from "../utils/hash.js";
-import { generateToken } from "../utils/jwt.js";
+import { generateToken, verifyToken } from "../utils/jwt.js";
 import { AppError, createUser } from "@repo/functions";
 import { ok } from "assert";
 
@@ -29,6 +29,8 @@ export const signIn = async (req: Request, res: Response) => {
     const token = generateToken({
       userId: user.id,
       role: user.role,
+      name: user.name,
+      profileImageUrl: user.profileImageUrl,
     });
 
     console.log("Token", token);
@@ -85,14 +87,14 @@ export const createAgentAdminStaff = async (req: Request, res: Response) => {
     // 🔥 CALL SERVICE (IMPORTANT)
     const result = await createUser({
       body: req.body,
-      files: adaptedFiles
+      files: adaptedFiles,
     });
 
     return res.status(201).json({
       ok: true,
       result,
     });
-  } catch (err:any) {
+  } catch (err: any) {
     // 🔥 HANDLE VALIDATION ERRORS (from Zod)
     if (err instanceof AppError) {
       return res.status(err.status).json({
@@ -112,27 +114,27 @@ export const verifyAgent = async (req: Request, res: Response) => {
     const user = req.user;
 
     const { userId } = req.body;
-    
+
     const result = await prisma.user.update({
       where: { id: userId },
-      data : {
+      data: {
         isVerified: true,
         verifiedById: user.id,
-        documents: { 
+        documents: {
           updateMany: {
-            where: {userId},
+            where: { userId },
             data: {
               isVerified: true,
-              verifiedById: user.id
-            }
-          } 
-        }
-      }
-    })  
+              verifiedById: user.id,
+            },
+          },
+        },
+      },
+    });
 
     return res.status(200).json({
       ok: true,
-      result
+      result,
     });
   } catch (err) {
     console.error("Error verifying agent:", err);
@@ -140,4 +142,55 @@ export const verifyAgent = async (req: Request, res: Response) => {
       message: "Internal Server Error!!!",
     });
   }
-}
+};
+
+export const signOut = (req: Request, res: Response) => {
+  res.clearCookie("accessToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    path: "/",
+  });
+
+  return res.status(200).json({
+    ok: true,
+    message: "Logged Out!!!",
+  });
+};
+
+
+export const myInfo = async (
+  req: Request,
+  res: Response,
+) => {
+  let token: string | undefined;
+
+  // 1️⃣ Try Authorization header (mobile)
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith("Bearer")) {
+    token = authHeader.split(" ")[1];
+  }
+
+  // 2️⃣ Try cookies (web)
+  if (!token && req.cookies?.accessToken) {
+    token = req.cookies.accessToken;
+  }
+  console.log("Token from myInfo:", token);
+  if (!token) {
+    return res.status(401).json({
+      error: "Not Authorized, Missing Token",
+    });
+  }
+
+  try {
+    const payload = verifyToken(token);
+    return res.status(200).json({
+      ok: true,
+      user: payload,
+    });
+  } catch (err) {
+    return res.status(403).json({
+      error: "Invalid or Expired token",
+    });
+  }
+};
