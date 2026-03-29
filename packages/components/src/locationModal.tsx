@@ -30,7 +30,7 @@ export const LocationModal: React.FC<Props> = ({ type, parentId, user, onClose }
     setName(e.target.value);
   };
 
-  const successHandler = (data: { status: number, message: string }) => {
+  const successHandler = (data: { message: string }) => {
     toast.success(data.message || "Success");
     queryClient.invalidateQueries({
       queryKey: ['location']
@@ -45,7 +45,6 @@ export const LocationModal: React.FC<Props> = ({ type, parentId, user, onClose }
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    console.log(name);
     if (type === "district") {
       districtMutation.mutate({ name }, {
         onSuccess: successHandler
