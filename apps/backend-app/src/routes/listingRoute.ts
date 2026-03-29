@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   checkAuthentication,
   requireAdmin,
+  requireAdminOrStaff,
 } from "../middleware/checkAuthentication.js";
 import {
   addProperty,
@@ -9,6 +10,7 @@ import {
   uploadCategoryImageFile,
 } from "../controller/listingController.js";
 import { uploadUserFiles } from "../middleware/userUpload.js";
+import { addDistrictController } from "../controller/locationController.js";
 
 const listingRouter = Router();
 
@@ -25,5 +27,7 @@ listingRouter.post(
   uploadUserFiles.any(),
   addProperty,
 );
+
+listingRouter.post("/add-district", checkAuthentication, requireAdminOrStaff, addDistrictController);
 
 export default listingRouter;

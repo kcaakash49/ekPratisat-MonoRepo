@@ -65,7 +65,7 @@ export default function ListAgents() {
           transition={{ delay: 0.3 }}
         >
           <Link
-            href="/agent/add-agent"
+            href="/admin/agent/add-agent"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors shadow-md font-medium"
           >
             <UserPlus className="w-5 h-5" />
@@ -90,7 +90,7 @@ export default function ListAgents() {
             </p>
           </div>
           <Link
-            href="/agent/add-agent"
+            href="/admin/agent/add-agent"
             className="inline-flex items-center gap-2 px-4 py-2 mt-4 sm:mt-0 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors font-medium"
           >
             <UserPlus className="w-4 h-4" />
@@ -143,7 +143,7 @@ export default function ListAgents() {
                         </div>
                         <div className="ml-4">
                           <Link
-                            href={`/agent/${agent.id}`}
+                            href={`/admin/agent/${agent.id}`}
                             className="text-lg font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 hover:underline transition-colors"
                           >
                             {agent.name}

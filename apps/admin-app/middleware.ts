@@ -37,11 +37,13 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   let isValidToken = false;
+  let role = null;
 
   // 1️⃣ verify token once
   if (token) {
     try {
-      await jwtVerify(token, SECRET);
+      const res = await jwtVerify(token, SECRET);
+      role = res.payload.role;
       isValidToken = true;
     } catch {
       isValidToken = false;
@@ -50,7 +52,7 @@ export async function middleware(req: NextRequest) {
 
   // 🔴 PROTECTED ROUTES (/admin)
   if (pathname.startsWith("/admin")) {
-    if (!isValidToken) {
+    if (!isValidToken || role !== "admin") {
       return NextResponse.redirect(new URL("/auth/signin", req.url));
     }
     return NextResponse.next();
@@ -58,10 +60,10 @@ export async function middleware(req: NextRequest) {
 
   // 🟢 AUTH ROUTES (/auth/signin)
   if (pathname.startsWith("/auth")) {
-    if (pathname === "/auth/signin" && isValidToken) {
+    if (pathname === "/auth/signin" && isValidToken && role === "admin") {
       return NextResponse.redirect(new URL("/admin/dashboard", req.url));
     }
   }
 
   return NextResponse.next();
-}
+}  

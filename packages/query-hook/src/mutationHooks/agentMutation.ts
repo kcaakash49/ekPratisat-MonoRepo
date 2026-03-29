@@ -1,4 +1,4 @@
-import { editBasicInfoAction, verifyAgentAction } from "@repo/actions"
+import { editBasicInfoAction } from "@repo/actions"
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
 
