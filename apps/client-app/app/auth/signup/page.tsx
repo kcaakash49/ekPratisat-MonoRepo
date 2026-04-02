@@ -1,17 +1,10 @@
 
-import { authOptions } from "@repo/auth-config";
 import SignupForm from "@repo/components/signUpForm";
-import { getServerSession } from "next-auth";
+
 import Link from "next/link";
-import { redirect } from "next/navigation";
+
 
 export default async function SignupPage() {
-  const session = await getServerSession(authOptions);
-  console.log(session);
-
-  if(session){
-    redirect("/");
-  }
   
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">

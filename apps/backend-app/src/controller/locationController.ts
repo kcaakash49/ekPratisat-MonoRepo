@@ -1,5 +1,5 @@
 import { prisma } from "@repo/database";
-import { AppError } from "@repo/functions";
+import { addDistrict, addMunicipality, addWard, AppError } from "@repo/functions";
 import { Request, Response } from "express";
 
 
@@ -8,32 +8,18 @@ export const addDistrictController = async (req: Request, res: Response) => {
         const { id } = req.user;
         const { name } = req.body;
 
-        const ifExisting = await prisma.district.findFirst({
-            where: {
-                name: name
-            }
-        });
+        const result = await addDistrict({ name, userId: id });
 
-        if (ifExisting) {
-            return res.status(409).json({
-                message: "District already exist!!!"
-            })
-        }
-
-        const district = await prisma.district.create({
-            data: {
-                name,
-                addedById: id
-            }
-        });
-
-        return res.status(200).json({
-            message: "District added Successfully",
-            district
+        return res.status(result.status).json({
+            message: result.message
         })
 
     } catch (error) {
-        console.log(error);
+        if (error instanceof AppError) {
+            return res.status(error.status).json({
+                message: error.message,
+            });
+        }
         return res.status(500).json({
             message: "Internal Server Error",
         });
@@ -42,3 +28,46 @@ export const addDistrictController = async (req: Request, res: Response) => {
 
 
 
+export const addMunicipalityController = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.user;
+        const { name, parentId } = req.body;
+
+        const result = await addMunicipality({ name, userId: id, parentId });
+
+        return res.status(result.status).json({
+            message: result.message,
+        });
+    } catch (error) {
+        if (error instanceof AppError) {
+            return res.status(error.status).json({
+                message: error.message,
+            });
+        }
+        return res.status(500).json({
+            message: "Internal Server Error",
+        });
+    }
+}
+
+export const addWardController = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.user;
+        const { name, parentId } = req.body;
+
+        const result = await addWard({ name, userId: id, parentId });
+
+        return res.status(result.status).json({
+            message: result.message,
+        });
+    } catch (error) {
+        if (error instanceof AppError) {
+            return res.status(error.status).json({
+                message: error.message,
+            });
+        }
+        return res.status(500).json({
+            message: "Internal Server Error",
+        });
+    }
+}   

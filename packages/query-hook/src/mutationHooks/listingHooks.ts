@@ -1,8 +1,4 @@
-import {
-  addDistrictAction,
-  addMunicipalityAction,
-  addWardAction,
-} from "@repo/actions";
+
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -61,7 +57,24 @@ export const useCreateDistrict = () => {
 //add municipality hook
 export const useCreateMunicipality = () => {
   return useMutation({
-    mutationFn: addMunicipalityAction,
+    mutationFn: async ({ name, parentId }: { name: string; parentId: string }) => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/add-municipality`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, parentId }),
+        },
+      );
+      const data = await res.json();
+      if (!res.ok) {
+        throw data;
+      }
+      return data;
+    },
     onError: (error) => {
       toast.error(error.message || "Couldn't add Municipality!!!");
     },
@@ -71,7 +84,24 @@ export const useCreateMunicipality = () => {
 //add ward
 export const useCreateWard = () => {
   return useMutation({
-    mutationFn: addWardAction,
+    mutationFn: async ({ name, parentId }: { name: string; parentId: string }) => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/add-ward`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, parentId }),
+        },
+      );
+      const data = await res.json();
+      if (!res.ok) {
+        throw data;
+      }
+      return data;
+    },
     onError: (error) => {
       toast.error(error.message || "Couldn't add ward");
     },
