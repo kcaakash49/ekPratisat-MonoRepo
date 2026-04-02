@@ -1,0 +1,24 @@
+import { AppError, createGeoZone } from "@repo/functions";
+import { Request, Response } from "express";
+
+export const createZoneController = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.user;
+        const formData = req.body;
+
+        const result = await createGeoZone({ userId: id, formData });
+
+        return res.status(result.status).json({
+            message: result.message,
+        }); 
+    } catch (error) {
+        if (error instanceof AppError) {
+            return res.status(error.status).json({
+                message: error.message,
+            });
+        }
+        return res.status(500).json({
+            message: "Internal Server Error!!!",
+        });
+    }
+}

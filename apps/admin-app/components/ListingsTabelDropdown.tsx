@@ -64,7 +64,7 @@ export default function PropertyTableDropdown({
                   >
                     <td className="px-6 py-4 font-medium">
                       <Link
-                        href={`/property/${property.id}`}
+                        href={`/admin/property/${property.id}`}
                         className="text-primary-600 hover:underline"
                       >
                         {property.title}
@@ -130,7 +130,7 @@ export default function PropertyTableDropdown({
                           <p className="text-secondary-500">Actions</p>
                             <div className="flex gap-3">
                               <Link
-                                href={`/property/${property.id}`}
+                                href={`/admin/property/${property.id}`}
                                 className="text-primary-600 hover:underline"
                               >
                                 View

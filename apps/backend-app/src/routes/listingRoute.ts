@@ -10,7 +10,7 @@ import {
   uploadCategoryImageFile,
 } from "../controller/listingController.js";
 import { uploadUserFiles } from "../middleware/userUpload.js";
-import { addDistrictController } from "../controller/locationController.js";
+import { addDistrictController, addMunicipalityController, addWardController } from "../controller/locationController.js";
 
 const listingRouter = Router();
 
@@ -29,5 +29,7 @@ listingRouter.post(
 );
 
 listingRouter.post("/add-district", checkAuthentication, requireAdminOrStaff, addDistrictController);
+listingRouter.post("/add-municipality", checkAuthentication, requireAdminOrStaff, addMunicipalityController);
+listingRouter.post("/add-ward", checkAuthentication, requireAdminOrStaff, addWardController);
 
 export default listingRouter;

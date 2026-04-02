@@ -14,7 +14,7 @@ const navSections = [
     name: "Properties",
     children: [
       { name: "Add Property", path: "/admin/property/add-property" },
-      { name: "List Properties", path: "admin/property/list-properties" },
+      { name: "List Properties", path: "/admin/property/list-properties" },
     ],
   },
   {
