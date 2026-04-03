@@ -6,6 +6,7 @@ import { useDeleteZoneMutation } from "@repo/query-hook";
 import { useQueryClient } from "@tanstack/react-query";
 import DeleteZoneModal from "./DeleteZoneModal";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function ZonesTable() {
     const { data: zones = [], isLoading } = useZonesQuery();
@@ -68,9 +69,13 @@ export default function ZonesTable() {
                             { id: selectedZone.id },
                             {
                                 onSuccess: () => {
+                                    toast.success("Zone deleted successfully!!!");
                                     queryClient.invalidateQueries({ queryKey: ["zones"] });
                                     setSelectedZone(null);
                                 },
+                                onError: (error) => {
+                                    toast.error(error.message || "Failed to delete zone!!!");   
+                                }
                             }
                         );
                     }}
