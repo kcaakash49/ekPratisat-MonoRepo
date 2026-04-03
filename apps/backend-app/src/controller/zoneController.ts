@@ -1,3 +1,4 @@
+import { prisma } from "@repo/database";
 import { AppError, createGeoZone } from "@repo/functions";
 import { Request, Response } from "express";
 
@@ -17,6 +18,25 @@ export const createZoneController = async (req: Request, res: Response) => {
                 message: error.message,
             });
         }
+        return res.status(500).json({
+            message: "Internal Server Error!!!",
+        });
+    }
+}
+
+export const getZonesController = async (req: Request, res: Response) => {  
+    try {
+        const zones = await prisma.$queryRaw`
+    SELECT 
+      id,
+      name,
+      notes,
+      ST_AsGeoJSON(geom)::json AS geom
+    FROM "GeoZone"
+    WHERE "isActive" = true
+  `;
+        return res.status(200).json({ zones });
+    } catch (error) {
         return res.status(500).json({
             message: "Internal Server Error!!!",
         });

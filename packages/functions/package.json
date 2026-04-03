@@ -8,6 +8,9 @@
   "scripts": {
     "build": "tsc"
   },
+  "devDependencies": {
+    "@types/geojson": "^7946.0.16"
+  },
   "peerDependencies": {
     "@repo/database" : "*",
     "@repo/validators": "*",
