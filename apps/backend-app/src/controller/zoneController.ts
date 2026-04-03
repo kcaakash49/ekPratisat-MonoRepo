@@ -3,30 +3,30 @@ import { AppError, createGeoZone } from "@repo/functions";
 import { Request, Response } from "express";
 
 export const createZoneController = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.user;
-        const formData = req.body;
+  try {
+    const { id } = req.user;
+    const formData = req.body;
 
-        const result = await createGeoZone({ userId: id, formData });
+    const result = await createGeoZone({ userId: id, formData });
 
-        return res.status(result.status).json({
-            message: result.message,
-        }); 
-    } catch (error) {
-        if (error instanceof AppError) {
-            return res.status(error.status).json({
-                message: error.message,
-            });
-        }
-        return res.status(500).json({
-            message: "Internal Server Error!!!",
-        });
+    return res.status(result.status).json({
+      message: result.message,
+    });
+  } catch (error) {
+    if (error instanceof AppError) {
+      return res.status(error.status).json({
+        message: error.message,
+      });
     }
-}
+    return res.status(500).json({
+      message: "Internal Server Error!!!",
+    });
+  }
+};
 
-export const getZonesController = async (req: Request, res: Response) => {  
-    try {
-        const zones = await prisma.$queryRaw`
+export const getZonesController = async (req: Request, res: Response) => {
+  try {
+    const zones = await prisma.$queryRaw`
     SELECT 
       id,
       name,
@@ -35,39 +35,56 @@ export const getZonesController = async (req: Request, res: Response) => {
     FROM "GeoZone"
     WHERE "isActive" = true
   `;
-        return res.status(200).json({ zones });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Internal Server Error!!!",
-        });
-    }
-}
+    return res.status(200).json({ zones });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal Server Error!!!",
+    });
+  }
+};
 
 export const deleteZoneController = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
+  try {
+    const zoneId = req.params.id;
+    const deleted = await prisma.$executeRaw`
+  DELETE FROM "GeoZone"
+  WHERE id = ${zoneId}
+  AND NOT EXISTS (
+    SELECT 1 FROM "AgentGeoZone"
+    WHERE "zoneId" = ${zoneId}
+  )
+`;
 
-        const zone = await prisma.geoZone.findUnique({
-            where: { id }
-        });
+    if (deleted === 0) {
+      const assigned = await prisma.agentGeoZone.findMany({
+        where: { zoneId },
+        include: {
+          agent: {
+            select: {
+              id: true,
+              name: true,
+              contact: true,
+            },
+          },
+        },
+      });
 
-        if (!zone) {
-            return res.status(404).json({
-                message: "Zone not found!!!",
-            });
-        }
+      const names = assigned.map((a) => a.agent.name).join(", ");
 
-        await prisma.geoZone.update({
-            where: { id },
-            data: { isActive: false },
-        });
-
-        return res.status(200).json({
-            message: "Zone deleted successfully!!!",
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Internal Server Error!!!",
-        });
+      throw new AppError(400, `Zone is assigned to: ${names}`);
     }
-}
+
+    return res.status(200).json({
+      message: "Zone deleted successfully!!!",
+    });
+  } catch (error) {
+    if (error instanceof AppError) {
+      return res.status(error.status).json({
+        message: error.message,
+      });
+    }
+    return res.status(500).json({
+      message: "Internal Server Error!!!",
+    });
+  }
+};

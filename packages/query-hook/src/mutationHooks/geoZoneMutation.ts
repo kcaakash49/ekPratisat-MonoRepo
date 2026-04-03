@@ -31,7 +31,7 @@ export function useDeleteZoneMutation() {
   return useMutation({
     mutationFn: async ({ id }: { id: string }) => {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/zone/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/zone/delete/${id}`,
         {
           method: "DELETE",
           credentials: "include",
