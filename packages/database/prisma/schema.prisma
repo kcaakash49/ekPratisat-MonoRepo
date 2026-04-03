@@ -62,6 +62,7 @@ model AgentGeoZone {
   @@id([agentId, zoneId])
   @@index([zoneId])
   @@index([agentId])
+  @@unique([zoneId])
 }
 
 model GeoZone {

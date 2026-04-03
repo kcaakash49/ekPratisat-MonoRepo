@@ -94,16 +94,29 @@ geoms AS (
           4326
         )
       ),
-      3
+      3 -- extract only polygons
     ) AS g
   FROM input,
   LATERAL jsonb_array_elements(fc->'features') f
 ),
+validated AS (
+  SELECT g
+  FROM geoms
+  WHERE NOT ST_IsEmpty(g)
+),
 merged AS (
   SELECT ST_Multi(ST_Collect(g))::geometry(MultiPolygon,4326) AS mg
-  FROM geoms
+  FROM validated
 )
-SELECT ST_Area(mg) < 1 AS is_degenerate
+SELECT
+  ST_Dimension(mg) < 2
+  OR ST_Area(ST_Transform(mg, 3857)) < 100
+  OR (
+    ST_XMax(mg) - ST_XMin(mg) = 0
+    OR ST_YMax(mg) - ST_YMin(mg) = 0
+  )
+  OR NOT ST_IsValid(mg)
+  AS is_degenerate
 FROM merged;
 `) as DegenerateRow[];
 
@@ -176,21 +189,6 @@ validated AS (
 merged AS (
   SELECT ST_Multi(ST_Collect(g))::geometry(MultiPolygon,4326) AS mg
   FROM validated
-),
-
--- ❗ Reject degenerate (straight line / tiny)
-degenerate AS (
-  SELECT 1
-  FROM merged
-  WHERE ST_Area(mg) < 1  -- adjust threshold if needed
-),
-
--- ❗ Reject overlap with existing zones
-conflict AS (
-  SELECT 1
-  FROM "GeoZone"
-  WHERE ST_Intersects("geom", (SELECT mg FROM merged))
-  LIMIT 1
 )
 
 INSERT INTO "public"."GeoZone" (
@@ -213,12 +211,15 @@ SELECT
   NOW(),
   NOW()
 FROM merged
-WHERE
-  NOT EXISTS (SELECT 1 FROM degenerate)
-  AND NOT EXISTS (SELECT 1 FROM conflict)
 RETURNING "id";
 `) as InsertRow[];
-
+console.log("INSERT RESULT:", result);
+if (!result || result.length === 0) {
+  throw new AppError(
+    400,
+    "Zone not created (overlap or invalid polygon)"
+  );
+}
     return {
       status: 200,
       message: "Geo zone created successfully",
@@ -246,3 +247,5 @@ RETURNING "id";
     throw new AppError(500, "Internal Server Error");
   }
 }
+
+

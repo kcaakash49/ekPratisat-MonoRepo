@@ -3,9 +3,12 @@
 import mapboxgl from "mapbox-gl";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { useEffect, useRef, useState } from "react";
-import { useCreateZoneMutation } from "@repo/query-hook";
+import { useCreateZoneMutation, useZonesQuery } from "@repo/query-hook";
 import * as turf from "@turf/turf";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+import type { FeatureCollection, Geometry } from "geojson";
+import AnimateLoader from "@repo/ui/animateLoader";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 type PolygonFeature = GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon>;
@@ -17,10 +20,13 @@ export default function GeoZoneCreator() {
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const drawRef = useRef<MapboxDraw | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const queryClient = useQueryClient();
+  const { mutate, isPending: saving } = useCreateZoneMutation();
+  const { data: zones = [], isLoading } = useZonesQuery();
 
   const [name, setName] = useState("");
   const [notes, setNotes] = useState("");
-  const { mutate, isPending: saving } = useCreateZoneMutation();
+  const [hasOverlap, setHasOverlap] = useState(false);
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -47,64 +53,6 @@ export default function GeoZoneCreator() {
     drawRef.current = draw;
 
     map.on("load", async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/zone/get-all`, {
-        credentials: "include",
-      });
-
-      const data = await res.json();
-
-      const features = data.zones.map((z: any) => ({
-        type: "Feature",
-        geometry: z.geom,
-        properties: {
-          id: z.id,
-          name: z.name,
-        },
-      }));
-
-      map.addSource("zones", {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features,
-        },
-      });
-
-      // Fill
-      map.addLayer({
-        id: "zones-fill",
-        type: "fill",
-        source: "zones",
-        paint: {
-          "fill-color": "#3b82f6",
-          "fill-opacity": 0.2,
-        },
-      });
-
-      // Border
-      map.addLayer({
-        id: "zones-outline",
-        type: "line",
-        source: "zones",
-        paint: {
-          "line-color": "#1d4ed8",
-          "line-width": 2,
-        },
-      });
-
-      // Labels
-      map.addLayer({
-        id: "zones-label",
-        type: "symbol",
-        source: "zones",
-        layout: {
-          "text-field": ["get", "name"],
-          "text-size": 12,
-        },
-        paint: {
-          "text-color": "#111827",
-        },
-      });
       map.on("draw.create", handleOverlapCheck);
       map.on("draw.update", handleOverlapCheck);
       map.on("draw.delete", () => {
@@ -119,7 +67,84 @@ export default function GeoZoneCreator() {
     };
   }, []);
 
-  const [hasOverlap, setHasOverlap] = useState(false);
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    const update = () => {
+      const features = zones.map((z: any) => ({
+        type: "Feature",
+        geometry: z.geom,
+        properties: {
+          id: z.id,
+          name: z.name,
+        },
+      }));
+
+      const geojson: FeatureCollection<Geometry> = {
+        type: "FeatureCollection",
+        features,
+      };
+
+      const existingSource = map.getSource("zones") as mapboxgl.GeoJSONSource;
+
+      if (existingSource) {
+        existingSource.setData(geojson);
+      } else {
+        map.addSource("zones", {
+          type: "geojson",
+          data: geojson,
+        });
+
+        map.addLayer({
+          id: "zones-fill",
+          type: "fill",
+          source: "zones",
+          paint: {
+            "fill-color": "#3b82f6",
+            "fill-opacity": 0.2,
+          },
+        });
+
+        map.addLayer({
+          id: "zones-outline",
+          type: "line",
+          source: "zones",
+          paint: {
+            "line-color": "#1d4ed8",
+            "line-width": 2,
+          },
+        });
+
+        map.addLayer({
+          id: "zones-label",
+          type: "symbol",
+          source: "zones",
+          layout: {
+            "text-field": ["get", "name"],
+            "text-size": 12,
+          },
+          paint: {
+            "text-color": "#111827",
+          },
+        });
+      }
+    };
+
+    if (!map.isStyleLoaded()) {
+      map.once("load", update);
+    } else {
+      update();
+    }
+  }, [zones]);
+
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex justify-center items-center h-full w-full">
+  //       <AnimateLoader />
+  //     </div>
+  //   )
+  // }
 
   const handleOverlapCheck = () => {
     const draw = drawRef.current;
@@ -333,6 +358,7 @@ export default function GeoZoneCreator() {
           draw.deleteAll();
           setName("");
           setNotes("");
+          queryClient.invalidateQueries({ queryKey: ["zones"] });
         },
         onError: (error: any) => {
           const message =
@@ -373,7 +399,16 @@ export default function GeoZoneCreator() {
         </p>
       )}
 
-      <div ref={containerRef} className="h-[520px] w-full rounded border" />
+      <div className="relative h-[520px] w-full rounded border">
+
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white/70 z-10">
+            <AnimateLoader />
+          </div>
+        )}
+
+        <div ref={containerRef} className="h-full w-full" />
+      </div>
     </div>
   );
 }
