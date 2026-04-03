@@ -10,6 +10,7 @@ import { toast } from "sonner";
 const navSections = [
   { name: "Dashboard", path: "/admin/dashboard" },
   { name: "Geozones", path: "/admin/geo-zones" },
+  { name: "List-Zones", path: "/admin/geo-zones/list-zones" },
   {
     name: "Properties",
     children: [

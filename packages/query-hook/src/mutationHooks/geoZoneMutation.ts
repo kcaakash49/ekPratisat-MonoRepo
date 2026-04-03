@@ -26,3 +26,25 @@ export const useCreateZoneMutation = () => {
         }
     })
 }
+
+export function useDeleteZoneMutation() {
+  return useMutation({
+    mutationFn: async ({ id }: { id: string }) => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/zone/${id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data?.message || "Delete failed");
+      }
+
+      return data;
+    },
+  });
+}
