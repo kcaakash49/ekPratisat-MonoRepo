@@ -128,6 +128,7 @@ export const getZoneByIdController = async (req: Request, res: Response) => {
         json_build_object(
           'id', p.id,
           'title', p.title,
+          'type', p.type,
           'lat', ST_Y(p."geoPoint"),
           'lng', ST_X(p."geoPoint")
         )
