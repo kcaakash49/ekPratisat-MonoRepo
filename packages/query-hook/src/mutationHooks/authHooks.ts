@@ -24,7 +24,7 @@ type ErrorType = {
 export const useCreateUser = () => {
   return useMutation<any,ErrorType,FormData>({
     mutationFn: async (formData: FormData) => {
-      const res = await fetch("http://localhost:5000/auth/create-agent", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/create-agent`, {
         method: "POST",
         credentials: "include",
         body: formData,

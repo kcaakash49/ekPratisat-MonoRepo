@@ -22,3 +22,25 @@ export function useZonesQuery() {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
+
+export function useZoneQueryById(zoneId: string) {
+  return useQuery({
+    queryKey: ["zone", zoneId],
+    queryFn: async () => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/zone/get/${zoneId}`,
+        { credentials: "include" }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw data;
+      }
+
+      return data.zone;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: false
+  });
+}
