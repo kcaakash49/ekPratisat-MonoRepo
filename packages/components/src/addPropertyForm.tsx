@@ -424,6 +424,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
       onSuccess: (data) => {
         toast.success(data.message || "Property added successfully!!!");
         queryClient.invalidateQueries({ queryKey: ["listings"] });
+        queryClient.invalidateQueries({ queryKey: ["zone"] });
         resetForm();
       }
     });
