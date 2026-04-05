@@ -116,7 +116,7 @@ export default function PropertyDetailComponent() {
           <h2 className="text-xl font-semibold text-secondary-900 dark:text-secondary-100 mb-3">
             Description
           </h2>
-          <p className="text-secondary-700 dark:text-secondary-300 leading-relaxed">
+          <p className="text-secondary-700 dark:text-secondary-300 whitespace-wrap">
             {property.description}
           </p>
         </div>

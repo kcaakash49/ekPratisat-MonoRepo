@@ -45,7 +45,12 @@ export const getZonesController = async (req: Request, res: Response) => {
 
 export const deleteZoneController = async (req: Request, res: Response) => {
   try {
-    const zoneId = req.params.id;
+    const { id: zoneId } = req.params; 
+
+    if (!zoneId || typeof zoneId !== 'string') {
+      throw new AppError(400, "Invalid Zone ID");
+    }
+    
     const deleted = await prisma.$executeRaw`
   DELETE FROM "GeoZone"
   WHERE id = ${zoneId}

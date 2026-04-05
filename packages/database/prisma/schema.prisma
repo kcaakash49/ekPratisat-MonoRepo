@@ -159,6 +159,9 @@ model Property {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   @@index([geoPoint], type: Gist)
+  @@index([categoryId])
+  @@index([type])
+  @@index([userId])
 }
 
 model District {

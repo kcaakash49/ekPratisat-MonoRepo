@@ -12,8 +12,6 @@
   },
   "dependencies": {
     "@repo/actions": "*",
-    "@repo/api-client": "*",
-    "@repo/auth-config": "*",
     "@repo/components": "*",
     "@repo/database": "*",
     "@repo/functions": "*",
@@ -25,7 +23,6 @@
     "bcrypt": "^6.0.0",
     "lucide-react": "^0.542.0",
     "next": "^15.5.0",
-    "next-auth": "^4.24.11",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "sharp": "^0.34.3",

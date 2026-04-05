@@ -16,8 +16,6 @@
     "@mapbox/mapbox-gl-draw": "^1.5.1",
     "@mapbox/mapbox-gl-geocoder": "^5.1.2",
     "@repo/actions": "*",
-    "@repo/api-client": "*",
-    "@repo/auth-config": "*",
     "@repo/components": "*",
     "@repo/database": "*",
     "@repo/functions": "*",
