@@ -47,3 +47,34 @@ export function useDeleteZoneMutation() {
     },
   });
 }
+
+
+export function useAssignZoneToAgentMutation() {
+  return useMutation({
+    mutationFn: async ({ agentId, zoneId }: { agentId: string; zoneId: string }) => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/zone/assign-zone`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ agentId, zoneId }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data?.message || "Assignment failed");
+      }
+
+      return data;
+    },
+    onError: (error) => {
+      toast.error(error.message || "Couldn't assign zone to agent!!!");
+    },
+  });   
+}
+

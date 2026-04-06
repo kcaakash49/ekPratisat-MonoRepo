@@ -6,6 +6,7 @@ import { useState } from "react";
 import { EditAgentBasicProfileModal } from "./EditBasicAgentProfile";
 import VerifyBadge from "./VerifyBadge";
 import RemoveUser from "./RemoveAgent";
+import AssignZoneToAgent from "./AssingZoneToAgent";
 
 export default function ManagementActions({ agent }: { agent: AgentDetailType }) {
     const [isEditOpen, setIsEditOpen] = useState(false);
@@ -78,7 +79,7 @@ export default function ManagementActions({ agent }: { agent: AgentDetailType })
                             <h3 className="font-semibold text-lg text-secondary-800 dark:text-secondary-200">Permissions & Access</h3>
                         </div>
                         <div className="space-y-3">
-                            <button
+                            {/* <button
                                 // onClick={() => handleAssignLocations(agent.id)}
                                 className="w-full flex items-center gap-3 p-3 text-left hover:bg-secondary-50 dark:hover:bg-secondary-700 rounded-lg transition-colors group"
                             >
@@ -90,7 +91,8 @@ export default function ManagementActions({ agent }: { agent: AgentDetailType })
                                     <div className="font-medium text-secondary-700 dark:text-secondary-300">Assign Locations</div>
                                     <div className="text-sm text-secondary-500 dark:text-secondary-400">Manage assigned locations and areas</div>
                                 </div>
-                            </button>
+                            </button> */}
+                            <AssignZoneToAgent agentId={agent.id} />
 
                             <button
                                 // onClick={() => handleViewActivity(agent.id)}
