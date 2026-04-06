@@ -21,7 +21,6 @@ export const useVerifyAgent = () => {
             return data;
         },
         onError: (error) => {
-            console.log(error);
             toast.error(error.message || "Unexpected Error")
         }
     })

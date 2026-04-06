@@ -348,6 +348,16 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+
+    if(name === "description") {
+      setFormData((prev: any) => ({
+        ...prev,
+        [name]: value.trim()
+
+      }));
+      return;
+    }
+
     setFormData((prev: any) => ({
       ...prev,
       [name]: value.trim().replace(/\s+/g, " "),
@@ -696,10 +706,163 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
         />
 
         {/* Dynamic fields */}
-        {selectedCategory && (
+         {selectedCategory && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* keep your dynamic fields unchanged */}
-            {/* ... (your existing dynamic fields block stays exactly as-is) */}
+            {selectedCategory.isLandAreaNeeded && (
+              <div>
+                <label className="block font-medium mb-1">Land Area</label>
+                <input
+                  type="text"
+                  name="landArea"
+                  value={formData.landArea}
+                  inputMode="numeric"
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition dark:border-transparent"
+                  required
+                />
+              </div>
+            )}
+
+            {selectedCategory.isNoOfFloorsNeeded && (
+              <div>
+                <label className="block font-medium mb-1">No. of Floors</label>
+                <input
+                  type="text"
+                  name="noOfFloors"
+                  value={formData.noOfFloors}
+                  inputMode="numeric"
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition dark:border-transparent"
+                  required
+                />
+              </div>
+            )}
+
+            {selectedCategory.isNoOfRoomsNeeded && (
+              <div>
+                <label className="block font-medium mb-1">No. of Rooms</label>
+                <input
+                  type="text"
+                  name="noOfBedRooms"
+                  value={formData.noOfBedRooms}
+                  inputMode="numeric"
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition dark:border-transparent"
+                  required
+                />
+              </div>
+            )}
+
+            {selectedCategory.isNoOfRestRoomsNeeded && (
+              <div>
+                <label className="block font-medium mb-1">No. of Rest Rooms</label>
+                <input
+                  type="text"
+                  name="noOfRestRooms"
+                  value={formData.noOfRestRooms}
+                  inputMode="numeric"
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition dark:border-transparent"
+                  required
+                />
+              </div>
+            )}
+
+            {selectedCategory.isAgeOfThePropertyNeeded && (
+              <div>
+                <label className="block font-medium mb-1">Property Age</label>
+                <input
+                  type="text"
+                  name="propertyAge"
+                  value={formData.propertyAge}
+                  inputMode="numeric"
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition dark:border-transparent"
+                  required
+                />
+              </div>
+            )}
+
+            {selectedCategory.isFacingDirectionNeeded && (
+              <div>
+                <label className="block font-medium mb-1">Facing Direction</label>
+                <select
+                  name="facingDirection"
+                  value={formData.facingDirection}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition dark:border-transparent"
+                  required
+                >
+                  <option value="" disabled hidden>
+                    Select Direction
+                  </option>
+                  <option value="east">East</option>
+                  <option value="west">West</option>
+                  <option value="north">North</option>
+                  <option value="south">South</option>
+                  <option value="northeast">Northeast</option>
+                  <option value="northwest">Northwest</option>
+                  <option value="southeast">Southeast</option>
+                  <option value="southwest">Southwest</option>
+                </select>
+              </div>
+
+            )}
+
+            {selectedCategory.isFloorAreaNeeded && (
+              <div>
+                <label className="block font-medium mb-1">Floor Area</label>
+                <input
+                  type="text"
+                  name="floorArea"
+                  value={formData.floorArea}
+                  inputMode="numeric"
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition dark:border-transparent"
+                  required
+                />
+              </div>
+            )}
+
+            {selectedCategory.isFloorLevelNeeded && (
+              <div>
+                <label className="block font-medium mb-1">Floor Level</label>
+                <input
+                  type="text"
+                  name="floorLevel"
+                  value={formData.floorLevel}
+                  inputMode="numeric"
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition dark:border-transparent"
+                  placeholder="eg: 0 means GroundFloor"
+                  required
+                />
+              </div>
+            )}
+
+            {selectedCategory.isRoadSizeNeeded && (
+              <div>
+                <label className="block font-medium mb-1">Road Size</label>
+                <input
+                  type="text"
+                  name="roadSize"
+                  value={formData.roadSize}
+                  inputMode="numeric"
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none
+              placeholder-secondary-400 transition dark:border-transparent"
+                  required
+                />
+              </div>
+            )}
           </div>
         )}
 

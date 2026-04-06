@@ -72,15 +72,19 @@ export default function ZoneDetail({ id }: { id: string }) {
 
             // add property markers
             zone.properties.forEach((property: PropertyPoint) => {
-                const popup = new mapboxgl.Popup({ offset: 25 }).setText(
-                    property.title
+                // Use setHTML instead of setText
+                const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
+                    `<div class="mapbox-popup-content">
+        <p class="popup-title">${property.title}</p>
+     </div>`
                 );
 
-                new mapboxgl.Marker({ color: "#ef4444" })
+                new mapboxgl.Marker({ color: "#ef4444" }) // Your red marker
                     .setLngLat([property.lng, property.lat])
                     .setPopup(popup)
                     .addTo(map);
             });
+
 
             // fit bounds to zone
             const bounds = new mapboxgl.LngLatBounds();

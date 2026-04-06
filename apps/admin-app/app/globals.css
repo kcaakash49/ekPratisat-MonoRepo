@@ -62,4 +62,24 @@
   animation: shake 0.5s ease-in-out;
 }
 
+/* Light Mode (Default) */
+.mapboxgl-popup-content {
+  background-color: #ffffff !important; /* white */
+  color: #1e293b !important; /* secondary-800 */
+  border-radius: 12px !important;
+  padding: 10px !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1) !important;
+}
 
+/* Dark Mode */
+.dark .mapboxgl-popup-content {
+  background-color: #1e293b !important; /* secondary-800 */
+  color: #f1f5f9 !important; /* secondary-100 */
+  border: 1px solid #334155; /* secondary-700 */
+}
+
+/* Style the little arrow tip too */
+.dark .mapboxgl-popup-tip {
+  border-top-color: #1e293b !important;
+  border-bottom-color: #1e293b !important;
+}
