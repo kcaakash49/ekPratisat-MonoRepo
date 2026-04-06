@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@repo/ui/button";
-import { signOut } from "next-auth/react";
+
 import { useRouter } from "next/navigation";
 
 export default function ProfileDropDown(){
@@ -9,7 +9,6 @@ export default function ProfileDropDown(){
     return (
         <div className="flex gap-2">
             <Button onClick = {() => router.push("/add-property")}>Add Property</Button>
-            <Button onClick={() => signOut()}>signOut</Button>
 
         </div>
         )

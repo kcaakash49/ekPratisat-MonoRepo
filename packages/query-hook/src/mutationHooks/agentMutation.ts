@@ -4,14 +4,14 @@ import { toast } from "sonner"
 
 export const useVerifyAgent = () => {
     return useMutation({
-        mutationFn: async (userId: string) => {
+        mutationFn: async ({userId,isVerified} : {userId:string, isVerified:boolean}) => {
             const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/verify-agent`, {
                 method: "POST",
                 credentials: "include",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ userId })
+                body: JSON.stringify({ userId, isVerified })
             });
             const data = await res.json();
 
@@ -34,3 +34,29 @@ export const useEditBasicInfo = () => {
         }
     })
 }
+
+
+export const useDeactivateAgent = () => {
+    return useMutation({
+        mutationFn: async ({agentId} : {agentId:string}) => {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/deactivate-agent`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ agentId })
+            });
+            const data = await res.json();
+            
+            if (!res.ok) {
+                throw data;
+            }   
+            return data;
+        },
+        onError: (error) => {
+            toast.error(error.message || "Unexpected Error")
+        }
+    })
+}
+

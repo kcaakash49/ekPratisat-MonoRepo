@@ -4,6 +4,8 @@ import { AgentDetailType } from "@repo/validators";
 import { Image } from "lucide-react";
 import { useState } from "react";
 import { EditAgentBasicProfileModal } from "./EditBasicAgentProfile";
+import VerifyBadge from "./VerifyBadge";
+import RemoveUser from "./RemoveAgent";
 
 export default function ManagementActions({ agent }: { agent: AgentDetailType }) {
     const [isEditOpen, setIsEditOpen] = useState(false);
@@ -116,24 +118,9 @@ export default function ManagementActions({ agent }: { agent: AgentDetailType })
                             <h3 className="font-semibold text-lg text-secondary-800 dark:text-secondary-200">Administrative Actions</h3>
                         </div>
                         <div className="space-y-3">
-                            <button
-                                // onClick={() => handleToggleVerification(agent.id)}
-                                className="w-full flex items-center gap-3 p-3 text-left hover:bg-secondary-50 dark:hover:bg-secondary-700 rounded-lg transition-colors group"
-                            >
-                                <svg className="w-5 h-5 text-yellow-500 group-hover:text-yellow-600 dark:group-hover:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <div>
-                                    <div className="font-medium text-secondary-700 dark:text-secondary-300">
-                                        {agent.isVerified ? 'Revoke Verification' : 'Verify Agent'}
-                                    </div>
-                                    <div className="text-sm text-secondary-500 dark:text-secondary-400">
-                                        {agent.isVerified ? 'Remove verification status' : 'Mark agent as verified'}
-                                    </div>
-                                </div>
-                            </button>
+                            <VerifyBadge userId={agent.id} isVerified={agent.isVerified} />
 
-                            <button
+                            {/* <button
                                 // onClick={() => handleRemoveUser(agent.id)}
                                 className="w-full flex items-center gap-3 p-3 text-left hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors group text-red-600 dark:text-red-400"
                             >
@@ -144,7 +131,8 @@ export default function ManagementActions({ agent }: { agent: AgentDetailType })
                                     <div className="font-medium">Remove User</div>
                                     <div className="text-sm">Permanently delete user account</div>
                                 </div>
-                            </button>
+                            </button> */}
+                            <RemoveUser agentId={agent.id} />
                         </div>
                     </div>
                 </div>
