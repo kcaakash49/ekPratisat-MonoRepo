@@ -72,7 +72,7 @@ export default function PropertyDetailComponent() {
             {property.title}
           </h1>
           <p className="mt-2 text-sm md:text-base opacity-90">
-            {property.location?.name}
+            {property.location.municipality.district.name}, {property.location.municipality.name}-{property.location.name}, {property.tole}
           </p>
         </div>
       </div>
@@ -116,7 +116,7 @@ export default function PropertyDetailComponent() {
           <h2 className="text-xl font-semibold text-secondary-900 dark:text-secondary-100 mb-3">
             Description
           </h2>
-          <p className="text-secondary-700 dark:text-secondary-300 whitespace-wrap">
+          <p className="text-secondary-700 dark:text-secondary-300 no-wrap whitespace-pre-line">
             {property.description}
           </p>
         </div>

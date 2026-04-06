@@ -7,8 +7,6 @@ import { AppError, createUser } from "@repo/functions";
 import { ok } from "assert";
 
 export const signIn = async (req: Request, res: Response) => {
-  console.log("Sign IN called");
-  console.log("Secret", process.env.port);
   try {
     const result = userSigninSchema.safeParse(req.body);
     if (!result.success) {
