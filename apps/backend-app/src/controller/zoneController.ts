@@ -165,3 +165,56 @@ export const getZoneByIdController = async (req: Request, res: Response) => {
     });
   }
 };
+
+
+export const assignZoneToAgentController = async (req: Request, res: Response) => {
+  try {
+    const { agentId, zoneId } = req.body;
+    const { id } = req.user;
+
+    if (!agentId || !zoneId) {
+      throw new AppError(400, "Agent ID and Zone ID are required");
+    }
+
+    const existinAssignment = await prisma.agentGeoZone.findFirst({
+      where: {
+        zoneId,
+      },
+      include: {
+        agent: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },    
+
+    });
+
+    if (existinAssignment) {
+      throw new AppError(400, `Zone is already assigned to agent: ${existinAssignment.agent.name}`);
+    }
+
+    await prisma.agentGeoZone.create({
+      data: {
+        agentId,
+        zoneId,
+        assignedById: id,
+      },
+    });
+
+    return res.status(200).json({
+      message: "Zone assigned to agent successfully!!!",
+    });
+  } catch (error) {
+    if (error instanceof AppError) {
+      return res.status(error.status).json({
+        message: error.message,
+      });
+    }
+    return res.status(500).json({
+      message: "Internal Server Error!!!",
+    });
+  } 
+};
+

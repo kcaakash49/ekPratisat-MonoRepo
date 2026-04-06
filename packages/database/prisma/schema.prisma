@@ -43,9 +43,10 @@ model User {
   municipalitiesAdded Municipality[]
   wardAdded           Ward[]                  @relation("WardsAddedByAdmin")
   assignedWards       PartnerWardAssignment[] @relation("UserWards")
-  assignedZones       AgentGeoZone[]
+  assignedZones       AgentGeoZone[]  @relation("zonesAssigned")
   geoZonesCreated     GeoZone[]
   // assignedWards       Ward[]         @relation("PartnerWards")
+  zonesAssigned      AgentGeoZone[]  @relation("AgentGeoZoneAssignedBy")
   createdAt           DateTime                @default(now())
   updatedAt           DateTime?               @updatedAt
   @@index([role])
@@ -58,10 +59,13 @@ model AgentGeoZone {
   agentId   String
   zoneId    String
 
-  agent     User    @relation(fields: [agentId], references: [id])
+  agent     User    @relation("zonesAssigned",fields: [agentId], references: [id])
   zone      GeoZone @relation(fields: [zoneId], references: [id])
 
   createdAt DateTime @default(now())
+
+  assignedById String
+  assignedBy   User     @relation("AgentGeoZoneAssignedBy", fields: [assignedById], references: [id])
 
   @@id([agentId, zoneId])
   @@index([zoneId])
