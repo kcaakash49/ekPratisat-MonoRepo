@@ -6,7 +6,7 @@ import { AgentType } from "@repo/validators";
 import Link from "next/link";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { UserPlus } from "lucide-react";
+import { Check, ShieldAlert, UserPlus } from "lucide-react";
 import VerifyBadge from "./VerifyBadge";
 
 
@@ -167,7 +167,19 @@ export default function ListAgents() {
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <VerifyBadge isVerified={agent.isVerified} userId={agent.id} />
+                       {
+                    agent.isVerified ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs sm:text-sm font-medium bg-primary-100 text-primary-700 dark:bg-primary-dark-500 dark:text-primary-200">
+                            <Check className="w-3 h-3" strokeWidth={3} />
+                            Verified
+                        </span>
+                    ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs sm:text-sm font-medium bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200 hover:bg-red-200 transition">
+                            <ShieldAlert className="w-3 h-3" strokeWidth={3} />
+                            Not verified
+                        </span>
+                    )
+                }
                     </td>
                     {/* <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-3 opacity-0 group-hover:opacity-100 transition-opacity">

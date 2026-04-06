@@ -5,7 +5,8 @@ export async function getAgentList() {
   try {
     const result = await prisma.user.findMany({
         where: {
-            role: "partner"
+            role: "partner",
+            isActive: true
         },select: {
             id: true,
             name: true,

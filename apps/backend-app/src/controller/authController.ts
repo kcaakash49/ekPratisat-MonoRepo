@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import { comparePassword, hashPassword } from "../utils/hash.js";
 import { generateToken, verifyToken } from "../utils/jwt.js";
 import { AppError, createUser } from "@repo/functions";
-import { ok } from "assert";
+
 
 export const signIn = async (req: Request, res: Response) => {
   try {
@@ -24,6 +24,10 @@ export const signIn = async (req: Request, res: Response) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
+    if (!user.isActive) {
+      return res.status(403).json({ error: "Account is deactivated. Please contact support." });
+    }
+
     const token = generateToken({
       userId: user.id,
       role: user.role,
@@ -31,7 +35,7 @@ export const signIn = async (req: Request, res: Response) => {
       profileImageUrl: user.profileImageUrl,
     });
 
-    console.log("Token", token);
+    
     res.cookie("accessToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -111,12 +115,13 @@ export const verifyAgent = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
-    const { userId } = req.body;
+    const { userId,isVerified } = req.body;
+
 
     const result = await prisma.user.update({
       where: { id: userId },
       data: {
-        isVerified: true,
+        isVerified: !isVerified,
         verifiedById: user.id,
         documents: {
           updateMany: {
@@ -192,3 +197,42 @@ export const myInfo = async (
     });
   }
 };
+
+
+export const removeAgent = async (req: Request, res: Response) => {
+  try {
+    
+    const { agentId } = req.body;
+
+    const result = await prisma.$transaction([
+      prisma.agentGeoZone.deleteMany({
+        where: { agentId },
+      }),
+      prisma.userDocument.updateMany({
+        where: { userId: agentId },
+        data: {
+          isVerified: false,
+          verifiedById: null,
+        },
+      }),
+      prisma.user.update({
+        where: { id: agentId },
+        data: {
+          isActive: false,
+        }
+      }),
+    ]);
+
+    return res.status(200).json({
+      ok: true,
+      result,
+    });
+  } catch (err) {
+    console.error("Error removing agent:", err);
+    return res.status(500).json({
+      message: "Internal Server Error!!!",
+    });
+  }
+}
+
+

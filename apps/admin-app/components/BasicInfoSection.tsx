@@ -1,8 +1,9 @@
 import { AgentDetailType } from "@repo/validators";
 import Image from "next/image";
 import VerifyBadge from "./VerifyBadge";
+import { Check, ShieldAlert } from "lucide-react";
 
-export default function BasicInfoSection({agent} : {agent: AgentDetailType}){
+export default function BasicInfoSection({ agent }: { agent: AgentDetailType }) {
     return (
         <div className="flex flex-col md:flex-row items-center md:justify-between gap-6 md:gap-14">
             {/* Profile Image - Clean without tick */}
@@ -22,7 +23,7 @@ export default function BasicInfoSection({agent} : {agent: AgentDetailType}){
                     )}
                 </div>
             </div>
-    
+
             {/* Basic Info */}
             <div className="flex-1 space-y-2 text-sm sm:text-base md:text-base lg:text-lg">
                 <div className="flex items-center gap-2">
@@ -52,7 +53,19 @@ export default function BasicInfoSection({agent} : {agent: AgentDetailType}){
                 <p className="text-secondary-600 dark:text-secondary-300">
                     Created By: {agent.createdBy?.name || "Unknown"}
                 </p>
-                <VerifyBadge isVerified={agent.isVerified} userId={agent.id}/>
+                {
+                    agent.isVerified ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs sm:text-sm font-medium bg-primary-100 text-primary-700 dark:bg-primary-dark-500 dark:text-primary-200">
+                            <Check className="w-3 h-3" strokeWidth={3} />
+                            Verified
+                        </span>
+                    ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs sm:text-sm font-medium bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200 hover:bg-red-200 transition">
+                            <ShieldAlert className="w-3 h-3" strokeWidth={3} />
+                            Not verified
+                        </span>
+                    )
+                }
             </div>
         </div>
     )

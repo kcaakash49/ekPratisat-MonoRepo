@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, ShieldAlert } from "lucide-react";
+import { Undo } from "lucide-react";
 import { toast } from "sonner";
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@repo/ui/dialog";
@@ -35,21 +35,21 @@ export default function VerifyBadge({ userId, isVerified }: VerifyBadgeProps) {
 
   const handleVerify = () => {
     const expectedText = confirmationText.replace('Type "', '').replace('" to verify', '');
-    
+
     if (userInput.trim().toLowerCase() !== expectedText.toLowerCase()) {
       toast.error("Confirmation text doesn't match. Please try again.");
       return;
     }
 
-    verifyAgent(userId, {
+    verifyAgent({userId,isVerified}, {
       onSuccess: () => {
-        toast.success("User verified successfully!");
+        toast.success("Operation Successful!!!!");
         setOpen(false);
         queryClient.invalidateQueries({
-            queryKey: ["agents-list"]
+          queryKey: ["agents-list"]
         });
         queryClient.invalidateQueries({
-            queryKey: ["agent-detail", userId]
+          queryKey: ["agent-detail", userId]
         })
         setUserInput("");
       },
@@ -61,24 +61,42 @@ export default function VerifyBadge({ userId, isVerified }: VerifyBadgeProps) {
 
   const isConfirmButtonDisabled = isPending || userInput.trim() === "";
 
-  if (isVerified) {
-    return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs sm:text-sm font-medium bg-primary-100 text-primary-700 dark:bg-primary-dark-500 dark:text-primary-200">
-        <Check className="w-3 h-3" strokeWidth={3} />
-        Verified
-      </span>
-    );
-  }
-
   return (
     <>
-      <button
-        onClick={handleOpenDialog}
-        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs sm:text-sm font-medium bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200 hover:bg-red-200 transition"
-      >
-        <ShieldAlert className="w-3 h-3" strokeWidth={3} />
-        Not Verified
+    {
+      isVerified ? (
+        <button  className="w-full flex items-center gap-3 p-3 text-left hover:bg-primary-200 dark:hover:bg-secondary-700 rounded-lg transition-colors group" onClick={handleOpenDialog}>
+        <Undo size={20} color="red"/>
+        <div>
+          <div className="font-medium text-secondary-700 dark:text-secondary-300">
+            Revoke Verification
+          </div>
+          <div className="text-sm text-secondary-500 dark:text-secondary-400">
+            Remove verification status
+          </div>
+
+        </div>
       </button>
+      ): (
+         <button
+        onClick={handleOpenDialog}
+        className="w-full flex items-center gap-3 p-3 text-left hover:bg-primary-200 dark:hover:bg-secondary-700 rounded-lg transition-colors group"
+      >
+         <svg className="w-5 h-5 text-yellow-500 group-hover:text-yellow-600 dark:group-hover:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div>
+          <div className="font-medium text-secondary-700 dark:text-secondary-300">
+            Verify Agent
+          </div>
+          <div className="text-sm text-secondary-500 dark:text-secondary-400">
+            Mark Agent as verified
+          </div>
+
+        </div>
+      </button>
+      )
+    }
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent onClose={() => setOpen(false)} className="max-w-lg">
@@ -89,7 +107,7 @@ export default function VerifyBadge({ userId, isVerified }: VerifyBadgeProps) {
           {/* FIX: Use proper grid/flex layout */}
           <div className="space-y-4">
             <p className="text-secondary-600 dark:text-secondary-300 text-sm break-words whitespace-normal">
-              Are you sure you want to verify this user? This action cannot be undone.
+              Are you sure you want to {isVerified ? "revoke verification for" : "verify"} this user? This action cannot be undone.
             </p>
 
             {/* Confirmation Challenge - Stack vertically */}
@@ -110,8 +128,8 @@ export default function VerifyBadge({ userId, isVerified }: VerifyBadgeProps) {
           </div>
 
           <DialogFooter>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => {
                 setOpen(false);
                 setUserInput("");
@@ -125,7 +143,7 @@ export default function VerifyBadge({ userId, isVerified }: VerifyBadgeProps) {
               disabled={isConfirmButtonDisabled}
               className="bg-primary-600 hover:bg-primary-700 text-white"
             >
-              {isPending ? "Verifying..." : "Confirm Verify"}
+              {isPending ? "Confirming......." : "Confirm"}
             </Button>
           </DialogFooter>
         </DialogContent>
