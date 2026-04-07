@@ -22,12 +22,12 @@ export function ToggleTheme() {
       variant="ghost" // Use ghost variant for minimal styling
       size="sm"     // Use icon size for perfect circle
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="px-4 py-2 rounded border border-gray-400 dark:border-gray-600 hover:bg-gray-300 dark:hover:bg-gray-700 transition"
+      className=" p-2 rounded border border-gray-400 dark:border-gray-600 hover:bg-gray-300 dark:hover:bg-gray-700 transition"
     >
       {isDark ? (
         <Sun className="text-yellow-400" />
       ) : (
-        <Moon className="text-gray-600" />
+        <Moon className="text-white"/>
       )}
       {/* {isDark ? "Switch to Light Mode" : "Switch to Dark Mode"} */}
     </Button>

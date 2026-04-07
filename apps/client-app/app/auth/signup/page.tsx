@@ -12,7 +12,7 @@ export default async function SignupPage() {
         <SignupForm/>
         <p className="text-sm mt-4 text-center">
         Already have an account?{" "}
-        <Link href="/login" className="text-red-600">Log in</Link>
+        <Link href="/auth/signin" className="text-red-600">Log in</Link>
       </p>
       </div>
     </div>

@@ -3,7 +3,7 @@ import { SearchBox } from "./SearchBox";
 
 export default function VideoBackground() {
   return (
-    <div className="relative w-full overflow-hidden flex flex-col" style={{ height: "60vh" }}>
+    <div className="relative w-full overflow-hidden flex flex-col" style={{ height: "80vh" }}>
       {/* Background Video - Only show in dark mode */}
       <div className="absolute inset-0 w-full h-full">
         <video
