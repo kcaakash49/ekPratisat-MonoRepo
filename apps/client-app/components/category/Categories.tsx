@@ -2,7 +2,6 @@ import { prisma } from "@repo/database";
 import CategoryCard from "./CategoryCard";
 import Link from "next/link";
 
-export const revalidate = 120;
 
 export async function Categories() {
     const categories = await prisma.category.findMany({
