@@ -45,7 +45,7 @@ export const useCreateUser = () => {
 export const useSignInUser = () => {
   return useMutation({
     mutationFn: async (form: Credentials) => {
-      const res = await fetch("http://localhost:5000/auth/signin", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signin`, {
         method: "POST",
         credentials: "include",
         headers: {
