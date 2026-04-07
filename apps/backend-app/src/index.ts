@@ -15,6 +15,8 @@ const PORT = process.env.PORT || 4000;
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 const allowedOrigins = [
   "http://localhost:3001",
   "http://localhost:3000",

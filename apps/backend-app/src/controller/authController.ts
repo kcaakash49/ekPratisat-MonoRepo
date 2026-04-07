@@ -42,6 +42,7 @@ export const signIn = async (req: Request, res: Response) => {
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 24 * 30 * 60 * 60 * 1000,
       path: "/", // cookie available for entire domain
+      domain: process.env.NODE_ENV === "production" ? ".ekpratishat.com" : "localhost",
     });
 
     return res.status(201).json({
