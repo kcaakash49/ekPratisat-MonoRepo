@@ -154,6 +154,7 @@ export const signOut = (req: Request, res: Response) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     path: "/",
+    domain: process.env.NODE_ENV === "production" ? ".ekpratishat.com" : "localhost",
   });
 
   return res.status(200).json({
