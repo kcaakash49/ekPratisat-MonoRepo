@@ -15,12 +15,31 @@ const PORT = process.env.PORT || 4000;
 
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:3001",
+  "http://localhost:3000",
+  "http://localhost:3002",
+  "https://ekpratishat.com",
+  "https://www.ekpratishat.com",
+  "https://admin.ekpratishat.com",
+  "https://partner.ekpratishat.com",
+];
+
 app.use(
-    cors({
-      origin: "http://localhost:3001", // your frontend URL
-      credentials: true, // if sending cookies or auth headers
-    })
-  );
+  cors({
+    origin: function (origin, callback) {
+      // allow requests with no origin (like mobile apps or curl)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
 app.use(cookieParser());
 app.use(express.json());
