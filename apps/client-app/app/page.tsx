@@ -3,7 +3,6 @@ import VideoBackground from "../components/VideoBackground";
 import Footer from "../components/Footer";
 import { Categories } from "../components/category/Categories";
 
-export const revalidate = 60;
 
 export default async function Home(){
   

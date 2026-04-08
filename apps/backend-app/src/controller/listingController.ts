@@ -1,12 +1,11 @@
-import { prisma } from "@repo/database";
-import { categorySchema } from "@repo/validators";
+
 import { Request, Response } from "express";
 import {
   uploadCategoryImage,
-  deleteFile,
 } from "./../middleware/uploadCategoryImage.js";
 import path from "path";
 import { addCategory, AppError, createListingFunction } from "@repo/functions";
+import { triggerFrontendUpdate } from "../utils/revalidator.js";
 
 // Multer middleware for single file upload
 export const uploadCategoryImageFile = uploadCategoryImage.single("image");
@@ -33,6 +32,8 @@ export async function createCategory(req: Request, res: Response) {
       body: req.body,
       file: adaptedFile,
     });
+
+    triggerFrontendUpdate("categories");
 
     return res.status(201).json({
       ok: true,

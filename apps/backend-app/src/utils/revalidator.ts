@@ -1,0 +1,11 @@
+export const triggerFrontendUpdate = async (tag = "") => {
+  const url = `${process.env.FRONTEND_URL}/api/revalidate?secret=${process.env.REVALIDATE_SECRET}${tag ? `&tag=${tag}` : ""}`;
+  
+  try {
+    const res = await fetch(url, { method: 'POST' });
+    const data = await res.json();
+    console.log("Revalidation triggered:", data);
+  } catch (error) {
+    console.error("Failed to notify frontend:", error);
+  }
+};
