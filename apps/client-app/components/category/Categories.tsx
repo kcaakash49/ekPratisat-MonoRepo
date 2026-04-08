@@ -1,16 +1,22 @@
 import { prisma } from "@repo/database";
 import CategoryCard from "./CategoryCard";
 import Link from "next/link";
+import { unstable_cache } from 'next/cache';
+
+
+const getCachedCategories = unstable_cache(
+  async () => {
+    return await prisma.category.findMany({
+      select: { id: true, name: true, imageUrl: true }
+    });
+  },
+  ['categories-list'],
+  { tags: ['categories'], revalidate: 3600 }
+);
 
 
 export async function Categories() {
-    const categories = await prisma.category.findMany({
-        select: {
-            id: true,
-            name: true,
-            imageUrl: true,
-        }
-        });
+    const categories = await getCachedCategories();
     
     if (categories.length === 0) {
         return;
