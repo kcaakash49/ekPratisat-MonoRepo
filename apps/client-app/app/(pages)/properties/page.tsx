@@ -12,7 +12,7 @@ export default async function Properties({
     const page = Number(sp.page || 1);
     const q = typeof sp.q === "string" ? sp.q : "";
 
-    const data = await getPropertiesQuery({ page, pageSize: 12, q });
+    const data = await getPropertiesQuery({ page, pageSize: 20, q });
     console.log("hey");
 
     if (data.items.length) {

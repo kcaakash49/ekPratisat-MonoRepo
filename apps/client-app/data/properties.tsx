@@ -4,7 +4,7 @@ import { unstable_cache } from "next/cache";
 type Input = {
     page?: number;
     pageSize?: number;
-    q?: string; 
+    q?: string;
 }
 
 export const _getProperties = async (input: Input) => {
@@ -12,19 +12,44 @@ export const _getProperties = async (input: Input) => {
     const page = Math.max(1, Number(input.page || 1));
     const pageSize = Math.min(100, Math.max(1, Number(input.pageSize || 12)));
     const q = input.q?.trim();
-    
-    const where:Prisma.PropertyWhereInput = q
+
+    const where: Prisma.PropertyWhereInput = q
         ? {
-              OR: [
-                  { title: { contains: q, mode: "insensitive"}  },
-                  { description: { contains: q, mode: "insensitive" } },
-              ],
-          }
-        : {};
+            OR: [
+                { title: { contains: q, mode: "insensitive" } },
+                { description: { contains: q, mode: "insensitive" } },
+                { isActive: true }
+            ],
+        }
+        : {isActive: true};
 
     const [items, total] = await Promise.all([
         prisma.property.findMany({
             where,
+            select: {
+                id: true,
+                title: true,
+                price: true,
+                type: true,
+                noOfBedRooms: true,
+                noOfFloors: true,
+                noOfRestRooms: true,
+                landArea: true,
+                floorArea: true,
+                tole: true,
+                category: {
+                    select: {
+                        name: true,
+                    }
+                },
+                images: {
+                    select: {
+                        url: true,
+                    },
+                    take: 1,
+                },
+                createdAt: true,
+            },
             skip: (page - 1) * pageSize,
             take: pageSize,
             orderBy: { createdAt: "desc" },
@@ -38,7 +63,7 @@ export const _getProperties = async (input: Input) => {
             total,
             page,
             pageSize,
-            totalPages:Math.max(1, Math.ceil(total / pageSize)),
+            totalPages: Math.max(1, Math.ceil(total / pageSize)),
         },
     };
 }

@@ -25,7 +25,7 @@ import {
   
   const Footer = () => {
     return (
-      <footer className="bg-[#f6f1ed] dark:bg-gray-900 text-gray-950 dark:text-gray-100 py-10 border-t border-gray-300 dark:border-gray-700 relative mt-4">
+      <footer className="bg-[#f6f1ed] dark:bg-gray-900 text-gray-950 dark:text-gray-100 py-10 border-t border-gray-300 dark:border-gray-700 relative">
         {/* Watermark Background - Fixed Position */}
         <div className="absolute inset-0 overflow-hidden z-0">
           <div className="relative w-full h-full">
