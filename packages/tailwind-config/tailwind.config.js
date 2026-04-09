@@ -16,6 +16,12 @@ export default {
       animation: {
         bounceDelay: "bounceDelay 1s infinite ease-in-out",
       },
+      backgroundImage: {
+        // The metallic gradient you requested
+        'gold-gradient': 'linear-gradient(135deg, hsl(38 70% 50%), hsl(38 60% 70%))',
+        // A slightly deeper version for interactive states
+        'gold-gradient-hover': 'linear-gradient(135deg, hsl(38 70% 45%), hsl(38 60% 65%))',
+      },
       colors: {
         primary: {
           50: "#eff6ff",
@@ -45,6 +51,19 @@ export default {
           700: "#334155",
           800: "#1e293b",
           900: "#0f172a",
+        },
+        gold: {
+          DEFAULT: "#C4A77D", // Accessible via 'bg-gold' or 'text-gold'
+          50: "#F9F6F1",
+          100: "#F1EBE0",
+          200: "#E2D6C0",
+          300: "#D4BC96",
+          400: "#C9B189",
+          500: "#C4A77D", // Same as DEFAULT
+          600: "#A68F6C",
+          700: "#887559",
+          800: "#695B45",
+          900: "#4B4132",
         },
       },
       fontFamily: {

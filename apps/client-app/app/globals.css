@@ -2,3 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    /* Use secondary-50 for light mode and secondary-900 for dark mode */
+    @apply bg-secondary-50 text-secondary-900 antialiased transition-colors duration-200;
+  }
+
+  .dark body {
+    /* Deep dark color from your palette */
+    @apply bg-secondary-900 text-secondary-50;
+  }
+}
