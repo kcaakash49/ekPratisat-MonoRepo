@@ -18,20 +18,20 @@ const Navbar = () => {
           {["Properties", "About", "Services", "Contact"].map((item) => (
             <a
               key={item}
-              href={`#${item.toLowerCase()}`}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              href={`${item.toLowerCase()}`}
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors text-gray-600 dark:text-gray-300 dark:hover:text-white"
             >
               {item}
             </a>
           ))}
-          <Button className="bg-gradient-gold text-accent-foreground hover:opacity-90 transition-opacity px-6">
+          <Button className="bg-yellow-600 hover:bg-yellow-800 dark:bg-yellow-600 dark:hover:bg-yellow-800 text-accent-foreground hover:opacity-90 transition-opacity px-6">
             List Property
           </Button>
           <ToggleTheme />
         </div>
 
         <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6 text-gray-600 dark:text-gray-300" />}
         </button>
       </div>
 
@@ -40,14 +40,14 @@ const Navbar = () => {
           {["Properties", "About", "Services", "Contact"].map((item) => (
             <a
               key={item}
-              href={`#${item.toLowerCase()}`}
+              href={`${item.toLowerCase()}`}
               className="block text-sm font-medium text-muted-foreground hover:text-foreground"
               onClick={() => setIsOpen(false)}
             >
               {item}
             </a>
           ))}
-          <Button variant="ghost">List Property</Button>
+          <Button variant="ghost" className="bg-yellow-100 dark:bg-yellow-200">List Property</Button>
           <ToggleTheme/>
         </div>
       )}
