@@ -10,7 +10,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 left-0 right-0 z-50 bg-transparent text-white dark:bg-gray-800 dark:text-white backdrop-blur-lg border-b border-border">
+    <nav className="sticky top-0 left-0 right-0 z-50 bg-secondary-50 text-white dark:bg-gray-800 dark:text-white backdrop-blur-lg border-b border-border">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
         <Image src="/logofinal.webp" alt="Logo" width={180} height={80} />
 
