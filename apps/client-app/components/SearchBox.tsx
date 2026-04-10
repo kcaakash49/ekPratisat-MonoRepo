@@ -8,10 +8,6 @@ import { useState } from "react";
 export const SearchBox = () => {
     const [search, setSearch] = useState("");
 
-
-
-    
-   
     const handleKeyPress = (e: React.KeyboardEvent) => {
         if (e.key === "Enter") {
             console.log(search);

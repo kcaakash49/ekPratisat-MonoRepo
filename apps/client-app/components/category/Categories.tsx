@@ -1,18 +1,7 @@
-import { prisma } from "@repo/database";
+
+import { getCachedCategories } from "../../data/categories";
 import CategoryCard from "./CategoryCard";
 import Link from "next/link";
-import { unstable_cache } from 'next/cache';
-
-
-const getCachedCategories = unstable_cache(
-  async () => {
-    return await prisma.category.findMany({
-      select: { id: true, name: true, imageUrl: true }
-    });
-  },
-  ['categories-list'],
-  { tags: ['categories'], revalidate: 3600 }
-);
 
 
 export async function Categories() {
@@ -36,7 +25,7 @@ export async function Categories() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                     {categories.map((item) => (
                         <Link 
-                          href={`/search?category=${item.id}`} 
+                          href={`/properties?c_id=${item.id}`} 
                           key={item.id} 
                           className="w-full transform transition-transform hover:-translate-y-1"
                         >

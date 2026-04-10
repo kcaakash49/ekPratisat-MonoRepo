@@ -3,7 +3,7 @@ import { getPropertiesQuery } from "../data/properties";
 import ListingCard from "./ListingCard";
 
 export default async function RecentListings() {
-    const response = await getPropertiesQuery({ page: 1, pageSize: 20, q: "" });
+    const response = await getPropertiesQuery({});
     const listings = response.items.slice(0, 6);
 
     return (
