@@ -1,4 +1,5 @@
 import { Search, ChevronDown } from 'lucide-react';
+import HomeSearch from './homeSearch/HomeSearch';
 
 const HeroSection = () => {
   return (
@@ -37,46 +38,7 @@ const HeroSection = () => {
             </p>
 
             {/* Responsive Search Container */}
-            <div className="bg-white dark:bg-secondary-800 p-2 md:p-3 rounded-2xl md:rounded-full shadow-2xl flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-0 max-w-4xl border border-white/10">
-              
-              {/* Location Input */}
-              <div className="relative flex-[1.5] flex items-center md:border-r border-secondary-200 dark:border-secondary-700">
-                <Search className="absolute left-4 h-5 w-5 text-secondary-400" />
-                <input
-                  type="text"
-                  placeholder="City, neighborhood, or ZIP"
-                  className="w-full pl-12 pr-4 py-4 bg-transparent text-secondary-900 dark:text-white placeholder-secondary-400 focus:outline-none text-base"
-                />
-              </div>
-
-              {/* Selectors with Gold hover states */}
-              <div className="flex flex-1 items-center border-secondary-200 dark:border-secondary-700 md:border-r">
-                <div className="relative w-full">
-                  <select className="w-full appearance-none px-6 py-4 bg-transparent text-secondary-700 dark:text-secondary-200 focus:outline-none cursor-pointer font-medium hover:text-[#C4A77D] transition-colors">
-                    <option>Buy</option>
-                    <option>Rent</option>
-                  </select>
-                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 pointer-events-none text-secondary-400" />
-                </div>
-              </div>
-
-              <div className="flex flex-1 items-center">
-                <div className="relative w-full">
-                  <select className="w-full appearance-none px-6 py-4 bg-transparent text-secondary-700 dark:text-secondary-200 focus:outline-none cursor-pointer font-medium hover:text-[#C4A77D] transition-colors">
-                    <option>All Types</option>
-                    <option>Villa</option>
-                    <option>Apartment</option>
-                  </select>
-                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 pointer-events-none text-secondary-400" />
-                </div>
-              </div>
-
-              {/* GOLD SEARCH BUTTON */}
-              <button className="bg-[#C4A77D] hover:bg-[#A68F6C] transition-all text-white rounded-xl md:rounded-full px-8 py-4 flex items-center justify-center gap-2 font-bold text-lg shadow-lg shadow-[#C4A77D]/20">
-                <Search className="h-5 w-5 " />
-                <span className="md:hidden lg:inline">Search</span>
-              </button>
-            </div>
+           <HomeSearch/>
           </div>
         </div>
       </section>

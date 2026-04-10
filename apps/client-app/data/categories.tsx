@@ -22,6 +22,6 @@ export const getCachedCategories = async () => {
   return unstable_cache(
     _getCachedCategories,
     ['categories-list'],
-    { tags: ['categories'], revalidate: 3600 }
+    { tags: ['categories'], revalidate: 86400 }
   )();
 }

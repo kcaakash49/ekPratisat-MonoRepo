@@ -88,7 +88,7 @@ export const getPropertiesQuery = async (input: Input) => {
     return unstable_cache(
         () => _getProperties(normalizedInput),
         ['properties', String(normalizedInput.page), String(normalizedInput.pageSize), String(normalizedInput.q), String(normalizedInput.c_id), String(normalizedInput.type)],
-        { tags: ['properties'], revalidate: 3600 }
+        { tags: ['properties'], revalidate: 86400 }
     )();
 }
 
