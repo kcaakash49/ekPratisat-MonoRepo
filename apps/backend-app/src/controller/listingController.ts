@@ -89,6 +89,11 @@ export const addProperty = async (req: Request, res: Response) => {
       imageFiles: adaptedFiles,
     });
 
+    if (result.listing.verified) {
+      triggerFrontendUpdate("properties");
+    }
+
+    
     return res.status(201).json({
       ok: true,
       message: "Property added successfully",
