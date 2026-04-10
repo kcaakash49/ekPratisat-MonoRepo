@@ -5,6 +5,7 @@ import { Menu, X } from "lucide-react";
 import { Button } from "@repo/ui/button";
 import { ToggleTheme } from "@repo/components/toggleTheme";
 import Image from "next/image";
+import Link from "next/link";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,7 +13,9 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 left-0 right-0 z-50 bg-secondary-50 text-white dark:bg-gray-800 dark:text-white backdrop-blur-lg border-b border-border">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-        <Image src="/logofinal.webp" alt="Logo" width={180} height={80} />
+        <Link href="/" className="flex items-center gap-2">
+           <Image src="/logofinal.webp" alt="Logo" width={180} height={80} />
+        </Link>
 
         <div className="hidden md:flex items-center gap-8">
           {["Properties", "About", "Services", "Contact"].map((item) => (

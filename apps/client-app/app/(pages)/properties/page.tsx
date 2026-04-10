@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { getPropertiesQuery } from "../../../data/properties";
 import ListingCard from "../../../components/ListingCard";
+import PropertySearchBar from "../../../components/PropertySearchBar";
+import { getCachedCategories } from "../../../data/categories";
 
 export default async function Properties({
     searchParams,
@@ -12,40 +14,50 @@ export default async function Properties({
 
     const page = Number(sp.page || 1);
     const q = typeof sp.q === "string" ? sp.q : "";
+    const c_id = typeof sp.c_id === "string" ? sp.c_id : "";
+    const type = typeof sp.type === "string" ? sp.type : "";
 
-    const data = await getPropertiesQuery({ page, pageSize: 20, q });
-    console.log("hey");
+
+    const categories = await getCachedCategories();
+    const data = await getPropertiesQuery({ page, pageSize: 20, q, c_id, type });
+
 
     if (!data.items.length) {
         return (
-            <div className="p-6">
-                {/* Header */}
-                <div className="flex items-center justify-between gap-4">
-                    <div>
-                        <h1 className="text-xl font-semibold">Properties</h1>
-                        <p className="text-sm text-muted-foreground">
-                            Total: {data.meta.total}
-                        </p>
+            /* --- BEAUTIFUL EMPTY STATE (Server Side) --- */
+            <div className="flex flex-col items-center justify-center py-20 text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <div className="relative mb-6">
+                    <div className="h-24 w-24 rounded-full bg-secondary-100 dark:bg-secondary-800 flex items-center justify-center text-4xl">
+                        🏙️
+                    </div>
+                    <div className="absolute -bottom-2 -right-2 h-10 w-10 rounded-full bg-gold-gradient flex items-center justify-center shadow-lg border-4 border-white dark:border-secondary-900">
+                        <span className="text-white text-xs font-bold">?</span>
                     </div>
                 </div>
 
-                {/* Empty State */}
-                <div className="mt-16 flex flex-col items-center justify-center rounded-2xl border border-dashed p-12 text-center">
-                    <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-muted">
-                        📷
-                    </div>
+                <h2 className="text-2xl md:text-3xl font-black text-secondary-900 dark:text-white uppercase tracking-tight">
+                    No Matches <span className="text-gold">Found</span>
+                </h2>
 
-                    <h2 className="text-lg font-semibold">No Properties yet</h2>
+                <p className="mt-4 max-w-md text-secondary-500 dark:text-secondary-400 leading-relaxed">
+                    We couldn't find any properties matching your current filters {q && <span>for <span className="text-gold font-bold">"{q}"</span></span>}.
+                    Try broadening your criteria or resetting the filters.
+                </p>
 
-                    <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-                        Start organizing your properties by creating your first property. It’s a great way to keep track of your listings and manage your real estate portfolio effectively.
-                    </p>
+                <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+                    {/* This link effectively "Refreshes" the search by clearing the URL */}
+                    <Link
+                        href="/properties"
+                        className="px-10 py-4 bg-secondary-900 dark:bg-black text-white rounded-full font-bold hover:bg-gold-gradient transition-all shadow-xl active:scale-95"
+                    >
+                        Clear All Filters
+                    </Link>
 
                     <Link
-                        href="#"
-                        className="mt-6 rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white hover:opacity-90 transition"
+                        href="/"
+                        className="px-10 py-4 border border-secondary-200 dark:border-secondary-700 text-secondary-900 dark:text-white rounded-full font-bold hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-all"
                     >
-                        Create your first Property
+                        Back to Home
                     </Link>
                 </div>
             </div>
@@ -55,34 +67,33 @@ export default async function Properties({
     const listings = data.items;
 
     return (
-              <div className="max-w-7xl mx-auto p-6">
-                
-                {/* Centered Header Section */}
-                <div className="text-center mb-16">
-                    <span className="text-gold font-bold tracking-[0.3em] text-xs md:text-sm uppercase">
-                        Handpicked for you
-                    </span>
-                    <h2 className="text-secondary-900 dark:text-white text-3xl md:text-5xl font-black mt-3">
-                        Listed <span className="text-gold">Properties</span>
-                    </h2>
-                    {/* Decorative gold line to match Categories */}
-                    <div className="h-1 w-24 bg-gold-gradient mx-auto mt-6 rounded-full shadow-sm" />
-                </div>
+        <main className="min-h-screen">
 
-                {/* Grid Layout */}
+            {/* Banner Section with Gold Gradient */}
+            <div className="h-60 bg-secondary-900 flex items-center justify-center relative">
+                <div className="absolute inset-0 opacity-20 bg-[url('/pattern.png')] bg-repeat" />
+                <h1 className="text-4xl font-black text-white z-10">Properties</h1>
+            </div>
+
+            {/* Search Bar overlaps the banner slightly with -mt-10 */}
+            <PropertySearchBar categories={categories} />
+            {/* Grid Layout */}
+            <div className="max-w-7xl mx-auto px-6 pb-20">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
                     {listings.map((item: any) => (
-                        <Link 
-                            key={item.id} 
-                            href={`/listing/${item.id}`} 
+                        <Link
+                            key={item.id}
+                            href={`/listing/${item.id}`}
                             className="transition-transform duration-300 hover:-translate-y-2"
                         >
                             <ListingCard listing={item} />
                         </Link>
                     ))}
                 </div>
+            </div>
 
-        </div>
-        
+
+        </main>
+
     );
 }

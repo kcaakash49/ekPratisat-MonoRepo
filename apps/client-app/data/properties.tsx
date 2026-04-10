@@ -5,23 +5,32 @@ type Input = {
     page?: number;
     pageSize?: number;
     q?: string;
+    c_id?: string;
+    type?: string;
 }
 
 export const _getProperties = async (input: Input) => {
     console.log("Fetching properties with input:", input, "at", new Date().toISOString());
     const page = Math.max(1, Number(input.page || 1));
-    const pageSize = Math.min(100, Math.max(1, Number(input.pageSize || 12)));
+    const pageSize = Math.min(100, Math.max(1, Number(input.pageSize || 20)));
     const q = input.q?.trim();
+    const c_id = input.c_id?.trim();
 
-    const where: Prisma.PropertyWhereInput = q
-        ? {
+    const type = input.type?.trim().toLowerCase() || "";
+    const validTypes = ['rent', 'sale'];
+    const filterType = validTypes.includes(type) ? (type as 'rent' | 'sale') : undefined;
+
+    const where: Prisma.PropertyWhereInput = {
+        isActive: true,
+        ...(q && {
             OR: [
                 { title: { contains: q, mode: "insensitive" } },
                 { description: { contains: q, mode: "insensitive" } },
-                { isActive: true }
             ],
-        }
-        : {isActive: true};
+        }),
+        ...(c_id && { categoryId: c_id }),
+        ...(filterType && { type: filterType }),
+    };
 
     const [items, total] = await Promise.all([
         prisma.property.findMany({
@@ -71,12 +80,14 @@ export const _getProperties = async (input: Input) => {
 export const getPropertiesQuery = async (input: Input) => {
     const normalizedInput = {
         page: Math.max(1, Number(input.page || 1)),
-        pageSize: Math.min(100, Math.max(1, Number(input.pageSize || 12))),
+        pageSize: Math.min(100, Math.max(1, Number(input.pageSize || 20))),
         q: input.q || "",
+        c_id: input.c_id || "",
+        type: input.type || "",
     };
     return unstable_cache(
         () => _getProperties(normalizedInput),
-        ['properties', String(normalizedInput.page), String(normalizedInput.pageSize), String(normalizedInput.q)],
+        ['properties', String(normalizedInput.page), String(normalizedInput.pageSize), String(normalizedInput.q), String(normalizedInput.c_id), String(normalizedInput.type)],
         { tags: ['properties'], revalidate: 3600 }
     )();
 }
