@@ -73,7 +73,7 @@ export default async function Properties({
 
             {/* Banner Section with Gold Gradient */}
             <div className="h-60 bg-secondary-900 flex items-center justify-center relative">
-                <div className="absolute inset-0 opacity-20 bg-[url('/pattern.png')] bg-repeat" />
+                <div className="absolute inset-0 opacity-80 dark:opacity-30 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-repeat" />
                 <h1 className="text-4xl font-black text-white z-10">Properties</h1>
             </div>
 

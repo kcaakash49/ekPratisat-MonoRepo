@@ -6,7 +6,8 @@ export default function ListingCard({ listing }: any) {
   const formattedPrice = new Intl.NumberFormat('en-IN').format(Number(listing.price));
 
   return (
-    <div className="group relative bg-white dark:bg-secondary-800 rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border border-secondary-100 dark:border-secondary-700 w-full">
+    // Add 'mask-image' and 'backface-visibility'
+    <div className="group relative bg-white dark:bg-secondary-800 rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border border-secondary-100 dark:border-secondary-700 w-full antialiased">
       {/* Image Section */}
       <div className="relative h-64 w-full overflow-hidden">
         {listing.images?.[0]?.url ? (
@@ -14,12 +15,12 @@ export default function ListingCard({ listing }: any) {
             src={`${process.env.NEXT_PUBLIC_BASE_URL}${listing.images[0].url}`}
             alt={listing.title}
             fill
-            className="object-cover group-hover:scale-110 transition-transform duration-500"
+            className="object-cover group-hover:scale-110 transition-transform duration-500 transform-gpu"
           />
         ) : (
           <div className="w-full h-full bg-secondary-200 flex items-center justify-center">No Image</div>
         )}
-        
+
         {/* Price Badge - Using your Gold Gradient */}
         <div className="absolute top-4 left-4 bg-gold-gradient text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg">
           Rs. {formattedPrice} {listing.type === "rent" ? "/mo" : ""}
@@ -34,10 +35,10 @@ export default function ListingCard({ listing }: any) {
       {/* Info Section */}
       <div className="p-5">
         <div className="flex items-center gap-1 text-gold mb-1">
-           <MapPin size={14} />
-           <span className="text-xs font-semibold uppercase tracking-wider">{listing.tole}</span>
+          <MapPin size={14} />
+          <span className="text-xs font-semibold uppercase tracking-wider">{listing.tole}</span>
         </div>
-        
+
         <h3 className="text-secondary-900 dark:text-white text-xl font-bold mb-4 line-clamp-1">
           {listing.title}
         </h3>
@@ -64,9 +65,9 @@ export default function ListingCard({ listing }: any) {
               </div>
             )}
           </div>
-          
+
           <div className="text-xs font-bold text-secondary-400 uppercase">
-             {listing.type}
+            {listing.type}
           </div>
         </div>
       </div>
