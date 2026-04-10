@@ -1,17 +1,23 @@
 "use client";
 
-import { useGetAgents } from "@repo/query-hook";
+import { useGetAgents, useGetStaffList } from "@repo/query-hook";
 import AnimateLoader from "@repo/ui/animateLoader";
 import { AgentType } from "@repo/validators";
 import Link from "next/link";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Check, ShieldAlert, UserPlus } from "lucide-react";
-import VerifyBadge from "./VerifyBadge";
 
 
-export default function ListAgents() {
-  const { data, isLoading, isError, error } = useGetAgents();
+export default function ListAgents({ page }: { page: string }) {
+
+  const isStaff = page === 'staff';
+
+  const staff = useGetStaffList({ enabled: isStaff });
+  const agent = useGetAgents({ enabled: !isStaff });
+
+
+  const { data, isLoading, isError, error } = isStaff ? staff : agent;
 
   if (isLoading) {
     return (
@@ -65,11 +71,11 @@ export default function ListAgents() {
           transition={{ delay: 0.3 }}
         >
           <Link
-            href="/admin/agent/add-agent"
+            href={isStaff ? "/admin/agent/add-staff" : "/admin/agent/add-agent"}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors shadow-md font-medium"
           >
             <UserPlus className="w-5 h-5" />
-            Add Your First Agent
+            Add Your First {isStaff ? "Staff Member" : "Agent"}
           </Link>
         </motion.div>
       </div>
@@ -167,19 +173,19 @@ export default function ListAgents() {
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                       {
-                    agent.isVerified ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs sm:text-sm font-medium bg-primary-100 text-primary-700 dark:bg-primary-dark-500 dark:text-primary-200">
+                      {
+                        agent.isVerified ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs sm:text-sm font-medium bg-primary-100 text-primary-700 dark:bg-primary-dark-500 dark:text-primary-200">
                             <Check className="w-3 h-3" strokeWidth={3} />
                             Verified
-                        </span>
-                    ) : (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs sm:text-sm font-medium bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200 hover:bg-red-200 transition">
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs sm:text-sm font-medium bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200 hover:bg-red-200 transition">
                             <ShieldAlert className="w-3 h-3" strokeWidth={3} />
                             Not verified
-                        </span>
-                    )
-                }
+                          </span>
+                        )
+                      }
                     </td>
                     {/* <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-3 opacity-0 group-hover:opacity-100 transition-opacity">

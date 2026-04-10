@@ -6,23 +6,27 @@ import { usePathname, useRouter } from "next/navigation";
 import { ToggleTheme } from "@repo/components/toggleTheme";
 import { SidebarDropdownSection } from "@repo/ui/sideBarDropdownSection";
 import { toast } from "sonner";
+import { useUser } from "@repo/query-hook";
+import { useQueryClient } from "@tanstack/react-query";
 
 const navSections = [
-  { name: "Dashboard", path: "/admin/dashboard" },
-  { name: "Geozones", path: "/admin/geo-zones" },
-  { name: "List-Zones", path: "/admin/geo-zones/list-zones" },
+  { name: "Dashboard", path: "/admin/dashboard", accessibleRoles: ["admin"] },
+  { name: "Geozones", path: "/admin/geo-zones", accessibleRoles: ["admin"] },
+  { name: "List-Zones", path: "/admin/geo-zones/list-zones", accessibleRoles: ["admin"] },
   {
     name: "Properties",
     children: [
-      { name: "Add Property", path: "/admin/property/add-property" },
-      { name: "List Properties", path: "/admin/property/list-properties" },
+      { name: "Add Property", path: "/admin/property/add-property", accessibleRoles: ["admin", "staff"] },
+      { name: "List Properties", path: "/admin/property/list-properties", accessibleRoles: ["admin", "staff"] },
     ],
   },
   {
     name: "Users",
     children: [
-      { name: "Add Agent", path: "/admin/agent/add-agent" },
-      { name: "List Agents", path: "/admin/agent/list-agents" },
+      { name: "Add Agent", path: "/admin/agent/add-agent", accessibleRoles: ["admin"] },
+      { name: "List Agents", path: "/admin/agent/list-agents", accessibleRoles: ["admin"] },
+      { name: "Add Staff", path: "/admin/agent/add-staff", accessibleRoles: ["admin"] },
+      { name: "List Staff", path: "/admin/agent/list-staff", accessibleRoles: ["admin"] },
     ],
   },
 ];
@@ -34,11 +38,45 @@ interface Props {
 export default function AdminSidebarClient({ userName }: Props) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { data: user, isLoading } = useUser();
   const router = useRouter();
+  const queryClient = useQueryClient();
   // Check if any child link is active to show dropdown as active
   const isSectionActive = (children: { path: string }[]) => {
     return children.some(child => pathname === child.path);
   };
+
+  if (isLoading) {
+    return null; // or a loading spinner
+  }
+  const userRole = user?.role?.toLowerCase(); 
+  console.log("User Role in Sidebar:", userRole);
+
+  // Helper to check if a user has permission for a specific item
+  const hasAccess = (accessibleRoles: string[]) => {
+    return accessibleRoles.includes(userRole);
+  };
+
+  // Filter the sections based on role
+  const filteredSections = navSections
+    .map((section) => {
+      // If it has children, filter the children first
+      if (section.children) {
+        const permittedChildren = section.children.filter((child) =>
+          hasAccess(child.accessibleRoles)
+        );
+        // Only return the section if it has at least one permitted child
+        return permittedChildren.length > 0
+          ? { ...section, children: permittedChildren }
+          : null;
+      }
+
+      // For top-level links, check role directly
+      return section.accessibleRoles && hasAccess(section.accessibleRoles)
+        ? section
+        : null;
+    })
+    .filter(Boolean); // Remove the null entries
 
   return (
     <>
@@ -70,11 +108,11 @@ export default function AdminSidebarClient({ userName }: Props) {
             </svg>
           )}
         </button>
-        
+
         <h2 className="text-lg font-semibold">
-          Welcome, {userName?.split(" ")[0]}
+          Welcome, {user.name.split(" ")[0]}
         </h2>
-        
+
         {/* Empty div for flex spacing */}
         <div className="w-10"></div>
       </div>
@@ -96,46 +134,39 @@ export default function AdminSidebarClient({ userName }: Props) {
       >
         {/* Hidden on mobile since we have the mobile navbar */}
         <h2 className="hidden md:block text-lg sm:text-xl md:text-2xl font-bold mb-5 md:mb-8">
-          Welcome, {userName?.split(" ")[0]}
+          Welcome, {user?.name?.split(" ")[0]}
         </h2>
 
-        <div className="flex flex-col space-y-2 text-sm sm:text-base">
-          {navSections.map((section) =>
-            section.children ? (
+       <div className="flex flex-col space-y-2 text-sm sm:text-base">
+          {filteredSections.map((section) =>
+            section!.children ? (
               <SidebarDropdownSection 
-                key={section.name}
-                title={section.name}
-                defaultOpen={isSectionActive(section.children)}
-                isActive={isSectionActive(section.children)}
+                key={section!.name}
+                title={section!.name}
+                 defaultOpen={isSectionActive(section!.children)}
+                isActive={isSectionActive(section!.children)}
                 className="mb-2"
               >
-                {section.children.map(({ name, path }) => (
-                  <Link
-                    key={path}
-                    href={path}
-                    onClick={() => setSidebarOpen(false)}
-                    className={`block px-3 py-2 rounded-lg transition-all duration-200 text-xs ${
+                {section!.children.map(({ name, path }) => (
+                  <Link key={path} href={path} className={`block px-3 py-2 rounded-lg transition-all duration-200 text-xs ${
                       pathname === path
                         ? "bg-primary-500 text-white shadow-sm"
                         : "text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 dark:hover:text-primary-400"
-                    }`}
-                  >
+                    }`}>
                     {name}
                   </Link>
                 ))}
               </SidebarDropdownSection>
             ) : (
               <Link
-                key={section.path}
-                href={section.path!}
+                key={section!.path} href={section!.path!}
                 onClick={() => setSidebarOpen(false)}
-                className={`block px-4 py-3 rounded-lg transition-all duration-200 ${
-                  pathname === section.path
-                    ? "bg-primary-500 text-white shadow-sm"
-                    : "text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 dark:hover:text-primary-400"
-                }`}
+                className={`block px-4 py-3 rounded-lg transition-all duration-200 ${pathname === section!.path
+                  ? "bg-primary-500 text-white shadow-sm"
+                  : "text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 dark:hover:text-primary-400"
+                  }`}
               >
-                {section.name}
+                {section!.name}
               </Link>
             )
           )}
@@ -153,7 +184,7 @@ export default function AdminSidebarClient({ userName }: Props) {
                 toast.error(data.message || "Failed to log out");
                 return;
               }
-
+              queryClient.clear();
               toast.success(data.message || "Logged out successfully");
               router.replace("/auth/signin");
             }}

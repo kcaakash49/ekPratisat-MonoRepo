@@ -1,12 +1,20 @@
+"use client";
 import { AddPropertyForm } from "@repo/components/addPropertyForm";
+import { useUser } from "@repo/query-hook";
+import Loading from "../../loading";
 
 
 
-export default async function AddProperty() {
+export default function AddProperty() {
     
-    const user = "admin"
+    const {data: user, isLoading} = useUser();
 
+    if(isLoading) {
+        return <div className="flex items-center justify-center min-h-screen"><Loading/></div>
+    }
+
+    const userRole = user?.role;
     return (
-        <AddPropertyForm user={user}/>
+        <AddPropertyForm user={userRole}/>
     )
 }

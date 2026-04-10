@@ -21,7 +21,7 @@ export const _getProperties = async (input: Input) => {
     const filterType = validTypes.includes(type) ? (type as 'rent' | 'sale') : undefined;
 
     const where: Prisma.PropertyWhereInput = {
-        isActive: true,
+        isActive: true,verified: true,
         ...(q && {
             OR: [
                 { title: { contains: q, mode: "insensitive" } },
