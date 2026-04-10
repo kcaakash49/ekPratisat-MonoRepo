@@ -1,8 +1,7 @@
-// components/Pagination.tsx
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 
 interface PaginationProps {
   totalPages: number;
@@ -18,45 +17,99 @@ export default function Pagination({ totalPages, currentPage }: PaginationProps)
   const handlePageChange = (page: number) => {
     const params = new URLSearchParams(sp.toString());
     params.set("page", page.toString());
-    router.push(`?${params.toString()}`, { scroll: false });
+    // scroll: true is actually better here so user sees the top of the new results
+    router.push(`?${params.toString()}`, { scroll: true });
   };
 
-  return (
-    <div className="flex items-center justify-center gap-2 mt-16">
-      {/* Previous Button */}
-      <button
-        disabled={currentPage <= 1}
-        onClick={() => handlePageChange(currentPage - 1)}
-        className="p-2 rounded-lg border border-secondary-200 dark:border-secondary-700 disabled:opacity-30 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors"
-      >
-        <ChevronLeft size={20} className="dark:text-white" />
-      </button>
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = [];
+    const showMax = 5; 
 
-      {/* Page Numbers */}
-      <div className="flex items-center gap-1">
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-          <button
-            key={p}
-            onClick={() => handlePageChange(p)}
-            className={`w-10 h-10 rounded-lg font-bold text-sm transition-all ${
-              currentPage === p
-                ? "bg-gold-gradient text-white shadow-lg"
-                : "text-secondary-600 dark:text-secondary-400 hover:bg-secondary-100 dark:hover:bg-secondary-800"
-            }`}
-          >
-            {p}
-          </button>
-        ))}
+    if (totalPages <= showMax + 2) {
+      // If total pages are low, just show all
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    // Always show first page
+    pages.push(1);
+
+    if (currentPage > 3) {
+      pages.push("...");
+    }
+
+    // Show pages around current
+    const start = Math.max(2, currentPage - 1);
+    const end = Math.min(totalPages - 1, currentPage + 1);
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    if (currentPage < totalPages - 2) {
+      pages.push("...");
+    }
+
+    // Always show last page
+    pages.push(totalPages);
+
+    return pages;
+  };
+
+  const pageNumbers = getPageNumbers();
+
+  return (
+    <div className="flex flex-col items-center gap-4 mt-20">
+      <div className="flex items-center gap-1 md:gap-2">
+        {/* Previous */}
+        <button
+          disabled={currentPage <= 1}
+          onClick={() => handlePageChange(currentPage - 1)}
+          className="p-2 md:p-3 rounded-xl border border-secondary-200 dark:border-secondary-700 disabled:opacity-20 hover:border-gold hover:text-gold transition-all dark:text-white"
+        >
+          <ChevronLeft size={18} />
+        </button>
+
+        {/* Dynamic Page Numbers */}
+        <div className="flex items-center gap-1 md:gap-2">
+          {pageNumbers.map((p, index) => {
+            if (p === "...") {
+              return (
+                <span key={`dots-${index}`} className="px-2 text-secondary-400">
+                  <MoreHorizontal size={16} />
+                </span>
+              );
+            }
+
+            return (
+              <button
+                key={p}
+                onClick={() => handlePageChange(p as number)}
+                className={`w-10 h-10 md:w-12 md:h-12 rounded-xl font-bold text-sm transition-all border ${
+                  currentPage === p
+                    ? "bg-gold-gradient text-white border-transparent shadow-lg scale-110"
+                    : "text-secondary-600 dark:text-secondary-400 border-secondary-200 dark:border-secondary-800 hover:border-gold"
+                }`}
+              >
+                {p}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Next */}
+        <button
+          disabled={currentPage >= totalPages}
+          onClick={() => handlePageChange(currentPage + 1)}
+          className="p-2 md:p-3 rounded-xl border border-secondary-200 dark:border-secondary-700 disabled:opacity-20 hover:border-gold hover:text-gold transition-all dark:text-white"
+        >
+          <ChevronRight size={18} />
+        </button>
       </div>
 
-      {/* Next Button */}
-      <button
-        disabled={currentPage >= totalPages}
-        onClick={() => handlePageChange(currentPage + 1)}
-        className="p-2 rounded-lg border border-secondary-200 dark:border-secondary-700 disabled:opacity-30 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors"
-      >
-        <ChevronRight size={20} className="dark:text-white" />
-      </button>
+      {/* Page Indicator for Mobile Clarity */}
+      <p className="text-xs font-bold text-secondary-400 uppercase tracking-widest">
+        Page {currentPage} of {totalPages}
+      </p>
     </div>
   );
 }
