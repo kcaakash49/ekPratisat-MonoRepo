@@ -33,6 +33,7 @@ import { jwtVerify } from "jose";
 const SECRET = new TextEncoder().encode(process.env.JWT_SECRET!);
 
 export async function middleware(req: NextRequest) {
+  console.log("Middleare ran");
   const token = req.cookies.get("accessToken")?.value;
   const { pathname } = req.nextUrl;
 
@@ -52,7 +53,7 @@ export async function middleware(req: NextRequest) {
 
   // 🔴 PROTECTED ROUTES (/admin)
   if (pathname.startsWith("/admin")) {
-    if (!isValidToken || role !== "admin") {
+    if (!isValidToken || (role !== "admin" && role !== "staff")) {
       return NextResponse.redirect(new URL("/auth/signin", req.url));
     }
     return NextResponse.next();
@@ -60,10 +61,26 @@ export async function middleware(req: NextRequest) {
 
   // 🟢 AUTH ROUTES (/auth/signin)
   if (pathname.startsWith("/auth")) {
-    if (pathname === "/auth/signin" && isValidToken && role === "admin") {
-      return NextResponse.redirect(new URL("/admin/dashboard", req.url));
+    if (pathname === "/auth/signin" && isValidToken) {
+      // If they are an admin or staff, send them to the dashboard
+      if (role === "admin" || role === "staff") {
+        return NextResponse.redirect(new URL("/admin/dashboard", req.url));
+      }
     }
   }
 
   return NextResponse.next();
-}  
+}
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - All images/icons (svg, png, jpg, etc.)
+     */
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
+};

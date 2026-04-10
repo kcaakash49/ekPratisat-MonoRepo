@@ -1,7 +1,5 @@
 // File: app/admin/layout.tsx
-import React from "react";
 import AdminSidebarClient from "../../components/AdminSidebarClient";
-
 
 
 
@@ -11,9 +9,9 @@ type Props = {
 
 
 export default async function AdminLayout({ children }: Props) {
-
-  return (
   
+  return (
+      
       <div className="min-h-screen flex bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
         <AdminSidebarClient />
         <div className="flex-1 flex flex-col min-h-0">
@@ -29,5 +27,6 @@ export default async function AdminLayout({ children }: Props) {
           </footer>
         </div>
       </div>
+
   );
 }
