@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getPropertiesQuery } from "../data/properties";
+import { getPropertiesQuery } from "../../data/properties";
 import ListingCard from "./ListingCard";
 
 export default async function RecentListings() {
