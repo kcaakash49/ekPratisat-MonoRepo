@@ -1,9 +1,10 @@
 
 import Link from "next/link";
 import { getPropertiesQuery } from "../../../data/properties";
-import ListingCard from "../../../components/ListingCard";
-import PropertySearchBar from "../../../components/PropertySearchBar";
+import ListingCard from "../../../components/properties/ListingCard";
+import PropertySearchBar from "../../../components/properties/PropertySearchBar";
 import { getCachedCategories } from "../../../data/categories";
+import Pagination from "../../../components/properties/Pagination";
 
 export default async function Properties({
     searchParams,
@@ -65,6 +66,7 @@ export default async function Properties({
     }
 
     const listings = data.items;
+    const { totalPages, page: currentPage } = data.meta;
 
     return (
         <main className="min-h-screen">
@@ -90,6 +92,10 @@ export default async function Properties({
                         </Link>
                     ))}
                 </div>
+                <Pagination
+                    totalPages={totalPages}
+                    currentPage={currentPage}
+                />
             </div>
 
 

@@ -1,6 +1,6 @@
 import { Categories } from "../../components/category/Categories";
 import HeroSection from "../../components/HeroSection";
-import RecentListings from "../../components/RecentListings";
+import RecentListings from "../../components/properties/RecentListings";
 
 
 
