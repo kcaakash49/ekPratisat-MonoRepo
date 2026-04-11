@@ -10,6 +10,7 @@ export default function AddProperty() {
   const { data: user, isLoading } = useUser();
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
+  console.log("User data:", user);
 
   useEffect(() => {
     setMounted(true);
@@ -26,7 +27,7 @@ export default function AddProperty() {
   }, [user, isLoading, router]);
 
   if (isLoading || !mounted) {
-    return <AddPropertySkeleton />
+    return <div className="mx-auto max-w-7xl px-4 py-8"><AddPropertySkeleton /></div>;
   }
 
   if (!user) {
@@ -60,11 +61,13 @@ export default function AddProperty() {
   }
 
   const role = user?.role;
-  console.log("User role:", role);
+
 
   return (
+    <div className="mx-auto max-w-7xl px-4 py-8 animate-in fade-in duration-500">
+      <AddPropertyForm user={role} />
 
-    <AddPropertyForm user={role} />
+    </div>
 
   )
 }
