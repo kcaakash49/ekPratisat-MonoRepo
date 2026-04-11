@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ToggleTheme } from "@repo/components/toggleTheme";
@@ -31,24 +31,26 @@ const navSections = [
   },
 ];
 
-interface Props {
-  userName?: string;
-}
 
-export default function AdminSidebarClient({ userName }: Props) {
+
+export default function AdminSidebarClient() {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { data: user, isLoading } = useUser();
   const router = useRouter();
   const queryClient = useQueryClient();
-  // Check if any child link is active to show dropdown as active
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (isLoading || !mounted) {
+    return null; // or a loading spinner
+  }
   const isSectionActive = (children: { path: string }[]) => {
     return children.some(child => pathname === child.path);
   };
-
-  if (isLoading) {
-    return null; // or a loading spinner
-  }
   const userRole = user?.role?.toLowerCase(); 
   console.log("User Role in Sidebar:", userRole);
 

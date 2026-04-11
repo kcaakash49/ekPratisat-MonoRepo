@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X, Heart, Home, LogOut, ChevronDown } from "lucide-react";
 import { Button } from "@repo/ui/button";
 import { ToggleTheme } from "@repo/components/toggleTheme";
@@ -18,6 +18,11 @@ const Navbar = () => {
   const { data: user, isLoading } = useUser();
   const queryClient = useQueryClient();
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -84,7 +89,7 @@ const Navbar = () => {
             </Button>
 
             {/* Auth Logic */}
-            {!isLoading && (
+            {(!isLoading && mounted)&& (
               user ? (
                 <div className="relative">
                   <button
