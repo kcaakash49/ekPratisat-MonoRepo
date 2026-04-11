@@ -164,26 +164,24 @@ export const signOut = (req: Request, res: Response) => {
 };
 
 
-export const myInfo = async (
-  req: Request,
-  res: Response,
-) => {
+export const myInfo = async (req: Request, res: Response) => {
   let token: string | undefined;
 
-  // 1️⃣ Try Authorization header (mobile)
   const authHeader = req.headers.authorization;
-  if (authHeader && authHeader.startsWith("Bearer")) {
+  if (authHeader?.startsWith("Bearer")) {
     token = authHeader.split(" ")[1];
   }
 
-  // 2️⃣ Try cookies (web)
   if (!token && req.cookies?.accessToken) {
     token = req.cookies.accessToken;
   }
-  console.log("Token from myInfo:", token);
+
+  // Instead of 401, we return 200 with ok: false or user: null
   if (!token) {
-    return res.status(401).json({
-      error: "Not Authorized, Missing Token",
+    return res.status(200).json({
+      ok: false,
+      user: null,
+      message: "Guest session"
     });
   }
 
@@ -191,11 +189,20 @@ export const myInfo = async (
     const payload = verifyToken(token);
     return res.status(200).json({
       ok: true,
-      user: payload,
+      user: {
+        id: payload.userId,
+        role: payload.role,
+        name: payload.name,
+        profileImageUrl: payload.profileImageUrl,
+      },
     });
   } catch (err) {
-    return res.status(403).json({
-      error: "Invalid or Expired token",
+    // If the token is invalid/expired, we still send 200 but null the user
+    // This forces the frontend to clear any old 'Admin' UI
+    return res.status(200).json({
+      ok: false,
+      user: null,
+      message: "Session expired"
     });
   }
 };
