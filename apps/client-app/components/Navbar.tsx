@@ -31,8 +31,11 @@ const Navbar = () => {
         credentials: "include",
       });
       if (res.ok) {
+        //The line below will set userinfo to null in the cache, which should trigger a re-render and update the UI accordingly.but we opted to navigate to homepage on logout.
+        // queryClient.setQueryData(["user-info"], null);
         queryClient.clear();
         toast.success("Logged out");
+        router.replace("/");
         setShowDropdown(false);
       }
     } catch (err) {

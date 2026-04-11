@@ -43,7 +43,7 @@ export default function SignInForm({ label }: SignInProps) {
           toast.success("Login Successful!!!");
           queryClient.invalidateQueries({
             queryKey: ["user-info"],
-          })
+          });
           router.replace("/");
         } else if (data?.error) {
           toast.error(data.error || "Something Happened");

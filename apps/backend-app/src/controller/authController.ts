@@ -47,6 +47,12 @@ export const signIn = async (req: Request, res: Response) => {
 
     return res.status(201).json({
       ok: true,
+      user: {
+        id: user.id,
+        role: user.role,
+        name: user.name,
+        profileImageUrl: user.profileImageUrl,
+      }
     });
   } catch (err) {
     return res.status(500).json({
@@ -165,6 +171,7 @@ export const signOut = (req: Request, res: Response) => {
 
 
 export const myInfo = async (req: Request, res: Response) => {
+  console.log("Received request for myInfo");
   let token: string | undefined;
 
   const authHeader = req.headers.authorization;
