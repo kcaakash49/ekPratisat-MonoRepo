@@ -22,7 +22,7 @@ export const checkAuthentication = async (
 
   if (!token) {
     return res.status(401).json({
-      error: "Not Authorized, Missing Token",
+      message: "Not Authorized, Missing Token",
     });
   }
 
@@ -32,14 +32,14 @@ export const checkAuthentication = async (
     next();
   } catch (err) {
     return res.status(403).json({
-      error: "Invalid or Expired token",
+      message: "Invalid or Expired token",
     });
   }
 };
 
 export const requireAdmin = (req: Request, res: Response, next: NextFunction) => {
   if (req.user?.role !== "admin") {
-    return res.status(403).json({ error: "Admin only" });
+    return res.status(403).json({ message: "Admin only" });
   }
   next();
 };
@@ -50,7 +50,7 @@ export const requireAdminOrStaff = (
   next: NextFunction
 ) => {
   if (!["admin", "staff"].includes(req.user?.role)) {
-    return res.status(403).json({ error: "Admin or Staff only" });
+    return res.status(403).json({ message: "Admin or Staff only" });
   }
   next();
 };
