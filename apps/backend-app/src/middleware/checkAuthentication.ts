@@ -31,8 +31,8 @@ export const checkAuthentication = async (
     req.user = { id: payload.userId, role: payload.role };
     next();
   } catch (err) {
-    return res.status(403).json({
-      message: "Invalid or Expired token",
+    return res.status(401).json({
+      message: "Session expired.... Please log in again.",
     });
   }
 };

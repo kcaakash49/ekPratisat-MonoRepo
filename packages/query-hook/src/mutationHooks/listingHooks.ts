@@ -1,4 +1,5 @@
 
+import { authenticatedFetch } from "@repo/shared-provider";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -112,19 +113,13 @@ export const useCreateWard = () => {
 export const useCreateProperty = () => {
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      const res = await fetch(
+       return authenticatedFetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/add-property`,
         {
           method: "POST",
-          credentials: "include",
           body: formData,
         },
       );
-      const data = await res.json();
-      if (!res.ok) {
-        throw data;
-      }
-      return data;
     },
     onError: (error) => {
       toast.error(error.message || "Couldn't add property!!!");
