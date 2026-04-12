@@ -123,7 +123,7 @@ export default function PropertySearchBar({ categories }: { categories: Category
             <button
               onClick={() => applyFilters({ q })}
               disabled={isPending}
-              className="flex-1 md:flex-none bg-secondary-900 dark:bg-black text-white px-8 py-3 rounded-xl md:rounded-full text-sm font-bold hover:bg-gold-gradient transition-all active:scale-95 disabled:opacity-50"
+              className="flex-1 md:flex-none bg-secondary-700 dark:bg-secondary-900 text-white px-8 py-3 rounded-xl md:rounded-full text-sm font-bold hover:bg-gold-gradient transition-all active:scale-95 disabled:opacity-50"
             >
               {isPending ? "..." : "Search"}
             </button>
