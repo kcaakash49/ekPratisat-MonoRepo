@@ -25,7 +25,8 @@ export default async function MyListingPage({
     try {
         // 1. Verify Token
         const { payload } = await jwtVerify(token, SECRET);
-        const userId = payload.id;
+        const userId = payload.userId;
+
 
         // 2. Fetch Data
         const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/my-listings?pageSize=${pageSize}&page=${page}`, {
