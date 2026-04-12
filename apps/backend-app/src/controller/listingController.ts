@@ -116,12 +116,18 @@ export const getUserListings = async (req: Request, res: Response) => {
   try {
     const user = req.user; 
     console.log("Fetching listings for user:", user.id);
-    const { page = 1, limit = 10 } = req.query;
+    const { page = 1, pageSize = 10 } = req.query;
+     if(Number(page) <= 0 || Number(pageSize) <= 0){
+      return res.status(400).json({
+        message: "Page and pageSize must be positive integers",
+      });
+    }
 
     const [total, listing] = await Promise.all([
       prisma.property.count({
         where: {
           userId: user.id,
+          isActive:true
         },
       }),
       prisma.property.findMany({
@@ -129,8 +135,8 @@ export const getUserListings = async (req: Request, res: Response) => {
           userId: user.id,
           isActive:true
         },
-        skip: (Number(page) - 1) * Number(limit),
-        take: Number(limit),
+        skip: (Number(page) - 1) * Number(pageSize),
+        take: Number(pageSize),
         orderBy: {
           createdAt: "desc",
         },
@@ -156,13 +162,14 @@ export const getUserListings = async (req: Request, res: Response) => {
     ]);
 
     return res.status(200).json({
-      ok: true,
       listing,
-      total,
-      page: Number(page),
-      limit: Number(limit),
-    });
-  
+      meta: {
+        total,
+        page: Number(page),
+        pageSize: Number(pageSize),
+        totalPages: Math.max(1, Math.ceil(total / Number(pageSize))),
+      },
+    }); 
   } catch (err) {
     console.error(err);
     return res.status(500).json({
