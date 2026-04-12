@@ -7,6 +7,7 @@ import {
 import {
   addProperty,
   createCategory,
+  getUserListings,
   uploadCategoryImageFile,
 } from "../controller/listingController.js";
 import { uploadUserFiles } from "../middleware/userUpload.js";
@@ -31,5 +32,6 @@ listingRouter.post(
 listingRouter.post("/add-district", checkAuthentication, requireAdminOrStaff, addDistrictController);
 listingRouter.post("/add-municipality", checkAuthentication, requireAdminOrStaff, addMunicipalityController);
 listingRouter.post("/add-ward", checkAuthentication, requireAdminOrStaff, addWardController);
+listingRouter.get("/my-listings", checkAuthentication, getUserListings);
 
 export default listingRouter;
