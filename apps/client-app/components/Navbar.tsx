@@ -10,6 +10,14 @@ import { useUser } from "@repo/query-hook";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { Building2, Info, LayoutGrid, PhoneCall, ChevronRight } from "lucide-react";
+
+const navItems = [
+  { name: "Properties", href: "/properties", icon: Building2 },
+  { name: "About", href: "/about", icon: Info },
+  { name: "Services", href: "/services", icon: LayoutGrid },
+  { name: "Contact", href: "/contact", icon: PhoneCall },
+];
 
 const Navbar = () => {
   console.log("Rendering Navbar");
@@ -92,7 +100,7 @@ const Navbar = () => {
             </Button>
 
             {/* Auth Logic */}
-            {(!isLoading && mounted)&& (
+            {(!isLoading && mounted) && (
               user ? (
                 <div className="relative">
                   <button
@@ -125,10 +133,10 @@ const Navbar = () => {
                           <p className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Account</p>
                           <p className="text-sm font-semibold truncate text-gray-700 dark:text-gray-200">{user.name}</p>
                         </div>
-                        <Link href="/user/my-listings" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <Link href="/user/my-listings" onClick={() => setShowDropdown(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                           <Home className="h-4 w-4" /> My Listings
                         </Link>
-                        <Link href="/user/my-favorites" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <Link href="/user/my-favorites" onClick={() => setShowDropdown(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                           <Heart className="h-4 w-4" /> My Favorites
                         </Link>
                         <div className="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
@@ -156,16 +164,14 @@ const Navbar = () => {
 
         {/* Mobile Controls */}
 
-        <div className="flex md:hidden items-center gap-4">
-
+        <div className="flex md:hidden items-center gap-2">
           <ToggleTheme />
-
-          <button onClick={() => setIsOpen(!isOpen)} className="p-2 text-gray-600 dark:text-gray-300">
-
-            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="p-2.5 rounded-xl bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-white transition-all active:scale-90"
+          >
+            {isOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
-
         </div>
 
       </div>
@@ -178,25 +184,22 @@ const Navbar = () => {
 
         <div className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 p-6 space-y-4 animate-in slide-in-from-top duration-300">
 
-          {["Properties", "About", "Services", "Contact"].map((item) => (
-
-            <Link
-
-              key={item}
-
-              href={`/${item.toLowerCase()}`}
-
-              className="block text-lg font-medium text-gray-600 dark:text-gray-300"
-
-              onClick={() => setIsOpen(false)}
-
-            >
-
-              {item}
-
-            </Link>
-
-          ))}
+          {navItems.map((item) => (
+    <Link
+      key={item.name}
+      href={item.href}
+      className="flex items-center gap-4 px-4 py-4 text-base font-bold text-secondary-200 hover:text-gold border-b border-secondary-800/50 transition-all group"
+      onClick={() => setIsOpen(false)}
+    >
+      {/* Icon with a subtle glow on hover */}
+      <item.icon className="h-5 w-5 text-secondary-500 group-hover:text-gold transition-colors" />
+      
+      <span className="flex-1">{item.name}</span>
+      
+      {/* Optional: Small arrow to emphasize the 'drawer' feel */}
+      <ChevronRight className="h-4 w-4 text-secondary-700 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
+    </Link>
+  ))}
 
           <hr className="border-gray-100 dark:border-gray-800" />
 
