@@ -125,10 +125,10 @@ const Navbar = () => {
                           <p className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Account</p>
                           <p className="text-sm font-semibold truncate text-gray-700 dark:text-gray-200">{user.name}</p>
                         </div>
-                        <Link href="/my-listings" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <Link href="/user/my-listings" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                           <Home className="h-4 w-4" /> My Listings
                         </Link>
-                        <Link href="/favorites" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <Link href="/user/my-favorites" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                           <Heart className="h-4 w-4" /> My Favorites
                         </Link>
                         <div className="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">

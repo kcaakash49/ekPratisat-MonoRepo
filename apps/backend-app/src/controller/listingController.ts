@@ -3,9 +3,9 @@ import { Request, Response } from "express";
 import {
   uploadCategoryImage,
 } from "./../middleware/uploadCategoryImage.js";
-import path from "path";
 import { addCategory, AppError, createListingFunction } from "@repo/functions";
 import { triggerFrontendUpdate } from "../utils/revalidator.js";
+import { prisma } from "@repo/database";
 
 // Multer middleware for single file upload
 export const uploadCategoryImageFile = uploadCategoryImage.single("image");
@@ -110,3 +110,64 @@ export const addProperty = async (req: Request, res: Response) => {
     });
   }
 };
+
+//fetch user listings, with pagination
+export const getUserListings = async (req: Request, res: Response) => {
+  try {
+    const user = req.user; 
+    console.log("Fetching listings for user:", user.id);
+    const { page = 1, limit = 10 } = req.query;
+
+    const [total, listing] = await Promise.all([
+      prisma.property.count({
+        where: {
+          userId: user.id,
+        },
+      }),
+      prisma.property.findMany({
+        where: {
+          userId: user.id,
+          isActive:true
+        },
+        skip: (Number(page) - 1) * Number(limit),
+        take: Number(limit),
+        orderBy: {
+          createdAt: "desc",
+        },
+        select: {
+          id: true,
+          title: true,
+          price:true,
+          type:true,
+          tole:true,
+          verified:true,
+          images: {
+            select: {
+              url: true,
+            }
+          },
+          category: {
+            select: {
+              name:true
+            }
+          }
+        },
+      }),
+    ]);
+
+    return res.status(200).json({
+      ok: true,
+      listing,
+      total,
+      page: Number(page),
+      limit: Number(limit),
+    });
+  
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+}
+    
