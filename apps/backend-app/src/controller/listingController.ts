@@ -88,10 +88,13 @@ export const addProperty = async (req: Request, res: Response) => {
       body: parsed,
       imageFiles: adaptedFiles,
     });
+    console.log(result);
 
     if (result.listing.verified) {
       triggerFrontendUpdate("properties");
     }
+
+    triggerFrontendUpdate(`listings-${result.listing.userId}`)
 
     
     return res.status(201).json({
