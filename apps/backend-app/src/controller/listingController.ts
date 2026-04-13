@@ -114,7 +114,6 @@ export const addProperty = async (req: Request, res: Response) => {
 export const getUserListings = async (req: Request, res: Response) => {
   try {
     const user = req.user;
-    console.log("Fetching listings for user:", user.id);
     const { page = 1, pageSize = 10 } = req.query;
     if (Number(page) <= 0 || Number(pageSize) <= 0) {
       return res.status(400).json({
@@ -184,7 +183,7 @@ export async function verifyListing(req: Request, res: Response) {
     const { propertyId } = req.body;
     const result = await prisma.property.update({
       where: {
-        id:propertyId,
+        id: propertyId,
       },
       data: {
         verified: true,
@@ -210,7 +209,7 @@ export async function featureListing(req: Request, res: Response) {
   try {
     const { propertyId, isFeatured } = req.body;
     const property = await prisma.property.findUnique({
-      where: {id:propertyId,isActive:true },
+      where: { id: propertyId, isActive: true },
     });
 
     if (!property || !property.verified) {
@@ -230,6 +229,119 @@ export async function featureListing(req: Request, res: Response) {
     console.error(error);
     return res.status(500).json({
       message: "Internal Server Error!!!",
+    });
+  }
+}
+
+//favourite toggle
+
+export async function toggleFavourite(req: Request, res: Response) {
+  try {
+    const { propertyId } = req.body;
+    const { id } = req.user;
+
+    const existing = await prisma.favourite.findUnique({
+      where: {
+        userId_propertyId: { userId: id, propertyId },
+      },
+    });
+
+    if (existing) {
+      await prisma.favourite.delete({
+        where: { id: existing.id },
+      });
+      triggerFrontendUpdate(`favourite-${id}`);
+      return res.status(200).json({
+        message: "Removed from Favourites!!!",
+      });
+    } else {
+      await prisma.favourite.create({
+        data: {
+          userId: id,
+          propertyId,
+        },
+      });
+      triggerFrontendUpdate(`favourite-${id}`);
+      return res.status(200).json({
+        message: "Added to Favourites!!!",
+      });
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log(error.message);
+    }
+
+    return res.status(500).json({
+      message: "Couldn't toggle favourite!!!",
+    });
+  }
+}
+
+export async function checkFavourite(req: Request, res: Response) {
+  try {
+    const { userId, propertyId } = req.body;
+
+    const existing = await prisma.favourite.findUnique({
+      where: {
+        userId_propertyId: { userId, propertyId },
+      },
+    });
+
+    return res.status(200).json({ result: !!existing });
+  } catch (err) {
+    console.error("getting favourite error", err);
+    return res.status(200).json({
+      result: false,
+    });
+  }
+}
+
+export async function fetchUserFavourites(req: Request, res: Response) {
+  try {
+    const { id } = req.user;
+    const favourites = await prisma.favourite.findMany({
+      where: { userId: id },
+      include: {
+        property: {
+          select: {
+            id: true,
+            title: true,
+            price: true,
+            type: true,
+            noOfBedRooms: true,
+            noOfFloors: true,
+            noOfRestRooms: true,
+            landArea: true,
+            floorArea: true,
+            tole: true,
+            category: {
+              select: {
+                name: true,
+              },
+            },
+            images: {
+              select: {
+                url: true,
+              },
+              take: 1,
+            },
+            createdAt: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    const result = favourites.map(f => f.property);
+    
+    return res.status(200).json({
+      ok: true,
+      result,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Internal Server Error",
     });
   }
 }

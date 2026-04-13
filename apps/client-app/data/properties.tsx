@@ -12,7 +12,7 @@ type Input = {
 export const _getProperties = async (input: Input) => {
     console.log("Fetching properties with input:", input, "at", new Date().toISOString());
     const page = Math.max(1, Number(input.page || 1));
-    const pageSize = Math.min(100, Math.max(1, Number(input.pageSize || 20)));
+    const pageSize = Math.min(100, Math.max(1, Number(input.pageSize || 21)));
     const q = input.q?.trim();
     const c_id = input.c_id?.trim();
 

@@ -20,7 +20,7 @@ export default async function Properties({
 
 
     const categories = await getCachedCategories();
-    const data = await getPropertiesQuery({ page, pageSize: 20, q, c_id, type });
+    const data = await getPropertiesQuery({ page, pageSize: 21, q, c_id, type });
 
 
     if (!data.items.length) {

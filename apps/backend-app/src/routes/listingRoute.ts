@@ -6,9 +6,12 @@ import {
 } from "../middleware/checkAuthentication.js";
 import {
   addProperty,
+  checkFavourite,
   createCategory,
   featureListing,
+  fetchUserFavourites,
   getUserListings,
+  toggleFavourite,
   uploadCategoryImageFile,
   verifyListing,
 } from "../controller/listingController.js";
@@ -34,9 +37,14 @@ listingRouter.post(
 listingRouter.post("/add-district", checkAuthentication, requireAdminOrStaff, addDistrictController);
 listingRouter.post("/add-municipality", checkAuthentication, requireAdminOrStaff, addMunicipalityController);
 listingRouter.post("/add-ward", checkAuthentication, requireAdminOrStaff, addWardController);
+
 listingRouter.get("/my-listings", checkAuthentication, getUserListings);
+listingRouter.get("/my-favourites",checkAuthentication,fetchUserFavourites);
+
 listingRouter.post("/mark-verified",checkAuthentication,requireAdmin,verifyListing);
 listingRouter.post("/mark-featured",checkAuthentication,requireAdmin,featureListing);
+listingRouter.post("/toggle-favourite", checkAuthentication, toggleFavourite);
+listingRouter.post("/check-favourite", checkFavourite)
 
 
 export default listingRouter;

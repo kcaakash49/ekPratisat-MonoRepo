@@ -1,6 +1,17 @@
 import { getAgentDetailAction, getAgentListAction } from "@repo/actions";
 import { useQuery } from "@tanstack/react-query";
 
+
+interface UserProps{
+  id:string;
+  name:string;
+  role:string;
+  profileImageUrl: string | null;
+}
+
+type User = UserProps | null;
+
+
 export const useGetAgents = (options = {}) => {
   return useQuery({
     queryKey: ["agents-list"],
@@ -40,7 +51,7 @@ export const useUser = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data?.error || "Failed to fetch zones");
+        throw new Error(data?.error || "Failed to fetch info");
       }
 
       return data.user;
@@ -50,3 +61,23 @@ export const useUser = () => {
     refetchOnWindowFocus: true,
   });
 };
+
+
+export const useCheckFavourite = ({propertyId,user}: {propertyId:string, user:User}) => {
+  return useQuery({
+    queryKey: ["favourite", user?.id],
+    queryFn: async () => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/check-favourite`,{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+          },
+        body:JSON.stringify({propertyId,userId: user?.id})
+      });
+      const data = await res.json();
+      return data.result;
+    },
+    enabled: !!user && !!propertyId,
+    staleTime:5 * 60 * 1000
+  })
+}

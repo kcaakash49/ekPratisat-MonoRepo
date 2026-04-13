@@ -1,41 +1,30 @@
-import { jwtVerify } from "jose";
-import { Clock, RefreshCw } from "lucide-react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import MyListingCard from "../../../../components/user-related/MyListingCard";
-import Pagination from "../../../../components/properties/Pagination";
+import { jwtVerify } from "jose";
 import Link from "next/link";
+import { Clock, RefreshCw } from "lucide-react";
+import ListingCard from "../../../../components/properties/ListingCard";
 
 
 const SECRET = new TextEncoder().encode(process.env.JWT_SECRET!);
 
-export default async function MyListingPage({
-    searchParams,
-}: {
-    searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) {
-    const sp = await searchParams;
-    const page = Number(sp.page || 1);
-    const pageSize = Number(sp.pageSize || 12);
+export default async function MyFavouritesPage() {
     const cookieStore = await cookies();
     const token = cookieStore.get("accessToken")?.value;
 
     if (!token) redirect("/auth/signin");
 
     try {
-        // 1. Verify Token
         const { payload } = await jwtVerify(token, SECRET);
         const userId = payload.userId;
 
 
         // 2. Fetch Data
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/my-listings?pageSize=${pageSize}&page=${page}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/my-favourites`, {
             headers: { 'Cookie': cookieStore.toString() },
-            next: { tags: [`listings-${userId}`, `listings-${userId}-p${page}`] },
+            next: { tags: [`favourite-${userId}`] },
             cache: 'force-cache'
         });
-
-        // 3. Check for specific status codes (like 401/403)
         if (res.status === 401) redirect("/auth/signin");
 
         if (!res.ok) {
@@ -60,15 +49,15 @@ export default async function MyListingPage({
                         </div>
 
                         <h2 className="text-2xl font-black text-secondary-900 dark:text-white mb-2">
-                            Unable to load your listings
+                            Unable to load your favourites
                         </h2>
                         <p className="text-secondary-500 max-w-sm mx-auto mb-8 font-medium">
-                            Our servers are having a moment. Don't worry, your property data is safe—we just can't reach it right now.
+                            Our servers are having a moment. Don't worry, your favourite data is safe—we just can't reach it right now.
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4">
                             <Link
-                                href="/user/my-listings"
+                                href="/user/my-favourites"
                                 className="bg-gold-gradient text-white px-8 py-3 rounded-xl font-bold shadow-gold-sm hover:shadow-gold transition-all flex items-center gap-2"
                             >
                                 <RefreshCw size={18} />
@@ -88,26 +77,16 @@ export default async function MyListingPage({
         }
 
         const data = await res.json();
-        const listings = data.listing;
-        const meta = data.meta;
+        const listings = data.result;
 
         return (
             <div className="max-w-7xl mx-auto px-4 py-12 min-h-screen">
-                <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12">
+                <header className="gap-4 mb-12 text-center">
                     <div>
                         <h1 className="text-4xl font-black text-secondary-900 dark:text-white tracking-tight">
-                            My <span className="text-gold">Properties</span>
+                            My <span className="text-gold">Favourites</span>
                         </h1>
-                        <p className="text-secondary-500 font-medium mt-2">
-                            Total {meta.total} listings found
-                        </p>
                     </div>
-                    <Link
-                        href="/user/add-property"
-                        className="bg-gold-gradient text-white px-8 py-4 rounded-2xl font-bold shadow-gold-sm hover:shadow-gold transition-all active:scale-95 inline-block"
-                    >
-                        + Post New Property
-                    </Link>
                 </header>
 
                 {listings.length === 0 ? (
@@ -115,43 +94,29 @@ export default async function MyListingPage({
                         <div className="w-20 h-20 bg-secondary-100 dark:bg-secondary-800 rounded-full flex items-center justify-center mb-4">
                             <Clock size={32} className="text-secondary-400" />
                         </div>
-                        <h2 className="text-xl font-bold text-secondary-900 dark:text-white">No Properties Found</h2>
-                        <p className="text-secondary-500 mt-1">Start by adding your first property listing.</p>
+                        <h2 className="text-xl font-bold text-secondary-900 dark:text-white">No Favourites Found</h2>
+                        <p className="text-secondary-500 mt-1">Start by adding your favourite properties.</p>
                     </div>
                 ) : (
                     <>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {listings.map((item: any) => (
-                                <MyListingCard key={item.id} item={item} />
+                                <Link href={`/properties/${item.id}`} key={item.id}>
+                                <ListingCard listing={item} />
+                                </Link>
                             ))}
                         </div>
 
-                        <Pagination
-                            totalPages={meta.totalPages}
-                            currentPage={page}
-                        />
                     </>
                 )}
             </div>
-        );
+        )
 
-    } catch (error: unknown) {
-        console.error("Server Page Error:", error);
-
-        // If JWT fails or network is down, you handle it here
-        // If it's a JWT error specifically, redirect to login
-        if (error instanceof Error) {
-            // Now TypeScript knows 'message' and 'name' exist
-            if (error.name === 'JWTExpired' || error.name === 'JWSSignatureVerificationFailed') {
-                redirect("/auth/signin");
-            }
-
-            console.log(error.message);
-        }
+    } catch (err) {
         return (
-            <div className="p-4 border border-orange-200 bg-orange-50 rounded">
+            <div className="p-4 border border-orange-200 bg-orange-50 rounded text-center">
                 <p className="text-orange-700">Something went wrong while loading your dashboard.</p>
             </div>
         );
-    }
+    }   
 }
