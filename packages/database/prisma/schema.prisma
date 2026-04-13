@@ -161,6 +161,7 @@ model Property {
   tole            String
   isActive        Boolean  @default(true)
   verified        Boolean  @default(false)
+  isFeatured      Boolean  @default(false)
   geoPoint        Unsupported("geometry(Point, 4326)")
   locationId      String
   location        Ward     @relation(fields: [locationId], references: [id])
@@ -169,7 +170,8 @@ model Property {
   @@index([geoPoint], type: Gist)
   @@index([categoryId])
   @@index([type])
-  @@index([userId])
+  @@index([userId,isActive])
+  @@index([userId,isActive,verified])
 }
 
 model District {
