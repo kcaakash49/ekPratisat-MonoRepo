@@ -85,7 +85,7 @@ export default async function Properties({
                     {listings.map((item: any) => (
                         <Link
                             key={item.id}
-                            href={`/listing/${item.id}`}
+                            href={`/properties/${item.id}`}
                             className="transition-transform duration-300 hover:-translate-y-2"
                         >
                             <ListingCard listing={item} />
