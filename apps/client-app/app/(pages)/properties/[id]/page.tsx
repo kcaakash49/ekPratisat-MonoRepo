@@ -6,6 +6,29 @@ import PropertyInfo from "../../../../components/properties/PropertyInfo";
 import RelatedProperties from "../../../../components/properties/RelatedProperties";
 
 
+export const revalidate = 3600;
+
+
+export async function generateStaticParams() {
+    const properties = await prisma.property.findMany({
+        where: {
+            isActive: true,
+            verified: true
+        },
+        select: {
+            id: true
+        },
+        take: 100, 
+        orderBy: {
+            createdAt: 'desc'
+        }
+    });
+
+    return properties.map((property) => ({
+        id: property.id,
+    }));
+}
+
 export default async function ListingDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const param = await params;
 

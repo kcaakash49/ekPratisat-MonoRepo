@@ -72,7 +72,7 @@ export default async function RelatedProperties({
                 </div>
 
                 <Link
-                    href={`/properties?category=${categoryId}`}
+                    href={`/properties?c_id=${categoryId}&type=${type}`}
                     className="group flex items-center gap-2 text-sm font-bold text-secondary-500 hover:text-gold transition-all"
                 >
                     Explore All <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
@@ -84,7 +84,7 @@ export default async function RelatedProperties({
                 {relatedItems.map((property) => (
                     <ListingCard
                         key={property.id}
-                        property={property}
+                        listing={property}
                     />
                 ))}
             </div>
