@@ -16,6 +16,7 @@ import {
   DocumentTextIcon,
 } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartSolidIcon } from "@heroicons/react/24/solid";
+import FavouriteButton from "./FavouriteButton";
 
 export type PropertyData = {
   id: string;
@@ -51,7 +52,6 @@ export interface PropertyDetailClientProps {
 }
 
 export function PropertyDetailClient({ property }: PropertyDetailClientProps) {
-  const [isSaved, setIsSaved] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
 
   // Format price with commas
@@ -110,7 +110,7 @@ export function PropertyDetailClient({ property }: PropertyDetailClientProps) {
           </div>
 
           <div className="flex gap-3">
-            <button
+            {/* <button
               onClick={() => setIsSaved(!isSaved)}
               className="flex items-center gap-2 px-4 py-2 rounded-xl border border-secondary-200 dark:border-secondary-700 hover:border-gold dark:hover:border-gold transition-all duration-200 bg-white dark:bg-secondary-800"
             >
@@ -122,7 +122,8 @@ export function PropertyDetailClient({ property }: PropertyDetailClientProps) {
               <span className="text-secondary-700 dark:text-secondary-300">
                 {isSaved ? "Saved" : "Save"}
               </span>
-            </button>
+            </button> */}
+            <FavouriteButton property={property}/>
             <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-secondary-200 dark:border-secondary-700 hover:border-gold dark:hover:border-gold transition-all duration-200 bg-white dark:bg-secondary-800">
               <ShareIcon className="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
               <span className="text-secondary-700 dark:text-secondary-300">Share</span>

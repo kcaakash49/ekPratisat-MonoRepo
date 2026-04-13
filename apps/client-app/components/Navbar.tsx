@@ -136,7 +136,7 @@ const Navbar = () => {
                         <Link href="/user/my-listings" onClick={() => setShowDropdown(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                           <Home className="h-4 w-4" /> My Listings
                         </Link>
-                        <Link href="/user/my-favorites" onClick={() => setShowDropdown(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <Link href="/user/my-favourites" onClick={() => setShowDropdown(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                           <Heart className="h-4 w-4" /> My Favorites
                         </Link>
                         <div className="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
@@ -207,9 +207,9 @@ const Navbar = () => {
 
             <div className="space-y-3">
 
-              <Link href="/my-listings" className="block text-sm">My Listings</Link>
+              <Link href="/user/my-listings" className="block text-sm">My Listings</Link>
 
-              <Link href="/favorites" className="block text-sm">Favorites</Link>
+              <Link href="/user/my-favourites" className="block text-sm">Favorites</Link>
 
               <button onClick={handleLogout} className="text-red-500 font-medium">Logout</button>
 
