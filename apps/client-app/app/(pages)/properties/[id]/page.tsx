@@ -6,7 +6,7 @@ import PropertyInfo from "../../../../components/properties/PropertyInfo";
 import RelatedProperties from "../../../../components/properties/RelatedProperties";
 
 
-export default async function ListingDetailPage({ params }: { params: { id: string } }) {
+export default async function ListingDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const param = await params;
 
     const result = await prisma.property.findUnique({

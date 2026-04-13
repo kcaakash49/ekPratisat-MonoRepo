@@ -22,6 +22,7 @@ export default function PropertyTableDropdown({
   onPageChange,
 }: Props) {
   const [openRow, setOpenRow] = useState<string | null>(null);
+  console.log(listings);
 
   return (
     <div className="h-full flex flex-col bg-white dark:bg-secondary-900 rounded-xl border border-secondary-200 dark:border-secondary-700 shadow-sm overflow-hidden">
@@ -37,7 +38,7 @@ export default function PropertyTableDropdown({
                 Category
               </th>
               <th className="px-6 py-4 text-left text-xs font-semibold uppercase">
-                Location
+                Verified
               </th>
               <th className="px-6 py-4 text-left text-xs font-semibold uppercase">
                 Price
@@ -76,8 +77,7 @@ export default function PropertyTableDropdown({
                     </td>
 
                     <td className="px-6 py-4">
-                      {property.location?.name},{" "}
-                      {property.location?.municipality?.name}
+                      {property.verified ? <span className="bg-green-400 p-2 rounded-md text-black">Verfified</span> : <span className="bg-red-400 p-2 rounded-xl text-black">Not Verified</span>}
                     </td>
 
                     <td className="px-6 py-4 font-semibold">

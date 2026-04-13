@@ -7,8 +7,10 @@ import {
 import {
   addProperty,
   createCategory,
+  featureListing,
   getUserListings,
   uploadCategoryImageFile,
+  verifyListing,
 } from "../controller/listingController.js";
 import { uploadUserFiles } from "../middleware/userUpload.js";
 import { addDistrictController, addMunicipalityController, addWardController } from "../controller/locationController.js";
@@ -33,5 +35,8 @@ listingRouter.post("/add-district", checkAuthentication, requireAdminOrStaff, ad
 listingRouter.post("/add-municipality", checkAuthentication, requireAdminOrStaff, addMunicipalityController);
 listingRouter.post("/add-ward", checkAuthentication, requireAdminOrStaff, addWardController);
 listingRouter.get("/my-listings", checkAuthentication, getUserListings);
+listingRouter.post("/mark-verified",checkAuthentication,requireAdmin,verifyListing);
+listingRouter.post("/mark-featured",checkAuthentication,requireAdmin,featureListing);
+
 
 export default listingRouter;
