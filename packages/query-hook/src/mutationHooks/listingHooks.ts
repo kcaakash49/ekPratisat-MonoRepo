@@ -126,3 +126,45 @@ export const useCreateProperty = () => {
     },
   });
 };
+
+//verify Property
+export const useVerifyProperty = () => {
+  return useMutation({
+    mutationFn:async({propertyId}: {propertyId:string}) => {
+      return authenticatedFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/mark-verified`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({propertyId})
+        }
+      )
+    },
+    onError: (error) => {
+      toast.error(error.message || "Couldn't add property!!!");
+    },
+  })
+}
+
+//mark featured
+export const useFeatureProperty = () => {
+  return useMutation({
+    mutationFn:async({propertyId,isFeatured}: {propertyId:string,isFeatured:boolean}) => {
+      return authenticatedFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/mark-featured`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({propertyId,isFeatured})
+        }
+      )
+    },
+    onError: (error) => {
+      toast.error(error.message || "Couldn't add property!!!");
+    },
+  })
+}

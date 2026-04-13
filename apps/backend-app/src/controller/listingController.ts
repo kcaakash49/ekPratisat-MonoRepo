@@ -1,8 +1,5 @@
-
 import { Request, Response } from "express";
-import {
-  uploadCategoryImage,
-} from "./../middleware/uploadCategoryImage.js";
+import { uploadCategoryImage } from "./../middleware/uploadCategoryImage.js";
 import { addCategory, AppError, createListingFunction } from "@repo/functions";
 import { triggerFrontendUpdate } from "../utils/revalidator.js";
 import { prisma } from "@repo/database";
@@ -53,7 +50,7 @@ export async function createCategory(req: Request, res: Response) {
 
 export const addProperty = async (req: Request, res: Response) => {
   try {
-    const user = req.user; 
+    const user = req.user;
     const body = req.body;
     const files = req.files as Express.Multer.File[];
     const normalized = Object.fromEntries(
@@ -71,12 +68,12 @@ export const addProperty = async (req: Request, res: Response) => {
       userId: user.id,
     };
 
-    if (parsed.verified && (user.role !== "admin" && user.role !== "staff")) {
+    if (parsed.verified && user.role !== "admin" && user.role !== "staff") {
       return res.status(403).json({
         message: "Forbidden, only admin or staff can verify properties",
       });
     }
-    
+
     const adaptedFiles = files.map((file) => ({
       fieldname: file.fieldname,
       buffer: file.buffer,
@@ -94,9 +91,8 @@ export const addProperty = async (req: Request, res: Response) => {
       triggerFrontendUpdate("properties");
     }
 
-    triggerFrontendUpdate(`listings-${result.listing.userId}`)
+    triggerFrontendUpdate(`listings-${result.listing.userId}`);
 
-    
     return res.status(201).json({
       ok: true,
       message: "Property added successfully",
@@ -117,10 +113,10 @@ export const addProperty = async (req: Request, res: Response) => {
 //fetch user listings, with pagination
 export const getUserListings = async (req: Request, res: Response) => {
   try {
-    const user = req.user; 
+    const user = req.user;
     console.log("Fetching listings for user:", user.id);
     const { page = 1, pageSize = 10 } = req.query;
-     if(Number(page) <= 0 || Number(pageSize) <= 0){
+    if (Number(page) <= 0 || Number(pageSize) <= 0) {
       return res.status(400).json({
         message: "Page and pageSize must be positive integers",
       });
@@ -130,13 +126,13 @@ export const getUserListings = async (req: Request, res: Response) => {
       prisma.property.count({
         where: {
           userId: user.id,
-          isActive:true
+          isActive: true,
         },
       }),
       prisma.property.findMany({
         where: {
           userId: user.id,
-          isActive:true
+          isActive: true,
         },
         skip: (Number(page) - 1) * Number(pageSize),
         take: Number(pageSize),
@@ -146,20 +142,20 @@ export const getUserListings = async (req: Request, res: Response) => {
         select: {
           id: true,
           title: true,
-          price:true,
-          type:true,
-          tole:true,
-          verified:true,
+          price: true,
+          type: true,
+          tole: true,
+          verified: true,
           images: {
             select: {
               url: true,
-            }
+            },
           },
           category: {
             select: {
-              name:true
-            }
-          }
+              name: true,
+            },
+          },
         },
       }),
     ]);
@@ -172,12 +168,65 @@ export const getUserListings = async (req: Request, res: Response) => {
         pageSize: Number(pageSize),
         totalPages: Math.max(1, Math.ceil(total / Number(pageSize))),
       },
-    }); 
+    });
   } catch (err) {
     console.error(err);
     return res.status(500).json({
       message: "Internal Server Error",
     });
   }
+};
+
+//mark listing verified
+
+export async function verifyListing(req: Request, res: Response) {
+  try {
+    const { propertyId } = req.body;
+    await prisma.property.update({
+      where: {
+        id:propertyId,
+      },
+      data: {
+        verified: true,
+      },
+    });
+
+    return res.status(200).json({
+      message: "Property Verified!!!",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal Server Error!!!",
+    });
+  }
 }
-    
+
+//mark listing featured
+
+export async function featureListing(req: Request, res: Response) {
+  try {
+    const { propertyId, isFeatured } = req.body;
+    const property = await prisma.property.findUnique({
+      where: {id:propertyId,isActive:true },
+    });
+
+    if (!property || !property.verified) {
+      return res.status(400).json({
+        message: "Property isn't verified, Verify First!!!",
+      });
+    }
+    await prisma.property.update({
+      where: { id: property.id },
+      data: { isFeatured: !isFeatured },
+    });
+
+    return res.status(200).json({
+      message: "Property Featured Successfully!!!",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Internal Server Error!!!",
+    });
+  }
+}
