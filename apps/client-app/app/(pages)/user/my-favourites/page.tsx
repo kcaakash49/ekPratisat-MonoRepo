@@ -22,7 +22,7 @@ export default async function MyFavouritesPage() {
         // 2. Fetch Data
         const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/my-favourites`, {
             headers: { 'Cookie': cookieStore.toString() },
-            next: { tags: [`favourite-${userId}`] },
+            next: { tags: ["favourite",`favourite-${userId}`] },
             cache: 'force-cache'
         });
         if (res.status === 401) redirect("/auth/signin");
