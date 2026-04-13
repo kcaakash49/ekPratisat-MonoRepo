@@ -17,6 +17,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartSolidIcon } from "@heroicons/react/24/solid";
 import FavouriteButton from "./FavouriteButton";
+import { toast } from "sonner";
 
 export type PropertyData = {
   id: string;
@@ -67,6 +68,26 @@ export function PropertyDetailClient({ property }: PropertyDetailClientProps) {
     month: "long",
     day: "numeric",
   });
+
+  const handleShare = async () => {
+  const shareData = {
+    title: property.title,
+    text: `Check out this property on Ek Pratisat: ${property.title}`,
+    url: window.location.href, // Current page URL
+  };
+
+  if (navigator.share) {
+    try {
+      await navigator.share(shareData);
+    } catch (err) {
+      console.log("Share failed or cancelled", err);
+    }
+  } else {
+    // Fallback: Copy to clipboard
+    navigator.clipboard.writeText(window.location.href);
+    toast.success("Link copied to clipboard!");
+  }
+};
 
   // Location string
   const locationString = property.location
@@ -124,7 +145,7 @@ export function PropertyDetailClient({ property }: PropertyDetailClientProps) {
               </span>
             </button> */}
             <FavouriteButton property={property}/>
-            <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-secondary-200 dark:border-secondary-700 hover:border-gold dark:hover:border-gold transition-all duration-200 bg-white dark:bg-secondary-800">
+            <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-secondary-200 dark:border-secondary-700 hover:border-gold dark:hover:border-gold transition-all duration-200 bg-white dark:bg-secondary-800" onClick={handleShare}>
               <ShareIcon className="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
               <span className="text-secondary-700 dark:text-secondary-300">Share</span>
             </button>
