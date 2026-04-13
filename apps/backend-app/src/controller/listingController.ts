@@ -182,7 +182,7 @@ export const getUserListings = async (req: Request, res: Response) => {
 export async function verifyListing(req: Request, res: Response) {
   try {
     const { propertyId } = req.body;
-    await prisma.property.update({
+    const result = await prisma.property.update({
       where: {
         id:propertyId,
       },
@@ -190,6 +190,9 @@ export async function verifyListing(req: Request, res: Response) {
         verified: true,
       },
     });
+    console.log("Result", result);
+    triggerFrontendUpdate("properties");
+    triggerFrontendUpdate(`listings-${result.userId}`);
 
     return res.status(200).json({
       message: "Property Verified!!!",
