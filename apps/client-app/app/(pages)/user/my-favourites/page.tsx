@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Clock, RefreshCw } from "lucide-react";
 import ListingCard from "../../../../components/properties/ListingCard";
 import { PropertyListing } from "@repo/validators";
+import PremiumListingCard from "../../../../components/properties/FeaturedListingCard";
 
 
 const SECRET = new TextEncoder().encode(process.env.JWT_SECRET!);
@@ -23,7 +24,7 @@ export default async function MyFavouritesPage() {
         // 2. Fetch Data
         const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/my-favourites`, {
             headers: { 'Cookie': cookieStore.toString() },
-            next: { tags: ["favourite",`favourite-${userId}`] },
+            next: { tags: ["favourite", `favourite-${userId}`] },
             cache: 'force-cache'
         });
         if (res.status === 401) redirect("/auth/signin");
@@ -103,7 +104,7 @@ export default async function MyFavouritesPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {listings.map((item: PropertyListing) => (
                                 <Link href={`/properties/${item.id}`} key={item.id}>
-                                <ListingCard listing={item} />
+                                    <PremiumListingCard listing={item} />
                                 </Link>
                             ))}
                         </div>
@@ -119,5 +120,5 @@ export default async function MyFavouritesPage() {
                 <p className="text-orange-700">Something went wrong while loading your dashboard.</p>
             </div>
         );
-    }   
+    }
 }
