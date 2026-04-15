@@ -34,6 +34,7 @@ export default async function RelatedProperties({
             price: true,
             type: true,
             noOfBedRooms: true,
+            isFeatured:true,
             noOfFloors: true,
             noOfRestRooms: true,
             landArea: true,

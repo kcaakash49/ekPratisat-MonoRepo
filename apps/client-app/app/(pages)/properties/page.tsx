@@ -5,6 +5,7 @@ import ListingCard from "../../../components/properties/ListingCard";
 import PropertySearchBar from "../../../components/properties/PropertySearchBar";
 import { getCachedCategories } from "../../../data/categories";
 import Pagination from "../../../components/properties/Pagination";
+import { PropertyListing } from "@repo/validators";
 
 export default async function Properties({
     searchParams,
@@ -82,7 +83,7 @@ export default async function Properties({
             {/* Grid Layout */}
             <div className="max-w-7xl mx-auto px-6 pb-20">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-                    {listings.map((item: any) => (
+                    {listings.map((item: PropertyListing) => (
                         <Link
                             key={item.id}
                             href={`/properties/${item.id}`}

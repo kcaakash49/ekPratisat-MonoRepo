@@ -1,14 +1,14 @@
-import Link from "next/link";
-import { getPropertiesQuery } from "../../data/properties";
-import ListingCard from "./ListingCard";
 import { PropertyListing } from "@repo/validators";
+import { getFeaturedPropertiesQuery } from "../../data/properties";
+import Link from "next/link";
+import FeaturedListingCard from "./FeaturedListingCard";
 
-export default async function RecentListings() {
-    const response = await getPropertiesQuery({});
+export async function HomePageFeaturedProperties(){
+    const response = await getFeaturedPropertiesQuery({});
 
     if(response.items.length === 0) return null;
-    
-    const listings = response.items.slice(0, 6);
+
+    const listings = response.items.slice(0,6);
 
     return (
         <section className="bg-secondary-50 dark:bg-secondary-800 py-16 md:py-24 transition-colors duration-300">
@@ -20,7 +20,7 @@ export default async function RecentListings() {
                         Handpicked for you
                     </span>
                     <h2 className="text-secondary-900 dark:text-white text-3xl md:text-5xl font-black mt-3">
-                        Recent <span className="text-gold">Listings</span>
+                        Top Featured <span className="text-gold">Listings</span>
                     </h2>
                     {/* Decorative gold line to match Categories */}
                     <div className="h-1 w-24 bg-gold-gradient mx-auto mt-6 rounded-full shadow-sm" />
@@ -34,7 +34,7 @@ export default async function RecentListings() {
                             href={`/properties/${item.id}`} 
                             className="transition-transform duration-300 hover:-translate-y-2"
                         >
-                            <ListingCard listing={item} />
+                            <FeaturedListingCard listing={item} />
                         </Link>
                     ))}
                 </div>
@@ -53,5 +53,5 @@ export default async function RecentListings() {
                 </div>
             </div>
         </section>
-    );
+    )
 }

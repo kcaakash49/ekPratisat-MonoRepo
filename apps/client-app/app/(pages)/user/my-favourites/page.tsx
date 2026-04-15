@@ -4,6 +4,7 @@ import { jwtVerify } from "jose";
 import Link from "next/link";
 import { Clock, RefreshCw } from "lucide-react";
 import ListingCard from "../../../../components/properties/ListingCard";
+import { PropertyListing } from "@repo/validators";
 
 
 const SECRET = new TextEncoder().encode(process.env.JWT_SECRET!);
@@ -100,7 +101,7 @@ export default async function MyFavouritesPage() {
                 ) : (
                     <>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {listings.map((item: any) => (
+                            {listings.map((item: PropertyListing) => (
                                 <Link href={`/properties/${item.id}`} key={item.id}>
                                 <ListingCard listing={item} />
                                 </Link>
