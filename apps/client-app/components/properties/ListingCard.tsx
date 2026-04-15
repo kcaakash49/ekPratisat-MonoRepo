@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { Bed, Bath, Maximize, MapPin } from "lucide-react"; // install lucide-react if not there
+import { PropertyListing } from "@repo/validators";
 
-export default function ListingCard({ listing }: any) {
+export default function ListingCard({ listing }: {listing:PropertyListing}) {
   // Use the Inland formatting logic for these large numbers
   const formattedPrice = new Intl.NumberFormat('en-IN').format(Number(listing.price));
 

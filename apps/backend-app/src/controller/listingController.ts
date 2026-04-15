@@ -222,6 +222,8 @@ export async function featureListing(req: Request, res: Response) {
       data: { isFeatured: !isFeatured },
     });
 
+    triggerFrontendUpdate("feature-properties");
+
     return res.status(200).json({
       message: "Property Featured Successfully!!!",
     });
@@ -311,6 +313,7 @@ export async function fetchUserFavourites(req: Request, res: Response) {
             noOfBedRooms: true,
             noOfFloors: true,
             noOfRestRooms: true,
+            isFeatured:true,
             landArea: true,
             floorArea: true,
             tole: true,

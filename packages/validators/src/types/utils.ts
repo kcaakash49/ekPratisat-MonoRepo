@@ -35,3 +35,25 @@ export interface AgentDetailType extends AgentType{
     type: string;
   }[];
 }
+
+
+export interface PropertyListing {
+  id: string;
+  title: string;
+  price: string;
+  type: string;
+  noOfBedRooms: string | null;
+  noOfFloors: string | null;
+  noOfRestRooms: string | null;
+  isFeatured: boolean;
+  landArea: string | null;
+  floorArea: string | null;
+  tole: string;
+  category: {
+    name: string;
+  };
+  images: {
+    url: string;
+  }[];
+  createdAt: Date | string;
+}

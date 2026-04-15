@@ -57,7 +57,7 @@ export default function FavouriteButton({ property }: PropertyDetailClientProps)
                 <HeartIcon className="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
             )}
              <span className="text-secondary-700 dark:text-secondary-300">
-                {isSaved ? "Remove from Favourites" : "Add to Favourite"}
+                {isSaved ? "Added" : "Add"}
               </span>
         </button>
     );
