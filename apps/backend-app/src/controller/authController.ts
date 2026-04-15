@@ -62,6 +62,56 @@ export const signIn = async (req: Request, res: Response) => {
   }
 };
 
+export const createClientUser = async(req:Request, res:Response) => {
+  try {
+    const adaptedFiles = (req.files as Express.Multer.File[]).map((file) => ({
+      fieldname: file.fieldname,
+      buffer: file.buffer,
+      mimetype: file.mimetype,
+      originalname: file.originalname,
+    }));
+    // 🔥 CALL SERVICE (IMPORTANT)
+    const result = await createUser({
+      body: req.body,
+      files: adaptedFiles,
+    });
+
+     const token = generateToken({
+      userId: result.user.id,
+      role: result.user.role,
+      name: result.user.name,
+      profileImageUrl: result.user.profileImageUrl,
+    });
+
+    
+    res.cookie("accessToken", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 24 * 30 * 60 * 60 * 1000,
+      path: "/", // cookie available for entire domain
+      domain: process.env.NODE_ENV === "production" ? ".ekpratishat.com" : "localhost",
+    });
+
+    return res.status(201).json({
+      ok: true,
+      result,
+    });
+  } catch (err: any) {
+    // 🔥 HANDLE VALIDATION ERRORS (from Zod)
+    if (err instanceof AppError) {
+      return res.status(err.status).json({
+        error: err.message,
+        fieldErrors: err.fieldErrors || null,
+      });
+    }
+
+    return res.status(500).json({
+      error: "Internal Server Error!!!",
+    });
+  }
+}
+
 export const createAgentAdminStaff = async (req: Request, res: Response) => {
   try {
     const user = req.user; // from JWT middleware
