@@ -222,7 +222,7 @@ export async function featureListing(req: Request, res: Response) {
       data: { isFeatured: !isFeatured },
     });
 
-    triggerFrontendUpdate("feature-properties");
+    triggerFrontendUpdate("properties");
 
     return res.status(200).json({
       message: "Property Featured Successfully!!!",
