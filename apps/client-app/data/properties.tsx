@@ -7,6 +7,7 @@ type Input = {
     q?: string;
     c_id?: string;
     type?: string;
+    isFeatured?:boolean;
 }
 
 export const _getProperties = async (input: Input) => {
@@ -14,13 +15,14 @@ export const _getProperties = async (input: Input) => {
     const pageSize = Math.min(100, Math.max(1, Number(input.pageSize || 21)));
     const q = input.q?.trim();
     const c_id = input.c_id?.trim();
-
+    
     const type = input.type?.trim().toLowerCase() || "";
     const validTypes = ['rent', 'sale'];
     const filterType = validTypes.includes(type) ? (type as 'rent' | 'sale') : undefined;
 
     const where: Prisma.PropertyWhereInput = {
         isActive: true,verified: true,
+        ...(input.isFeatured && {isFeatured:true}),
         ...(q && {
             OR: [
                 { title: { contains: q, mode: "insensitive" } },
@@ -84,10 +86,11 @@ export const getPropertiesQuery = async (input: Input) => {
         q: input.q || "",
         c_id: input.c_id || "",
         type: input.type || "",
+        isFeatured: input.isFeatured || false
     };
     return unstable_cache(
         () => _getProperties(normalizedInput),
-        ['properties', String(normalizedInput.page), String(normalizedInput.pageSize), String(normalizedInput.q), String(normalizedInput.c_id), String(normalizedInput.type)],
+        ['properties', String(normalizedInput.page), String(normalizedInput.pageSize), String(normalizedInput.q), String(normalizedInput.c_id), String(normalizedInput.type), String(normalizedInput.isFeatured)],
         { tags: ['properties'], revalidate: 86400 }
     )();
 }

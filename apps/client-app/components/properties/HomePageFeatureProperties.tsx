@@ -1,10 +1,10 @@
 import { PropertyListing } from "@repo/validators";
-import { getFeaturedPropertiesQuery } from "../../data/properties";
+import { getPropertiesQuery } from "../../data/properties";
 import Link from "next/link";
 import FeaturedListingCard from "./FeaturedListingCard";
 
 export async function HomePageFeaturedProperties(){
-    const response = await getFeaturedPropertiesQuery({});
+    const response = await getPropertiesQuery({isFeatured:true});
 
     if(response.items.length === 0) return null;
 
@@ -42,7 +42,7 @@ export async function HomePageFeaturedProperties(){
                 {/* Bottom Centered Button */}
                 <div className="mt-16 text-center">
                     <Link 
-                        href="/properties" 
+                        href="/properties?isFeatured=true" 
                         className="inline-flex items-center gap-3 px-10 py-4 bg-secondary-900 dark:bg-secondary-800 text-white font-bold rounded-full hover:bg-gold-gradient transition-all duration-300 shadow-xl group border border-secondary-800 dark:border-secondary-700 hover:border-transparent"
                     >
                         View All Properties

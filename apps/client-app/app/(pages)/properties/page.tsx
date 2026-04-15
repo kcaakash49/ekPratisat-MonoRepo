@@ -18,10 +18,10 @@ export default async function Properties({
     const q = typeof sp.q === "string" ? sp.q : "";
     const c_id = typeof sp.c_id === "string" ? sp.c_id : "";
     const type = typeof sp.type === "string" ? sp.type : "";
-
+   const isFeatured = sp.isFeatured === "true";
 
     const categories = await getCachedCategories();
-    const data = await getPropertiesQuery({ page, pageSize: 21, q, c_id, type });
+    const data = await getPropertiesQuery({ page, pageSize: 21, q, c_id, type,isFeatured });
 
 
     if (!data.items.length) {

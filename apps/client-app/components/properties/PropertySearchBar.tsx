@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
-import { Search, ChevronDown, X, Filter } from "lucide-react";
+import { Search, ChevronDown, X, Filter, Sparkles } from "lucide-react";
 
 interface Category {
   id: string;
@@ -18,6 +18,7 @@ export default function PropertySearchBar({ categories }: { categories: Category
   const [q, setQ] = useState(sp.get("q") ?? "");
   const [category, setCategory] = useState(sp.get("c_id") ?? "");
   const [type, setType] = useState(sp.get("type") ?? "");
+  const [isFeatured, setIsFeatured] = useState(sp.get("isFeatured") === "true");
 
   const [isPending, startTransition] = useTransition();
 
@@ -26,15 +27,22 @@ export default function PropertySearchBar({ categories }: { categories: Category
     setQ(sp.get("q") ?? "");
     setCategory(sp.get("c_id") ?? "");
     setType(sp.get("type") ?? "");
+    setIsFeatured(sp.get("isFeatured") === "true");
   }, [sp]);
 
-  const applyFilters = (updates: Record<string, string>) => {
+  const applyFilters = (updates: Record<string, string | boolean>) => {
     const params = new URLSearchParams(sp.toString());
 
     // Apply the updates passed (q, c_id, or type)
     Object.entries(updates).forEach(([key, value]) => {
-      if (value) params.set(key, value);
-      else params.delete(key);
+      // if (value) params.set(key, value);
+      // else params.delete(key);
+      if (value === "" || value === false || value === undefined) {
+        params.delete(key);
+      } else {
+        params.set(key, String(value));
+      }
+
     });
 
     params.set("page", "1"); // Reset to page 1 on search
@@ -44,10 +52,17 @@ export default function PropertySearchBar({ categories }: { categories: Category
     });
   };
 
+  const toggleFeatured = () => {
+    const nextValue = !isFeatured;
+    setIsFeatured(nextValue);
+    applyFilters({ isFeatured: nextValue });
+  };
+
   const resetAll = () => {
     setQ("");
     setCategory("");
     setType("");
+    setIsFeatured(false);
     startTransition(() => router.push(pathname));
   };
 
@@ -96,6 +111,21 @@ export default function PropertySearchBar({ categories }: { categories: Category
               </div>
             </div>
           </div>
+          
+          {/* Feature toggle button */}
+          <div className="px-2 w-full md:w-auto">
+            <button
+              onClick={toggleFeatured}
+              className={`flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-full text-xs font-bold transition-all duration-300 border ${
+                isFeatured 
+                ? "bg-gold/10 border-gold text-gold shadow-[0_0_15px_rgba(212,175,55,0.2)]" 
+                : "bg-secondary-50 dark:bg-secondary-900 border-secondary-200 dark:border-secondary-700 text-secondary-500 hover:border-gold/50"
+              }`}
+            >
+              <Sparkles size={14} className={isFeatured ? "fill-gold" : ""} />
+              <span>FEATURED</span>
+            </button>
+          </div>
 
           {/* Type Dropdown (Rent/Sale) */}
           <div className="flex-1 flex items-center px-4 w-full py-2">
@@ -108,8 +138,8 @@ export default function PropertySearchBar({ categories }: { categories: Category
                     applyFilters({ type: t });
                   }}
                   className={`flex-1 text-[10px] md:text-xs font-bold py-1.5 rounded-full transition-all ${type === t
-                      ? 'bg-gold-gradient text-white shadow-md'
-                      : 'text-secondary-500 hover:text-secondary-900 dark:hover:text-white'
+                    ? 'bg-gold-gradient text-white shadow-md'
+                    : 'text-secondary-500 hover:text-secondary-900 dark:hover:text-white'
                     }`}
                 >
                   {t === '' ? 'ALL' : t.toUpperCase()}
