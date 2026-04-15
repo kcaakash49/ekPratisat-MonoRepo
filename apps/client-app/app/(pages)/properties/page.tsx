@@ -6,6 +6,7 @@ import PropertySearchBar from "../../../components/properties/PropertySearchBar"
 import { getCachedCategories } from "../../../data/categories";
 import Pagination from "../../../components/properties/Pagination";
 import { PropertyListing } from "@repo/validators";
+import PremiumListingCard from "../../../components/properties/FeaturedListingCard";
 
 export default async function Properties({
     searchParams,
@@ -89,7 +90,7 @@ export default async function Properties({
                             href={`/properties/${item.id}`}
                             className="transition-transform duration-300 hover:-translate-y-2"
                         >
-                            <ListingCard listing={item} />
+                            <PremiumListingCard listing={item} />
                         </Link>
                     ))}
                 </div>

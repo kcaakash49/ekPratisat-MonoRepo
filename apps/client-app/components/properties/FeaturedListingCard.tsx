@@ -6,9 +6,9 @@ import { PropertyListing } from "@repo/validators";
 
 
 export default function PremiumListingCard({ listing }: { listing: PropertyListing }) {
-  
+
   const formattedPrice = new Intl.NumberFormat('en-IN').format(Number(listing.price));
-  
+
   // Premium features based on actual data
   const premiumFeatures = [
     listing.noOfBedRooms ? `${listing.noOfBedRooms} Beds` : null,
@@ -18,46 +18,52 @@ export default function PremiumListingCard({ listing }: { listing: PropertyListi
   ].filter(Boolean);
 
   return (
-    <div 
+    <div
       className="group relative w-full h-full"
     >
       {/* Premium Glow Effect */}
       <div className="absolute -inset-0.5 bg-gradient-to-r from-gold via-gold-light to-gold rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition duration-500"></div>
-      
+
       {/* Main Card - Fixed height container */}
       <div className="relative bg-gradient-to-br from-white via-white to-gold-50 dark:from-secondary-800 dark:via-secondary-800 dark:to-gold-900/10 rounded-2xl overflow-hidden shadow-lg hover:shadow-3xl transition-all duration-500 border-2 border-gold/30 dark:border-gold/20 h-full flex flex-col">
-        
+
         {/* Premium Ribbon Banner - Pure CSS Ribbon */}
-        <div className="absolute top-0 right-0 z-20">
-          <div className="relative">
-            {/* Ribbon tail */}
-            <div className="absolute -left-4 bottom-0 w-4 h-8 bg-gold-dark/80 clip-path-triangle"></div>
-            {/* Main ribbon */}
-            <div className=" bg-gold-gradient text-white px-6 py-2 shadow-lg relative">
-              <div className="flex items-center gap-2">
-                <Crown className="w-4 h-4" />
-                <span className="text-xs font-bold tracking-wider">PREMIUM</span>
-                <Sparkles className="w-3 h-3" />
+        {listing.isFeatured && (
+          <div className="absolute top-0 right-0 z-20">
+            <div className="relative">
+              {/* Ribbon tail */}
+              <div className="absolute -left-4 bottom-0 w-4 h-8 bg-gold-dark/80 clip-path-triangle"></div>
+              {/* Main ribbon */}
+              <div className=" bg-gold-gradient text-white px-6 py-2 shadow-lg relative">
+                <div className="flex items-center gap-2">
+                  <Crown className="w-4 h-4" />
+                  <span className="text-xs font-bold tracking-wider">PREMIUM</span>
+                  <Sparkles className="w-3 h-3" />
+                </div>
               </div>
+              {/* Ribbon fold effect */}
+              <div className="absolute -bottom-2 right-2 w-0 h-0 border-l-[8px] border-l-transparent border-t-[8px] border-t-gold-dark"></div>
             </div>
-            {/* Ribbon fold effect */}
-            <div className="absolute -bottom-2 right-2 w-0 h-0 border-l-[8px] border-l-transparent border-t-[8px] border-t-gold-dark"></div>
           </div>
-        </div>
+
+        )}
 
         {/* Verified Badge */}
-        <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
-          <div className="bg-black/70 backdrop-blur-md rounded-full px-3 py-1.5 flex items-center gap-1.5 shadow-lg">
-            <Award className="w-3.5 h-3.5 text-gold" />
-            <span className="text-white text-xs font-semibold">Premium Pick</span>
+        {listing.isFeatured && (
+          <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
+            <div className="bg-black/70 backdrop-blur-md rounded-full px-3 py-1.5 flex items-center gap-1.5 shadow-lg">
+              <Award className="w-3.5 h-3.5 text-gold" />
+              <span className="text-white text-xs font-semibold">Premium Pick</span>
+            </div>
           </div>
-        </div>
+
+        )}
 
         {/* Image Section - Fixed height */}
         <div className="relative h-56 w-full overflow-hidden flex-shrink-0">
           {/* Premium Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10"></div>
-          
+
           {listing.images?.[0]?.url ? (
             <Image
               src={`${process.env.NEXT_PUBLIC_BASE_URL}${listing.images[0].url}`}
@@ -133,7 +139,7 @@ export default function PremiumListingCard({ listing }: { listing: PropertyListi
                   <span className="text-xs font-semibold text-secondary-900 dark:text-white">{listing.noOfBedRooms}</span>
                 </div>
               )}
-              
+
               {listing.noOfRestRooms && (
                 <div className="flex items-center gap-1.5">
                   <div className="p-1 rounded bg-gold/10">
@@ -142,7 +148,7 @@ export default function PremiumListingCard({ listing }: { listing: PropertyListi
                   <span className="text-xs font-semibold text-secondary-900 dark:text-white">{listing.noOfRestRooms}</span>
                 </div>
               )}
-              
+
               {listing.landArea && (
                 <div className="flex items-center gap-1.5">
                   <div className="p-1 rounded bg-gold/10">
@@ -177,7 +183,7 @@ export default function PremiumListingCard({ listing }: { listing: PropertyListi
           <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-bl from-gold/15 to-transparent rounded-tr-2xl"></div>
         </div>
       </div>
-  
+
     </div>
   );
 }
