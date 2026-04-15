@@ -9,6 +9,7 @@ import { User, Mail, Phone, Lock, Eye, EyeOff, ImageIcon } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 type ErrorType = {
@@ -31,6 +32,7 @@ export default function SignupForm() {
     const [profileImage, setProfileImage] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [step, setStep] = useState<number>(1);
+    const queryClient = useQueryClient();
 
     const signupMutation = useCreateClientUser();
 
@@ -93,6 +95,9 @@ export default function SignupForm() {
         signupMutation.mutate(formData, {
             onSuccess: (data) => {
                 toast.success("Signup and Logged in Successfully!!!");
+                queryClient.invalidateQueries({
+                    queryKey:["user-info"]
+                })
                 router.replace("/");
             },
             onError: (error) => {
