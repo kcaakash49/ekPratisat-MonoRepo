@@ -122,7 +122,37 @@ export default async function MyListingPage({
                     <>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {listings.map((item: any) => (
-                                <MyListingCard key={item.id} item={item} />
+                                item.verified ? (
+                                    <Link
+                                        href={`/properties/${item.id}`}
+                                        key={item.id}
+                                        className="transition-transform duration-300 hover:-translate-y-2 block"
+                                    >
+                                        <MyListingCard item={item} />
+                                    </Link>
+                                ) : (
+                                    <div
+                                        key={item.id}
+                                        className="relative group cursor-not-allowed"
+                                    >
+                                        {/* Visual indicator that it's pending */}
+                                        <div className="opacity-60 grayscale-[0.5] transition-all">
+                                            <MyListingCard item={item} />
+                                        </div>
+
+                                        {/* CSS-only Tooltip (Works on Server Components) */}
+                                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                                            <div className="bg-secondary-900/90 text-white text-xs py-2 px-4 rounded-lg border border-gold/30 shadow-xl backdrop-blur-sm">
+                                                Verification Pending — Access Restricted
+                                            </div>
+                                        </div>
+
+                                        {/* Optional: A small "Pending" badge over the image */}
+                                        <div className="absolute top-4 right-4 bg-orange-500 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-lg">
+                                            PENDING
+                                        </div>
+                                    </div>
+                                )
                             ))}
                         </div>
 
