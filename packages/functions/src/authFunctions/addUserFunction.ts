@@ -205,6 +205,7 @@ export async function createUser({
           id: user.id,
           role: user.role,
           name: user.name,
+          profileImageUrl:user.profileImageUrl
         },
       };
     });

@@ -42,6 +42,27 @@ export const useCreateUser = () => {
   });
 };
 
+export const useCreateClientUser = () => {
+  return useMutation<any,ErrorType,FormData>({
+    mutationFn: async (formData: FormData) => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/create-user`, {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw data as ErrorType;
+      }
+
+      return data;
+    },
+  
+  });
+};
+
 export const useSignInUser = () => {
   return useMutation({
     mutationFn: async (form: Credentials) => {
