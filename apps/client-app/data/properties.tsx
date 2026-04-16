@@ -51,7 +51,7 @@ export const _getProperties = async (input: Input) => {
                 category: {
                     select: {
                         name: true,
-                    }
+                }
                 },
                 images: {
                     select: {
