@@ -50,7 +50,7 @@ export default function ListingTable({ listings }: { listings: PropertyListing[]
                             <tr key={item.id} className="hover:bg-secondary-50 dark:hover:bg-secondary-900/30 transition-colors group">
                                 <td className={`px-6 py-4 transition-colors ${item.isFeatured ? "bg-gold/5" : ""}`}>
                                     <div className="flex flex-col gap-0.5">
-                                        <Link href={`/admin/property/${item.id}`} className="flex items-center gap-2">
+                                        <Link href={`/admin/properties/${item.id}`} className="flex items-center gap-2">
                                             {item.isFeatured && (
                                                 <Star
                                                     size={14}
