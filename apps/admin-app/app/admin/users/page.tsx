@@ -14,10 +14,10 @@ export default function UserListPage() {
     const pathname = usePathname();
     const router = useRouter();
 
-    const[input,setInput] = useState("");
+    const [input, setInput] = useState("");
     const [q, setQ] = useState(sp.get("q") ?? "");
     const [isVerified, setIsVerified] = useState(sp.get("isVerified") ?? "");
-    const [isActive, setIsActive] = useState(sp.get("isActive") || "");
+    const [isActive, setIsActive] = useState(sp.get("isActive") || "true");
     const [role, setRole] = useState(sp.get("role") ?? "");
     const page = Number(sp.get("page") || 1);
 
@@ -28,63 +28,22 @@ export default function UserListPage() {
         setInput(sp.get("q") ?? "");
         setIsVerified(sp.get("isVerified") ?? "");
         setRole(sp.get("role") ?? "");
-        setIsActive(sp.get("isActive") || "");
+        setIsActive(sp.get("isActive") || "true");
     }, [sp]);
 
-    const { data, isLoading, isError,error } = useGetAllUsers({ page, q, pageSize: 20, isVerified, role, isActive });
+    const { data, isLoading, isError, error } = useGetAllUsers({ page, q, pageSize: 20, isVerified, role, isActive });
 
-      if (isLoading) {
+    if (isLoading) {
         return (
-          <div className="flex items-center justify-center h-full min-h-[400px]">
-            <AnimateLoader />
-          </div>
-        );
-      }
-    if(isError) {
-        return <div className="min-h-screen flex items-center justify-center text-red-500">{error.message}</div>
-    }
-
-        if (!data.items.length) {
-        return (
-            /* --- BEAUTIFUL EMPTY STATE (Server Side) --- */
-            <div className="flex flex-col items-center justify-center py-20 text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
-                <div className="relative mb-6">
-                    <div className="h-24 w-24 rounded-full bg-secondary-100 dark:bg-secondary-800 flex items-center justify-center text-4xl">
-                        🏙️
-                    </div>
-                    <div className="absolute -bottom-2 -right-2 h-10 w-10 rounded-full bg-gold-gradient flex items-center justify-center shadow-lg border-4 border-white dark:border-secondary-900">
-                        <span className="text-white text-xs font-bold">?</span>
-                    </div>
-                </div>
-
-                <h2 className="text-2xl md:text-3xl font-black text-secondary-900 dark:text-white uppercase tracking-tight">
-                    No Matches <span className="text-gold">Found</span>
-                </h2>
-
-                <p className="mt-4 max-w-md text-secondary-500 dark:text-secondary-400 leading-relaxed">
-                    We couldn't find any users matching your current filters {q && <span>for <span className="text-gold font-bold">"{q}"</span></span>}.
-                    Try broadening your criteria or resetting the filters.
-                </p>
-
-                <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-                    {/* This link effectively "Refreshes" the search by clearing the URL */}
-                    <Link
-                        href="/admin/users"
-                        className="px-10 py-4 bg-secondary-900 dark:bg-black text-white rounded-full font-bold hover:bg-gold-gradient transition-all shadow-xl active:scale-95"
-                    >
-                        Clear All Filters
-                    </Link>
-
-                    <Link
-                        href="/admin/dashboard"
-                        className="px-10 py-4 border border-secondary-200 dark:border-secondary-700 text-secondary-900 dark:text-white rounded-full font-bold hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-all"
-                    >
-                        Back to Home
-                    </Link>
-                </div>
+            <div className="flex items-center justify-center h-full min-h-[400px]">
+                <AnimateLoader />
             </div>
         );
     }
+    if (isError) {
+        return <div className="min-h-screen flex items-center justify-center text-red-500">{error.message}</div>
+    }
+
 
     const applyFilters = (updates: Record<string, string>) => {
         const params = new URLSearchParams(sp.toString());
@@ -113,7 +72,7 @@ export default function UserListPage() {
         setIsVerified("");
         setRole("");
         setInput("");
-        setIsActive("");
+        setIsActive("true");
         startTransition(() => router.push(pathname));
     };
 
@@ -121,7 +80,7 @@ export default function UserListPage() {
     const { totalPages, page: currentPage } = data.meta;
     return (
         <main className="min-h-screen">
-             <div className="h-60 bg-secondary-900 flex flex-col items-center justify-center relative overflow-hidden">
+            <div className="h-60 bg-secondary-900 flex flex-col items-center justify-center relative overflow-hidden">
                 {/* Texture Overlay */}
                 <div className="absolute inset-0 opacity-80 dark:opacity-30 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-repeat" />
 
@@ -157,9 +116,9 @@ export default function UserListPage() {
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={(e) => {
-                                    if(e.key === "Enter"){
+                                    if (e.key === "Enter") {
                                         setQ(input);
-                                        applyFilters({q:input});
+                                        applyFilters({ q: input });
                                     }
                                 }}
                                 placeholder="Search by name..."
@@ -236,7 +195,7 @@ export default function UserListPage() {
                                     }}
                                     className="bg-secondary-50 dark:bg-secondary-900/50 border border-secondary-200 dark:border-secondary-700 rounded-lg px-3 py-2 text-sm w-full cursor-pointer dark:text-white appearance-none focus:border-gold focus:ring-1 focus:ring-gold outline-none transition-all pr-10"
                                 >
-                                    <option value="" className="dark:bg-secondary-800">All</option>
+                                    <option value="all" className="dark:bg-secondary-800">All</option>
                                     <option value="true" className="dark:bg-secondary-800">Active</option>
                                     <option value="false" className="dark:bg-secondary-800">Inactive</option>
 
@@ -254,7 +213,7 @@ export default function UserListPage() {
                             <button
                                 onClick={() => {
                                     setQ(input);
-                                    applyFilters({q:input});
+                                    applyFilters({ q: input });
                                 }}
                                 disabled={isPending}
                                 className="flex-1 md:flex-none bg-secondary-700 dark:bg-secondary-900 text-white px-8 py-3 rounded-xl md:rounded-full text-sm font-bold hover:bg-gold-gradient transition-all active:scale-95 disabled:opacity-50"
@@ -275,8 +234,56 @@ export default function UserListPage() {
                     </div>
                 </div>
             </div>
-            <UserTable users={users}/>
-            <Pagination totalPages={totalPages} currentPage={currentPage}/>
+            {
+                users.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-20 text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
+                        <div className="relative mb-6">
+                            <div className="h-24 w-24 rounded-full bg-secondary-100 dark:bg-secondary-800 flex items-center justify-center text-4xl">
+                                🏙️
+                            </div>
+                            <div className="absolute -bottom-2 -right-2 h-10 w-10 rounded-full bg-gold-gradient flex items-center justify-center shadow-lg border-4 border-white dark:border-secondary-900">
+                                <span className="text-white text-xs font-bold">?</span>
+                            </div>
+                        </div>
+
+                        <h2 className="text-2xl md:text-3xl font-black text-secondary-900 dark:text-white uppercase tracking-tight">
+                            No Matches <span className="text-gold">Found</span>
+                        </h2>
+
+                        <p className="mt-4 max-w-md text-secondary-500 dark:text-secondary-400 leading-relaxed">
+                            We couldn't find any users matching your current filters {q && <span>for <span className="text-gold font-bold">"{q}"</span></span>}.
+                            Try broadening your criteria or resetting the filters.
+                        </p>
+
+                        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+                            {/* This link effectively "Refreshes" the search by clearing the URL */}
+                            <Link
+                                href="/admin/users/add-user"
+                                className="px-10 py-4 bg-gold-gradient text-white rounded-full font-bold hover:bg-gold-gradient-hover transition-all shadow-xl active:scale-95"
+                            >
+                                Add User
+                            </Link>
+                            <Link
+                                href="/admin/users"
+                                className="px-10 py-4 bg-secondary-900 dark:bg-black text-white rounded-full font-bold hover:bg-gold-gradient transition-all shadow-xl active:scale-95"
+                            >
+                                Clear All Filters
+                            </Link>
+
+                            <Link
+                                href="/admin/dashboard"
+                                className="px-10 py-4 border border-secondary-200 dark:border-secondary-700 text-secondary-900 dark:text-white rounded-full font-bold hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-all"
+                            >
+                                Back to Home
+                            </Link>
+                        </div>
+                    </div>
+                ) : (
+
+                    <UserTable users={users} />
+                )
+            }
+            <Pagination totalPages={totalPages} currentPage={currentPage} />
         </main>
     )
 }
