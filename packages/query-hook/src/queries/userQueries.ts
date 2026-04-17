@@ -18,6 +18,7 @@ interface UserQueryType {
   isVerified?:string;
   q?:string;
   role?:string;
+  isActive?:string;
 }
 
 export const useGetAgents = (options = {}) => {
@@ -92,9 +93,9 @@ export const useCheckFavourite = ({propertyId,user}: {propertyId:string, user:Us
 
 
 //get staff,agent and client list
-export const useGetAllUsers = ({ page = 1, q = "", pageSize = 20, isVerified = "", role = "" }: UserQueryType) => {
+export const useGetAllUsers = ({ page = 1, q = "", pageSize = 20, isVerified = "", role = "", isActive="" }: UserQueryType) => {
   return useQuery({
-    queryKey: ["all-users", { page, role, isVerified, q, pageSize }],
+    queryKey: ["all-users", { page, role, isVerified, q, pageSize,isActive }],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: String(page),
@@ -102,6 +103,7 @@ export const useGetAllUsers = ({ page = 1, q = "", pageSize = 20, isVerified = "
         ...(q && { q }),
         ...(role && { role }),
         ...(isVerified !== "" && { isVerified: String(isVerified) }),
+        ...(isActive !== "" && { isActive: String(isActive) }),
       });
 
       return authenticatedFetch(

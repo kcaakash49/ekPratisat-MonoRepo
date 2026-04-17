@@ -285,6 +285,8 @@ export const removeAgent = async (req: Request, res: Response) => {
         where: { id: agentId },
         data: {
           isActive: false,
+          isVerified:false,
+          verifiedById:null
         }
       }),
     ]);
