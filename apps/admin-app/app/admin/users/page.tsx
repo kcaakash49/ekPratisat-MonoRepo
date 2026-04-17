@@ -17,6 +17,7 @@ export default function UserListPage() {
     const[input,setInput] = useState("");
     const [q, setQ] = useState(sp.get("q") ?? "");
     const [isVerified, setIsVerified] = useState(sp.get("isVerified") ?? "");
+    const [isActive, setIsActive] = useState(sp.get("isActive") || "");
     const [role, setRole] = useState(sp.get("role") ?? "");
     const page = Number(sp.get("page") || 1);
 
@@ -27,9 +28,10 @@ export default function UserListPage() {
         setInput(sp.get("q") ?? "");
         setIsVerified(sp.get("isVerified") ?? "");
         setRole(sp.get("role") ?? "");
+        setIsActive(sp.get("isActive") || "");
     }, [sp]);
 
-    const { data, isLoading, isError,error } = useGetAllUsers({ page, q, pageSize: 20, isVerified, role });
+    const { data, isLoading, isError,error } = useGetAllUsers({ page, q, pageSize: 20, isVerified, role, isActive });
 
       if (isLoading) {
         return (
@@ -111,6 +113,7 @@ export default function UserListPage() {
         setIsVerified("");
         setRole("");
         setInput("");
+        setIsActive("");
         startTransition(() => router.push(pathname));
     };
 
@@ -209,6 +212,33 @@ export default function UserListPage() {
                                     <option value="" className="dark:bg-secondary-800">All</option>
                                     <option value="true" className="dark:bg-secondary-800">Verified</option>
                                     <option value="false" className="dark:bg-secondary-800">Not Verified</option>
+
+                                </select>
+
+                                {/* Custom Chevron Icon */}
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-secondary-400 group-hover:text-gold transition-colors">
+                                    <ChevronDown size={16} />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Visibility */}
+                        <div className="flex-1 flex items-center px-4 w-full border-b md:border-b-0 md:border-r border-secondary-100 dark:border-secondary-700 py-2">
+                            <Filter className="text-gold mr-3 shrink-0" size={18} />
+
+                            <div className="relative w-full group">
+                                {/* The Select Box */}
+                                <select
+                                    value={isActive}
+                                    onChange={(e) => {
+                                        setIsActive(e.target.value);
+                                        applyFilters({ isActive: e.target.value });
+                                    }}
+                                    className="bg-secondary-50 dark:bg-secondary-900/50 border border-secondary-200 dark:border-secondary-700 rounded-lg px-3 py-2 text-sm w-full cursor-pointer dark:text-white appearance-none focus:border-gold focus:ring-1 focus:ring-gold outline-none transition-all pr-10"
+                                >
+                                    <option value="" className="dark:bg-secondary-800">All</option>
+                                    <option value="true" className="dark:bg-secondary-800">Active</option>
+                                    <option value="false" className="dark:bg-secondary-800">Inactive</option>
 
                                 </select>
 

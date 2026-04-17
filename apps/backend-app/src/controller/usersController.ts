@@ -51,14 +51,23 @@ export async function getUsers(req: Request, res: Response) {
       : isVerifiedQuery === "false" 
         ? false 
         : undefined;
+    
+     const isActiveQuery = queries.isActive;
+    const filterActive =
+      isActiveQuery === "true"
+        ? true
+        : isActiveQuery === "false"
+          ? false
+          : undefined;
+
     const q = String(queries.q || "").toLowerCase().trim();
 
     const where: Prisma.UserWhereInput = {
-      isActive: true,
       role: {
         not: "admin"
       },
       ...(filterVerified !== undefined && { isVerified: filterVerified }),
+      ...(filterActive !== undefined && { isActive: filterActive }),
       ...(q && { name: { contains: q, mode: "insensitive" } }),
       ...(filterRole && { role: filterRole }),
     };
