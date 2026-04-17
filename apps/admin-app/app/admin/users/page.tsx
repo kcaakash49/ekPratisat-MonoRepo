@@ -114,8 +114,6 @@ export default function UserListPage() {
         startTransition(() => router.push(pathname));
     };
 
-   
-    console.log(data);
     const users = data.items;
     const { totalPages, page: currentPage } = data.meta;
     return (
