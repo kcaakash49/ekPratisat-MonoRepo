@@ -40,24 +40,6 @@ export const useGetLocationTree = () => {
     })
 }
 
-export const useFetchListings = ({page, pageSize}: {
-    page?:number,
-    pageSize?:number
-}) => {
-    return useQuery({
-        queryKey: ["listings", String(page)],
-        queryFn: async() => {
-            const res = await fetchListingAction({page,pageSize});
-            if(res.status === 200) {
-                return res;
-            }
-        },
-        retry: 1,
-        staleTime:10 * 60 * 1000,
-        refetchOnWindowFocus: true
-    })
-}
-
 export const useFetchPropertyDetail = (id:string) => {
     return useQuery({
         queryKey: ["property-detail", id],

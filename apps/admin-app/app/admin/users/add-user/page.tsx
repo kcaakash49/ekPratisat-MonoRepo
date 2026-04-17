@@ -4,6 +4,6 @@ import CreatePartnerAdminUser from "../../../../components/CreatePartnerAdminUse
 
 export default async function AddStaff(){
      return (
-        <CreatePartnerAdminUser userRole="staff"/>
+        <CreatePartnerAdminUser/>
     )
 }

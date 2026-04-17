@@ -50,9 +50,6 @@ export default function AdminPropertyDetailComponent() {
         onSuccess: (data) => {
           toast.success(data.message || "Operation Successful!!!");
           queryClient.invalidateQueries({
-            queryKey: ["listings"]
-          });
-          queryClient.invalidateQueries({
             queryKey: ["all-properties"]
           });
           queryClient.invalidateQueries({
@@ -69,6 +66,9 @@ export default function AdminPropertyDetailComponent() {
       featureMutate({ propertyId: property.id, isFeatured: property.isFeatured }, {
         onSuccess: (data) => {
           toast.success(data.message || "Operation Successful!!!");
+          queryClient.invalidateQueries({
+            queryKey: ["all-properties"]
+          });
           queryClient.invalidateQueries({
             queryKey: ["property-detail", property.id]
           })

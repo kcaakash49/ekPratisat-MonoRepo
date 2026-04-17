@@ -2,7 +2,7 @@
 import { Router } from "express";
 
 import { checkAuthentication, requireAdmin } from "../middleware/checkAuthentication.js";
-import { getStaff, getUsers } from "../controller/usersfController.js";
+import { getStaff, getUsers } from "../controller/usersController.js";
 
 const userRouter = Router();
 

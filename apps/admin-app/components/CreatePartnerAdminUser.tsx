@@ -42,12 +42,15 @@ interface PropType {
   userRole: UserType;
 }
 
-export default function CreatePartnerAdminUser({ userRole }: PropType) {
+type RoleType = "partner" | "staff";
+
+export default function CreatePartnerAdminUser() {
   const [form, setForm] = useState<UserSingUpSchema>({
     name: "",
     email: "",
     contact: "",
     password: "",
+    role: "partner" as UserType,
     isVerified: false,
   });
 
@@ -59,6 +62,7 @@ export default function CreatePartnerAdminUser({ userRole }: PropType) {
       email: "",
       contact: "",
       password: "",
+      role: "partner" as UserType,
       isVerified: false,
     })
     if (profileImage) URL.revokeObjectURL(profileImage.preview);
@@ -127,7 +131,7 @@ export default function CreatePartnerAdminUser({ userRole }: PropType) {
     formData.append("email", form.email);
     formData.append("contact", form.contact);
     formData.append("password", form.password);
-    formData.append("role", userRole);
+    formData.append("role", form.role as UserType);
     formData.append("isVerified", String(form.isVerified));
 
     if (profileImage) formData.append("profileImage", profileImage.file);
@@ -141,10 +145,10 @@ export default function CreatePartnerAdminUser({ userRole }: PropType) {
 
     mutate(formData, {
       onSuccess: () => {
-          toast.success(`${userRole} user created successfully!`);
+          toast.success(`${form.role} user created successfully!`);
           setErrors({});
           queryClient.invalidateQueries({
-            queryKey: ["agents-list"]
+            queryKey: ["all-users"]
           })
           resetForm();
       },
@@ -160,7 +164,7 @@ export default function CreatePartnerAdminUser({ userRole }: PropType) {
   return (
     <form onSubmit={handleSubmit} className="shadow-lg rounded-2xl p-8 space-y-6 transition-colors max-w-7xl">
       <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
-        Create {userRole.charAt(0).toUpperCase() + userRole.slice(1)} User
+        Create User
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -211,6 +215,26 @@ export default function CreatePartnerAdminUser({ userRole }: PropType) {
             className="w-full mt-1 p-2.5 border rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500"
           />
           {errors.contact && <p className="text-red-500 text-sm">{errors.contact}</p>}
+        </div>
+
+        {/* RoleType */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            User Role
+          </label>
+          <select
+                value={form.role}
+                onChange={(e) => {
+                  setForm({...form, role:e.target.value as UserType})
+                }}
+                className="bg-secondary-50 dark:bg-secondary-900/50 border border-secondary-200 dark:border-secondary-700 rounded-lg px-3 py-2 text-sm w-full cursor-pointer dark:text-white appearance-none focus:border-gold focus:ring-1 focus:ring-gold outline-none transition-all pr-10"
+              >
+                {
+                  ['partner', 'admin' ,'staff'].map((item,index) => (
+                    <option key={index} value={item}>{item.toUpperCase()}</option>
+                  ))
+                }
+              </select>
         </div>
 
         {/* Password */}
@@ -381,7 +405,7 @@ export default function CreatePartnerAdminUser({ userRole }: PropType) {
         disabled={isPending}
         className=" bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white p-2.5 rounded-lg font-medium transition"
       >
-        {isPending ? `Creating ${userRole}...` : `Create ${userRole}`}
+        {isPending ? `Creating User...` : `Create User`}
       </button>
     </form>
   );
