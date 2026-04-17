@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { uploadCategoryImage } from "./../middleware/uploadCategoryImage.js";
 import { addCategory, AppError, createListingFunction } from "@repo/functions";
 import { triggerFrontendUpdate } from "../utils/revalidator.js";
-import { prisma } from "@repo/database";
+import { Prisma, prisma } from "@repo/database";
 
 // Multer middleware for single file upload
 export const uploadCategoryImageFile = uploadCategoryImage.single("image");
@@ -313,7 +313,7 @@ export async function fetchUserFavourites(req: Request, res: Response) {
             noOfBedRooms: true,
             noOfFloors: true,
             noOfRestRooms: true,
-            isFeatured:true,
+            isFeatured: true,
             landArea: true,
             floorArea: true,
             tole: true,
@@ -332,11 +332,11 @@ export async function fetchUserFavourites(req: Request, res: Response) {
           },
         },
       },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: "desc" },
     });
 
-    const result = favourites.map(f => f.property);
-    
+    const result = favourites.map((f) => f.property);
+
     return res.status(200).json({
       ok: true,
       result,
@@ -345,6 +345,140 @@ export async function fetchUserFavourites(req: Request, res: Response) {
     console.error(err);
     return res.status(500).json({
       message: "Internal Server Error",
+    });
+  }
+}
+
+//get-all properties
+
+export async function getAllProperties(req: Request, res: Response) {
+  try {
+    const queries = req.query;
+    console.log("queries", queries);
+    const page = Math.max(1, Number(queries.page || 1));
+    const pageSize = Math.min(100, Math.max(1, Number(queries.pageSize || 20)));
+
+    const isVerifiedQuery = queries.isVerified || "";
+    const filterVerified =
+      isVerifiedQuery === "true"
+        ? true
+        : isVerifiedQuery === "false"
+          ? false
+          : undefined;
+
+    const isActiveQuery = queries.isActive;
+    const filterActive =
+      isActiveQuery === "true"
+        ? true
+        : isActiveQuery === "false"
+          ? false
+          : undefined;
+
+    const isFeaturedQuery = queries.isFeatured || "";
+    const filterFeature =
+      isFeaturedQuery === "true"
+        ? true
+        : isFeaturedQuery === "false"
+          ? false
+          : undefined;
+
+    const q = String(queries.q || "")
+      .toLowerCase()
+      .trim();
+    const c_id = String(queries.c_id || "")
+      .toLowerCase()
+      .trim();
+
+    const typeQuery = String(queries.type || "")
+      .toLowerCase()
+      .trim();
+    const validTypes = ["rent", "sale"];
+    const filterType = validTypes.includes(typeQuery)
+      ? (typeQuery as "rent" | "sale")
+      : undefined;
+
+    const where: Prisma.PropertyWhereInput = {
+      ...(filterVerified !== undefined && { verified: filterVerified }),
+      ...(filterActive !== undefined && { isActive: filterActive }),
+      ...(filterFeature !== undefined && { isFeatured: filterFeature }),
+      ...(filterType !== undefined && { type: filterType }),
+      ...(c_id && { categoryId: c_id }),
+      ...(q && {
+        OR: [
+          { title: { contains: q, mode: "insensitive" } },
+          { description: { contains: q, mode: "insensitive" } },
+          { tole: { contains: q, mode: "insensitive" } },
+          {
+            location: {
+              municipality: {
+                name: { contains: q, mode: "insensitive" },
+              },
+            },
+          },
+          {
+            location: {
+              municipality: {
+                district: {
+                  name: { contains: q, mode: "insensitive" },
+                },
+              },
+            },
+          },
+        ],
+      }),
+    };
+
+    const [items, total] = await Promise.all([
+      prisma.property.findMany({
+        where,
+        select: {
+          id: true,
+          title: true,
+          type: true,
+          verified: true,
+          isFeatured: true,
+          tole: true,
+          createdAt: true,
+          location: {
+            select: {
+              name: true,
+              municipality: {
+                select: {
+                  name: true,
+                  district: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          category: {
+            select: {
+              name: true,
+            },
+          },
+        },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.property.count({ where }),
+    ]);
+    return res.status(200).json({
+      items,
+      meta: {
+        total,
+        page,
+        pageSize,
+        totalPages: Math.max(1, Math.ceil(total / pageSize)),
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Internal Server Error!!!",
     });
   }
 }

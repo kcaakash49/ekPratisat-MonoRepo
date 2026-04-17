@@ -10,6 +10,7 @@ import {
   createCategory,
   featureListing,
   fetchUserFavourites,
+  getAllProperties,
   getUserListings,
   toggleFavourite,
   uploadCategoryImageFile,
@@ -40,6 +41,7 @@ listingRouter.post("/add-ward", checkAuthentication, requireAdminOrStaff, addWar
 
 listingRouter.get("/my-listings", checkAuthentication, getUserListings);
 listingRouter.get("/my-favourites",checkAuthentication,fetchUserFavourites);
+listingRouter.get("/get-all",checkAuthentication,requireAdmin,getAllProperties);
 
 listingRouter.post("/mark-verified",checkAuthentication,requireAdmin,verifyListing);
 listingRouter.post("/mark-featured",checkAuthentication,requireAdmin,featureListing);

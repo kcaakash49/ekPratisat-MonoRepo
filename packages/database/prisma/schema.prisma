@@ -197,6 +197,7 @@ model District {
   addedById      String
   addedBy        User           @relation(fields: [addedById], references: [id])
   createdAt      DateTime       @default(now())
+  @@index([name])
 }
 
 model Municipality {
@@ -208,6 +209,7 @@ model Municipality {
   addedById  String
   addedBy    User     @relation(fields: [addedById], references: [id])
   createdAt  DateTime @default(now())
+  @@index([name])
 }
 
 model Ward {

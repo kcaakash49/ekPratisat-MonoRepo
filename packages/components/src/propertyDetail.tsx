@@ -29,7 +29,7 @@ export default function AdminPropertyDetailComponent() {
     error,
     refetch // Important for updating UI after actions
   } = useFetchPropertyDetail(param.id as string);
-  const { mutate: verifyMutate, isPending: verifyPendign } = useVerifyProperty();
+  const { mutate: verifyMutate, isPending: verifyPending } = useVerifyProperty();
   const { mutate: featureMutate, isPending: featurePending } = useFeatureProperty();
 
   if (isLoading) return <PageLoading />;
@@ -51,6 +51,9 @@ export default function AdminPropertyDetailComponent() {
           toast.success(data.message || "Operation Successful!!!");
           queryClient.invalidateQueries({
             queryKey: ["listings"]
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["all-properties"]
           });
           queryClient.invalidateQueries({
             queryKey: ["property-detail", property.id]
