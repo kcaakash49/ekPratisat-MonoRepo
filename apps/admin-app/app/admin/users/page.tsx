@@ -2,7 +2,7 @@
 
 import { useGetAllUsers } from "@repo/query-hook";
 import AnimateLoader from "@repo/ui/animateLoader";
-import { ChevronDown, Filter, Search, X } from "lucide-react";
+import { ChevronDown, Filter, Plus, Search, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
@@ -118,9 +118,30 @@ export default function UserListPage() {
     const { totalPages, page: currentPage } = data.meta;
     return (
         <main className="min-h-screen">
-            <div className="h-60 bg-secondary-900 flex items-center justify-center relative">
+             <div className="h-60 bg-secondary-900 flex flex-col items-center justify-center relative overflow-hidden">
+                {/* Texture Overlay */}
                 <div className="absolute inset-0 opacity-80 dark:opacity-30 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-repeat" />
-                <h1 className="text-4xl font-black text-white z-10">Users List</h1>
+
+                {/* Decorative Glow */}
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-gold/20 rounded-full blur-3xl" />
+                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-gold/10 rounded-full blur-3xl" />
+
+                {/* Content Container */}
+                <div className="relative z-10 flex flex-col items-center gap-6">
+                    <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight text-center">
+                        Users List
+                    </h1>
+
+                    <Link
+                        href="/admin/users/add-user"
+                        className="group flex items-center gap-3 px-8 py-3.5 bg-white/10 hover:bg-gold backdrop-blur-md border border-white/20 hover:border-gold text-white rounded-full font-bold transition-all duration-300 shadow-2xl active:scale-95"
+                    >
+                        <div className="bg-gold group-hover:bg-white p-1 rounded-full transition-colors">
+                            <Plus size={16} className="text-white group-hover:text-gold" strokeWidth={3} />
+                        </div>
+                        <span className="tracking-wide">Add New User</span>
+                    </Link>
+                </div>
             </div>
             <div className="w-full max-w-7xl mx-auto -mt-10 mb-12 relative z-20 px-4">
                 <div className="bg-white dark:bg-secondary-800 backdrop-blur-md border border-secondary-200 dark:border-secondary-700 rounded-2xl md:rounded-full shadow-2xl p-2 md:p-3">

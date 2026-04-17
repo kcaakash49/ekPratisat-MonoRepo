@@ -48,12 +48,12 @@ export default function RemoveUser({ agentId }: Props) {
                 setOpen(false);
                 setUserInput("");
                 queryClient.invalidateQueries({
-                    queryKey: ["agents-list"]
+                    queryKey: ["all-users"]
                 });
                 queryClient.invalidateQueries({
                     queryKey: ["agent-detail", agentId]
                 })
-                router.replace("/admin/agent/list-agents");
+                router.replace("/admin/users");
             },
             onError: () => {
                 setUserInput("");

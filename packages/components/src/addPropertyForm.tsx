@@ -433,7 +433,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
     mutate(form, {
       onSuccess: (data) => {
         toast.success(data.message || "Property added successfully!!!");
-        queryClient.invalidateQueries({ queryKey: ["listings"] });
+        queryClient.invalidateQueries({ queryKey: ["all-properties"] });
         queryClient.invalidateQueries({ queryKey: ["zone"] });
         resetForm();
       }

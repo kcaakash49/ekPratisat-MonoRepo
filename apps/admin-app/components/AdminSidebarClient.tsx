@@ -16,15 +16,6 @@ const navSections = [
 
   { name: "Geozones", path: "/admin/geo-zones", accessibleRoles: ["admin"] },
   { name: "List-Zones", path: "/admin/geo-zones/list-zones", accessibleRoles: ["admin"] },
-  {
-    name: "Users",
-    children: [
-      { name: "Add Agent", path: "/admin/agent/add-agent", accessibleRoles: ["admin"] },
-      { name: "List Agents", path: "/admin/agent/list-agents", accessibleRoles: ["admin"] },
-      { name: "Add Staff", path: "/admin/agent/add-staff", accessibleRoles: ["admin"] },
-      { name: "List Staff", path: "/admin/agent/list-staff", accessibleRoles: ["admin"] },
-    ],
-  },
 ];
 
 
@@ -58,17 +49,6 @@ export default function AdminSidebarClient() {
   // Filter the sections based on role
   const filteredSections = navSections
     .map((section) => {
-      // If it has children, filter the children first
-      if (section.children) {
-        const permittedChildren = section.children.filter((child) =>
-          hasAccess(child.accessibleRoles)
-        );
-        // Only return the section if it has at least one permitted child
-        return permittedChildren.length > 0
-          ? { ...section, children: permittedChildren }
-          : null;
-      }
-
       // For top-level links, check role directly
       return section.accessibleRoles && hasAccess(section.accessibleRoles)
         ? section
@@ -137,25 +117,7 @@ export default function AdminSidebarClient() {
 
        <div className="flex flex-col space-y-2 text-sm sm:text-base">
           {filteredSections.map((section) =>
-            section!.children ? (
-              <SidebarDropdownSection 
-                key={section!.name}
-                title={section!.name}
-                 defaultOpen={isSectionActive(section!.children)}
-                isActive={isSectionActive(section!.children)}
-                className="mb-2"
-              >
-                {section!.children.map(({ name, path }) => (
-                  <Link key={path} href={path} className={`block px-3 py-2 rounded-lg transition-all duration-200 text-xs ${
-                      pathname === path
-                        ? "bg-primary-500 text-white shadow-sm"
-                        : "text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 dark:hover:text-primary-400"
-                    }`}>
-                    {name}
-                  </Link>
-                ))}
-              </SidebarDropdownSection>
-            ) : (
+            (
               <Link
                 key={section!.path} href={section!.path!}
                 onClick={() => setSidebarOpen(false)}

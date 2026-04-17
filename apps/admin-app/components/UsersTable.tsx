@@ -9,6 +9,7 @@ import {
   Phone, 
   ShieldCheck 
 } from "lucide-react";
+import Link from "next/link";
 
 // Types matching your Prisma select
 interface User {
@@ -53,7 +54,7 @@ export default function UserTable({ users }: UserTableProps) {
                     <div className="h-10 w-10 rounded-full bg-gold/10 flex items-center justify-center text-gold">
                       <UserCircle size={24} />
                     </div>
-                    <span className="font-semibold text-secondary-900 dark:text-white">{user.name}</span>
+                    <Link href={`/admin/users/${user.id}`} className="font-semibold text-secondary-900 dark:text-white">{user.name}</Link>
                   </div>
                 </td>
                 <td className="px-6 py-4 text-secondary-600 dark:text-secondary-400">
@@ -96,12 +97,12 @@ export default function UserTable({ users }: UserTableProps) {
                 <div className="h-10 w-10 rounded-full bg-gold/10 flex items-center justify-center text-gold">
                   <UserCircle size={24} />
                 </div>
-                <div>
+                <Link href={`/admin/users/${user.id}`}>
                   <h3 className="font-bold text-secondary-900 dark:text-white">{user.name}</h3>
                   <span className={`text-[10px] font-black uppercase tracking-widest ${getRoleStyles(user.role)}`}>
                     {user.role}
                   </span>
-                </div>
+                </Link>
               </div>
               {user.isVerified && <CheckCircle2 size={20} className="text-emerald-500" />}
             </div>
