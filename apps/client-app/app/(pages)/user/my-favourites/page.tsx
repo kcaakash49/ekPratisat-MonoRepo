@@ -15,11 +15,13 @@ export default async function MyFavouritesPage() {
     const token = cookieStore.get("accessToken")?.value;
 
     if (!token) redirect("/auth/signin");
-
+    let userId;
     try {
         const { payload } = await jwtVerify(token, SECRET);
-        const userId = payload.userId;
-
+        userId = payload.userId;
+    } catch(err){
+        redirect("/auth/signin");
+    }
 
         // 2. Fetch Data
         const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/my-favourites`, {
@@ -30,8 +32,6 @@ export default async function MyFavouritesPage() {
         if (res.status === 401) redirect("/auth/signin");
 
         if (!res.ok) {
-            // This is where you return the "Failed" UI instead of throwing
-            // Inside your (!res.ok) block
             return (
                 <div className="max-w-7xl mx-auto px-4 py-20">
                     <div className="flex flex-col items-center justify-center bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-800 rounded-3xl p-12 shadow-xl shadow-secondary-200/50 dark:shadow-none text-center">
@@ -113,12 +113,4 @@ export default async function MyFavouritesPage() {
                 )}
             </div>
         )
-
-    } catch (err) {
-        return (
-            <div className="p-4 border border-orange-200 bg-orange-50 rounded text-center">
-                <p className="text-orange-700">Something went wrong while loading your dashboard.</p>
-            </div>
-        );
-    }
 }
