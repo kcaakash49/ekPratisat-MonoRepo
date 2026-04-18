@@ -185,13 +185,13 @@ export const verifyAgent = async (req: Request, res: Response) => {
       where: { id: userId },
       data: {
         isVerified: !isVerified,
-        verifiedById: user.id,
+        verifiedById:isVerified ? null : user.id,
         documents: {
           updateMany: {
             where: { userId },
             data: {
-              isVerified: true,
-              verifiedById: user.id,
+              isVerified: !isVerified,
+              verifiedById: isVerified ? null : user.id,
             },
           },
         },
@@ -293,35 +293,57 @@ export const myInfo = async (req: Request, res: Response) => {
 };
 
 
-export const removeAgent = async (req: Request, res: Response) => {
+export const toggleActive = async (req: Request, res: Response) => {
   try {
     
-    const { agentId } = req.body;
+    const { agentId,activeStatus } = req.body;
+    const {id:userId} = req.user;
 
-    const result = await prisma.$transaction([
+    if(activeStatus){
+      const result = await prisma.$transaction([
       prisma.agentGeoZone.deleteMany({
         where: { agentId },
       }),
-      prisma.userDocument.updateMany({
-        where: { userId: agentId },
-        data: {
-          isVerified: false,
-          verifiedById: null,
-        },
-      }),
       prisma.user.update({
-        where: { id: agentId },
+        where: {id:agentId},
         data: {
-          isActive: false,
+          isActive:false,
           isVerified:false,
-          verifiedById:null
+          verifiedById:null,
+          documents: {
+            updateMany: {
+              where: {userId:agentId},
+              data: {
+                isVerified:false,
+                verifiedById:null
+              }
+            }
+          }
         }
       }),
     ]);
+    }else if(!activeStatus) {
+      const result = await prisma.user.update({
+        where: {id: agentId},
+        data: {
+          isVerified:true,
+          isActive:true,
+          verifiedById: userId,
+          documents: {
+            updateMany: {
+              where: {userId:agentId},
+              data: {
+                isVerified:true,
+                verifiedById:userId
+              }
+            }
+          }
+        }
+      })
+    }
 
     return res.status(200).json({
       ok: true,
-      result,
     });
   } catch (err) {
     console.error("Error removing agent:", err);

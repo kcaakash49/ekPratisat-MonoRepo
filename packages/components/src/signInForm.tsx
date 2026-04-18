@@ -38,7 +38,6 @@ export default function SignInForm({ label }: SignInProps) {
     e.preventDefault();
     signinMutation.mutate(form, {
       onSuccess: (data) => {
-        console.log("Data from signin mutation:", data);
         if (data?.ok) {
           toast.success("Login Successful!!!");
           queryClient.invalidateQueries({

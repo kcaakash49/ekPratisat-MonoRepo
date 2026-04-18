@@ -134,7 +134,7 @@ export default function ManagementActions({ agent }: { agent: AgentDetailType })
                                     <div className="text-sm">Permanently delete user account</div>
                                 </div>
                             </button> */}
-                            <RemoveUser agentId={agent.id} />
+                            <RemoveUser agentId={agent.id} activeStatus={agent.isActive}/>
                         </div>
                     </div>
                 </div>
