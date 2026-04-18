@@ -17,6 +17,7 @@ export interface AgentType {
   name: string;
   contact: string;
   secondContact: string | null;
+  isActive:boolean;
   isVerified: boolean;
   createdAt: Date;
   createdBy : {

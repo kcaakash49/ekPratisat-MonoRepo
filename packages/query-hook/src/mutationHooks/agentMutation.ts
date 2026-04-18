@@ -1,4 +1,5 @@
 import { editBasicInfoAction } from "@repo/actions"
+import { authenticatedFetch } from "@repo/shared-provider"
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
 
@@ -36,23 +37,17 @@ export const useEditBasicInfo = () => {
 }
 
 
-export const useDeactivateAgent = () => {
+export const useToggleActive = () => {
     return useMutation({
-        mutationFn: async ({agentId} : {agentId:string}) => {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/deactivate-agent`, {
-                method: "POST",
+        mutationFn: async ({agentId,activeStatus} : {agentId:string,activeStatus:boolean}) => {
+            return authenticatedFetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/toggle-active`, {
+                 method: "POST",
                 credentials: "include",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ agentId })
+                body: JSON.stringify({agentId,activeStatus})
             });
-            const data = await res.json();
-            
-            if (!res.ok) {
-                throw data;
-            }   
-            return data;
         },
         onError: (error) => {
             toast.error(error.message || "Unexpected Error")

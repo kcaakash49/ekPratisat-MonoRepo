@@ -29,6 +29,7 @@ export default function AgentDetail() {
     }
 
     const agent = data?.result as AgentDetailType;
+    console.log(agent);
 
     return (
         <div className="max-w-7xl mx-auto p-6 space-y-6 rounded-xl shadow-md">
