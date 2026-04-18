@@ -9,7 +9,7 @@ export const checkAuthentication = async (
   next: NextFunction,
 ) => {
   let token: string | undefined;
-
+  console.log("Middleware called.......from checkAuthentication")
   // 1️⃣ Try Authorization header (mobile)
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith("Bearer")) {
