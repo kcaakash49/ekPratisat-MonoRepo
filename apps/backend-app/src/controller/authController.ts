@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import { comparePassword, hashPassword } from "../utils/hash.js";
 import { generateToken, verifyToken } from "../utils/jwt.js";
 import { AppError, createUser } from "@repo/functions";
-
+import { triggerFrontendUpdate } from "../utils/revalidator.js";
 
 export const signIn = async (req: Request, res: Response) => {
   try {
@@ -24,14 +24,18 @@ export const signIn = async (req: Request, res: Response) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    if(user.role === "partner" || user.role === "staff"){
-      if(!user.isVerified){
-        return res.status(403).json({error: "Pending account verification!!!"})
+    if (user.role === "partner" || user.role === "staff") {
+      if (!user.isVerified) {
+        return res
+          .status(403)
+          .json({ error: "Pending account verification!!!" });
       }
     }
 
     if (!user.isActive) {
-      return res.status(403).json({ error: "Account is deactivated. Please contact support." });
+      return res
+        .status(403)
+        .json({ error: "Account is deactivated. Please contact support." });
     }
 
     const token = generateToken({
@@ -41,14 +45,16 @@ export const signIn = async (req: Request, res: Response) => {
       profileImageUrl: user.profileImageUrl,
     });
 
-    
     res.cookie("accessToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 24 * 30 * 60 * 60 * 1000,
       path: "/", // cookie available for entire domain
-      domain: process.env.NODE_ENV === "production" ? ".ekpratishat.com" : "localhost",
+      domain:
+        process.env.NODE_ENV === "production"
+          ? ".ekpratishat.com"
+          : "localhost",
     });
 
     return res.status(201).json({
@@ -58,7 +64,7 @@ export const signIn = async (req: Request, res: Response) => {
         role: user.role,
         name: user.name,
         profileImageUrl: user.profileImageUrl,
-      }
+      },
     });
   } catch (err) {
     return res.status(500).json({
@@ -68,7 +74,7 @@ export const signIn = async (req: Request, res: Response) => {
   }
 };
 
-export const createClientUser = async(req:Request, res:Response) => {
+export const createClientUser = async (req: Request, res: Response) => {
   try {
     const adaptedFiles = (req.files as Express.Multer.File[]).map((file) => ({
       fieldname: file.fieldname,
@@ -82,21 +88,23 @@ export const createClientUser = async(req:Request, res:Response) => {
       files: adaptedFiles,
     });
 
-     const token = generateToken({
+    const token = generateToken({
       userId: result.user.id,
       role: result.user.role,
       name: result.user.name,
       profileImageUrl: result.user.profileImageUrl,
     });
 
-    
     res.cookie("accessToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 24 * 30 * 60 * 60 * 1000,
       path: "/", // cookie available for entire domain
-      domain: process.env.NODE_ENV === "production" ? ".ekpratishat.com" : "localhost",
+      domain:
+        process.env.NODE_ENV === "production"
+          ? ".ekpratishat.com"
+          : "localhost",
     });
 
     return res.status(201).json({
@@ -116,7 +124,7 @@ export const createClientUser = async(req:Request, res:Response) => {
       error: "Internal Server Error!!!",
     });
   }
-}
+};
 
 export const createAgentAdminStaff = async (req: Request, res: Response) => {
   try {
@@ -178,14 +186,13 @@ export const verifyAgent = async (req: Request, res: Response) => {
   try {
     const user = req.user;
 
-    const { userId,isVerified } = req.body;
-
+    const { userId, isVerified } = req.body;
 
     const result = await prisma.user.update({
       where: { id: userId },
       data: {
         isVerified: !isVerified,
-        verifiedById:isVerified ? null : user.id,
+        verifiedById: isVerified ? null : user.id,
         documents: {
           updateMany: {
             where: { userId },
@@ -216,7 +223,8 @@ export const signOut = (req: Request, res: Response) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     path: "/",
-    domain: process.env.NODE_ENV === "production" ? ".ekpratishat.com" : "localhost",
+    domain:
+      process.env.NODE_ENV === "production" ? ".ekpratishat.com" : "localhost",
   });
 
   return res.status(200).json({
@@ -224,7 +232,6 @@ export const signOut = (req: Request, res: Response) => {
     message: "Logged Out!!!",
   });
 };
-
 
 export const myInfo = async (req: Request, res: Response) => {
   console.log("Received request for myInfo");
@@ -244,7 +251,7 @@ export const myInfo = async (req: Request, res: Response) => {
     return res.status(200).json({
       ok: false,
       user: null,
-      message: "Guest session"
+      message: "Guest session",
     });
   }
 
@@ -266,11 +273,10 @@ export const myInfo = async (req: Request, res: Response) => {
             : "localhost",
       });
       return res.status(200).json({
-        user:null,
-        ok:false,
-        message:"Account deactivated"
-      })
-
+        user: null,
+        ok: false,
+        message: "Account deactivated",
+      });
     }
     return res.status(200).json({
       ok: true,
@@ -287,59 +293,75 @@ export const myInfo = async (req: Request, res: Response) => {
     return res.status(200).json({
       ok: false,
       user: null,
-      message: "Session expired"
+      message: "Session expired",
     });
   }
 };
 
-
 export const toggleActive = async (req: Request, res: Response) => {
   try {
-    
-    const { agentId,activeStatus } = req.body;
-    const {id:userId} = req.user;
+    const { agentId, activeStatus } = req.body;
+    const { id: userId } = req.user;
 
-    if(activeStatus){
+    if (activeStatus) {
       const result = await prisma.$transaction([
-      prisma.agentGeoZone.deleteMany({
-        where: { agentId },
-      }),
-      prisma.user.update({
-        where: {id:agentId},
-        data: {
-          isActive:false,
-          isVerified:false,
-          verifiedById:null,
-          documents: {
-            updateMany: {
-              where: {userId:agentId},
-              data: {
-                isVerified:false,
-                verifiedById:null
+        prisma.agentGeoZone.deleteMany({
+          where: { agentId },
+        }),
+        prisma.user.update({
+          where: { id: agentId },
+          data: {
+            isActive: false,
+            isVerified: false,
+            verifiedById: null,
+            documents: {
+              updateMany: {
+                where: { userId: agentId },
+                data: {
+                  isVerified: false,
+                  verifiedById: null,
+                },
+              },
+            },
+            properties:{
+              updateMany: {
+                where: {userId: agentId},
+                data: {
+                  isActive:false
+                }
               }
             }
-          }
-        }
-      }),
-    ]);
-    }else if(!activeStatus) {
+          },
+        }),
+      ]);
+      triggerFrontendUpdate("properties");
+    } else if (!activeStatus) {
       const result = await prisma.user.update({
-        where: {id: agentId},
+        where: { id: agentId },
         data: {
-          isVerified:true,
-          isActive:true,
+          isVerified: true,
+          isActive: true,
           verifiedById: userId,
           documents: {
             updateMany: {
-              where: {userId:agentId},
+              where: { userId: agentId },
               data: {
-                isVerified:true,
-                verifiedById:userId
+                isVerified: true,
+                verifiedById: userId,
+              },
+            },
+          },
+          properties:{
+              updateMany: {
+                where: {userId: agentId},
+                data: {
+                  isActive:true
+                }
               }
             }
-          }
-        }
-      })
+        },
+      });
+      triggerFrontendUpdate("properties");
     }
 
     return res.status(200).json({
@@ -351,6 +373,4 @@ export const toggleActive = async (req: Request, res: Response) => {
       message: "Internal Server Error!!!",
     });
   }
-}
-
-
+};

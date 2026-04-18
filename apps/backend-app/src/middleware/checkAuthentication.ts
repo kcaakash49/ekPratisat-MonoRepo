@@ -34,6 +34,7 @@ export const checkAuthentication = async (
       where: { id: payload.userId },
     });
     if (!checkUser || !checkUser.isActive) {
+      console.log("USer is not active")
       res.clearCookie("accessToken", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
