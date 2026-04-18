@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 
 import { verifyToken } from "../utils/jwt.js";
+import { prisma } from "@repo/database";
 
 export const checkAuthentication = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   let token: string | undefined;
 
@@ -28,6 +29,26 @@ export const checkAuthentication = async (
 
   try {
     const payload = verifyToken(token);
+
+    const checkUser = await prisma.user.findUnique({
+      where: { id: payload.userId },
+    });
+    if (!checkUser || !checkUser.isActive) {
+      res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        path: "/",
+        domain:
+          process.env.NODE_ENV === "production"
+            ? ".ekpratishat.com"
+            : "localhost",
+      });
+
+      return res.status(401).json({
+        message: "Account is Deactivated!!!",
+      });
+    }
     req.user = { id: payload.userId, role: payload.role };
     next();
   } catch (err) {
@@ -37,7 +58,11 @@ export const checkAuthentication = async (
   }
 };
 
-export const requireAdmin = (req: Request, res: Response, next: NextFunction) => {
+export const requireAdmin = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   if (req.user?.role !== "admin") {
     return res.status(403).json({ message: "Admin only" });
   }
@@ -47,7 +72,7 @@ export const requireAdmin = (req: Request, res: Response, next: NextFunction) =>
 export const requireAdminOrStaff = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   if (!["admin", "staff"].includes(req.user?.role)) {
     return res.status(403).json({ message: "Admin or Staff only" });

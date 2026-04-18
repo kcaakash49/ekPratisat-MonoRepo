@@ -24,6 +24,12 @@ export const signIn = async (req: Request, res: Response) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
+    if(user.role === "partner" || user.role === "staff"){
+      if(!user.isVerified){
+        return res.status(403).json({error: "Pending account verification!!!"})
+      }
+    }
+
     if (!user.isActive) {
       return res.status(403).json({ error: "Account is deactivated. Please contact support." });
     }
@@ -244,13 +250,35 @@ export const myInfo = async (req: Request, res: Response) => {
 
   try {
     const payload = verifyToken(token);
+
+    const checkUser = await prisma.user.findUnique({
+      where: { id: payload.userId },
+    });
+    if (!checkUser || !checkUser.isActive) {
+      res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        path: "/",
+        domain:
+          process.env.NODE_ENV === "production"
+            ? ".ekpratishat.com"
+            : "localhost",
+      });
+      return res.status(200).json({
+        user:null,
+        ok:false,
+        message:"Account deactivated"
+      })
+
+    }
     return res.status(200).json({
       ok: true,
       user: {
-        id: payload.userId,
-        role: payload.role,
-        name: payload.name,
-        profileImageUrl: payload.profileImageUrl,
+        id: checkUser.id,
+        role: checkUser.role,
+        name: checkUser.name,
+        profileImageUrl: checkUser.profileImageUrl,
       },
     });
   } catch (err) {

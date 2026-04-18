@@ -13,9 +13,6 @@ export const metadata: Metadata = {
   keywords: ["Real Estate Nepal", "Property Listing", "Buy House Nepal", "1 Percent Commission", "Luxury Homes", "Rent rooms", "Rent flat"],
   authors: [{ name: "Ek Pratishat Team" }],
   creator: "Ek Pratishat",
-  icons: {
-    icon: "/favicon.ico",
-  },
   openGraph: {
     title: "Ek Pratishat | Premium Real Estate",
     description: "Discover your dream property with just 1% commission. Transparent, reliable, and premium real estate services.",
