@@ -45,9 +45,9 @@ export default function ServicesPage() {
         secondaryCta={{ href: "/properties", label: "Explore Properties" }}
         stats={[
           { value: "Buy", label: "Property", href: "/properties?type=buy" },
-          { value: "Sell", label: "With Support", href: "/add-property" },
+          { value: "Sell", label: "With Support", href: "/user/add-property" },
           { value: "Rent", label: "Or Lease", href: "/properties?type=rent" },
-          { value: "List", label: "As Owner", href: "/add-property" },
+          { value: "List", label: "As Owner", href: "/user/add-property" },
         ]}
         floatingCard={{
           eyebrow: "One Stop Property Help",
