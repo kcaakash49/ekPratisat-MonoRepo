@@ -6,6 +6,8 @@ import cookieParser from 'cookie-parser';
 import authRouter from './routes/authRoute.js';
 import listingRouter from './routes/listingRoute.js';
 import zoneRouter from './routes/zoneRoute.js';
+import staffRouter from './routes/staffRoute.js';
+import userRouter from './routes/userRoute.js';
 
 // dotenv.config();
 
@@ -46,11 +48,14 @@ app.use(
 );
 
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 app.use("/auth", authRouter);
 app.use("/listing", listingRouter);
 app.use("/zone", zoneRouter);
+app.use("/staff", staffRouter);
+app.use("/users", userRouter);
 
 
 app.listen(PORT, () => {

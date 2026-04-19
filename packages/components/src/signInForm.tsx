@@ -3,7 +3,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Lock, Phone, Eye, EyeOff } from "lucide-react";
@@ -21,7 +21,7 @@ interface SignInProps {
 }
 
 export default function SignInForm({ label }: SignInProps) {
-  
+  const queryClient = useQueryClient();
   const [form, setForm] = useState({ contact: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
 
@@ -38,9 +38,11 @@ export default function SignInForm({ label }: SignInProps) {
     e.preventDefault();
     signinMutation.mutate(form, {
       onSuccess: (data) => {
-        console.log("Data from signin mutation:", data);
         if (data?.ok) {
           toast.success("Login Successful!!!");
+          queryClient.invalidateQueries({
+            queryKey: ["user-info"],
+          });
           router.replace("/");
         } else if (data?.error) {
           toast.error(data.error || "Something Happened");

@@ -26,6 +26,8 @@ export async function fetchListings({
                     type: true,
                     price: true,
                     tole: true,
+                    verified:true,
+                    isFeatured:true,
                     category: {
                         select: {
                             name: true

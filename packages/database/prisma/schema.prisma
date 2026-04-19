@@ -14,12 +14,12 @@ datasource db {
 }
 
 model User {
-  id       String @unique @default(uuid())
-  name     String
-  contact  String @unique
-  secondContact String?  
-  email    String @unique
-  password String
+  id            String  @unique @default(uuid())
+  name          String
+  contact       String  @unique
+  secondContact String?
+  email         String  @unique
+  password      String
 
   createdById  String? // who created this user (admin or staff)
   createdBy    User?   @relation("UserCreatedBy", fields: [createdById], references: [id])
@@ -43,54 +43,56 @@ model User {
   municipalitiesAdded Municipality[]
   wardAdded           Ward[]                  @relation("WardsAddedByAdmin")
   assignedWards       PartnerWardAssignment[] @relation("UserWards")
-  assignedZones       AgentGeoZone[]  @relation("zonesAssigned")
+  assignedZones       AgentGeoZone[]          @relation("zonesAssigned")
   geoZonesCreated     GeoZone[]
   // assignedWards       Ward[]         @relation("PartnerWards")
-  zonesAssigned      AgentGeoZone[]  @relation("AgentGeoZoneAssignedBy")
+  zonesAssigned       AgentGeoZone[]          @relation("AgentGeoZoneAssignedBy")
   createdAt           DateTime                @default(now())
   updatedAt           DateTime?               @updatedAt
+  favourites          Favourite[]
+
   @@index([role])
   @@index([contact])
   @@index([isVerified])
 }
 
-
 model AgentGeoZone {
-  agentId   String
-  zoneId    String
+  agentId String
+  zoneId  String
 
-  agent     User    @relation("zonesAssigned",fields: [agentId], references: [id])
-  zone      GeoZone @relation(fields: [zoneId], references: [id])
+  agent User    @relation("zonesAssigned", fields: [agentId], references: [id])
+  zone  GeoZone @relation(fields: [zoneId], references: [id])
 
   createdAt DateTime @default(now())
 
   assignedById String
-  assignedBy   User     @relation("AgentGeoZoneAssignedBy", fields: [assignedById], references: [id])
+  assignedBy   User   @relation("AgentGeoZoneAssignedBy", fields: [assignedById], references: [id])
 
   @@id([agentId, zoneId])
+  @@unique([zoneId])
   @@index([zoneId])
   @@index([agentId])
-  @@unique([zoneId])
 }
 
 model GeoZone {
-  id          String   @id @default(uuid())
-  name        String
-  notes       String?
-  isActive    Boolean  @default(true)
+  id       String  @id @default(uuid())
+  name     String
+  notes    String?
+  isActive Boolean @default(true)
 
   // PostGIS geometry
-  geom        Unsupported("geometry(MultiPolygon, 4326)")
+  geom Unsupported("geometry(MultiPolygon, 4326)")
 
   // optional ownership / audit
   createdById String?
-  createdBy   User?     @relation(fields: [createdById], references: [id])
+  createdBy   User?   @relation(fields: [createdById], references: [id])
 
   // link to agents (many-to-many)
-  agents      AgentGeoZone[]
+  agents AgentGeoZone[]
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@index([geom], type: Gist)
 }
 
@@ -139,15 +141,15 @@ model Category {
 }
 
 model Property {
-  id              String   @unique @default(uuid())
+  id              String                               @unique @default(uuid())
   title           String
   description     String
   price           String
   type            SaleType
   categoryId      String
-  category        Category @relation(fields: [categoryId], references: [id])
+  category        Category                             @relation(fields: [categoryId], references: [id])
   userId          String
-  user            User     @relation(fields: [userId], references: [id])
+  user            User                                 @relation(fields: [userId], references: [id])
   images          Image[]
   noOfBedRooms    String?
   noOfRestRooms   String?
@@ -159,17 +161,33 @@ model Property {
   roadSize        String?
   floorLevel      String?
   tole            String
-  isActive        Boolean  @default(true)
-  verified        Boolean  @default(false)
+  isActive        Boolean                              @default(true)
+  verified        Boolean                              @default(false)
+  isFeatured      Boolean                              @default(false)
   geoPoint        Unsupported("geometry(Point, 4326)")
   locationId      String
-  location        Ward     @relation(fields: [locationId], references: [id])
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  location        Ward                                 @relation(fields: [locationId], references: [id])
+  createdAt       DateTime                             @default(now())
+  updatedAt       DateTime                             @updatedAt
+  favourites      Favourite[]
+
   @@index([geoPoint], type: Gist)
   @@index([categoryId])
   @@index([type])
-  @@index([userId])
+  @@index([userId, isActive])
+  @@index([userId, isActive, verified])
+}
+
+model Favourite {
+  id         String @id @default(uuid())
+  userId     String
+  propertyId String
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, propertyId])
 }
 
 model District {
@@ -179,6 +197,7 @@ model District {
   addedById      String
   addedBy        User           @relation(fields: [addedById], references: [id])
   createdAt      DateTime       @default(now())
+  @@index([name])
 }
 
 model Municipality {
@@ -190,6 +209,7 @@ model Municipality {
   addedById  String
   addedBy    User     @relation(fields: [addedById], references: [id])
   createdAt  DateTime @default(now())
+  @@index([name])
 }
 
 model Ward {

@@ -1,0 +1,152 @@
+import { PropertyDetailClientProps } from "./PropertyDetailClient";
+import {
+  HeartIcon,
+  ShareIcon,
+  MapPinIcon,
+  HomeIcon,
+  ArrowsPointingOutIcon,
+  CalendarIcon,
+  CheckBadgeIcon,
+  BuildingOfficeIcon,
+  CursorArrowRippleIcon,
+  DocumentTextIcon,
+} from "@heroicons/react/24/outline";
+
+export default function PropertyInfo({property}:PropertyDetailClientProps){
+    const specifications = [
+    { label: "Property Type", value: property.type || "Not specified", icon: HomeIcon },
+    { label: "Category", value: property.category?.name || "Not specified", icon: BuildingOfficeIcon },
+    { label: "Bedrooms", value: property.noOfBedRooms || "N/A", icon: HomeIcon },
+    { label: "Bathrooms", value: property.noOfRestRooms || "N/A", icon: HomeIcon },
+    { label: "Land Area (sq. MTR)", value: property.landArea || "N/A", icon: ArrowsPointingOutIcon },
+    { label: "Floor Area (sq. ft.)", value: property.floorArea || "N/A", icon: ArrowsPointingOutIcon },
+    { label: "Number of Floors", value: property.noOfFloors || "N/A", icon: BuildingOfficeIcon },
+    { label: "Floor Level", value: property.floorLevel || "N/A", icon: CursorArrowRippleIcon },
+    { label: "Property Age (years)", value: property.propertyAge || "N/A", icon: CalendarIcon },
+    { label: "Facing Direction", value: property.facingDirection || "N/A", icon: HomeIcon },
+    { label: "Road Size (ft.)", value: property.roadSize || "N/A", icon: ArrowsPointingOutIcon },
+  ];
+
+   const formattedDate = new Date(property.createdAt).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  return (
+    <div className="max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Description */}
+            <div className="bg-white dark:bg-secondary-800/50 rounded-2xl p-6 border border-secondary-100 dark:border-secondary-700">
+              <h2 className="text-xl font-semibold text-secondary-900 dark:text-white mb-4 flex items-center gap-2">
+                <DocumentTextIcon className="w-5 h-5 text-gold" />
+                Description
+              </h2>
+              <p className="text-secondary-600 dark:text-secondary-300 leading-relaxed whitespace-break-spaces">
+                {property.description || "No description provided."}
+              </p>
+            </div>
+
+            {/* Specifications */}
+            <div className="bg-white dark:bg-secondary-800/50 rounded-2xl p-6 border border-secondary-100 dark:border-secondary-700">
+              <h2 className="text-xl font-semibold text-secondary-900 dark:text-white mb-6">
+                Specifications
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {specifications.map((spec, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-start gap-3 p-3 rounded-xl bg-secondary-50 dark:bg-secondary-800/80"
+                  >
+                    <spec.icon className="w-5 h-5 text-gold mt-0.5" />
+                    <div>
+                      <p className="text-xs text-secondary-500 dark:text-secondary-400 uppercase tracking-wide">
+                        {spec.label}
+                      </p>
+                      <p className="text-secondary-900 dark:text-white font-medium capitalize">
+                        {spec.value}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Agent Card */}
+            <div className="bg-white dark:bg-secondary-800/50 rounded-2xl p-6 border border-secondary-100 dark:border-secondary-700 text-center">
+              <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gold-gradient flex items-center justify-center">
+                <span className="text-2xl font-bold text-white">A</span>
+              </div>
+              <h3 className="text-lg font-semibold text-secondary-900 dark:text-white">
+                Verified By
+              </h3>
+              <p className="text-secondary-500 dark:text-secondary-400 text-sm mt-1">
+                Licensed Real Estate Professional
+              </p>
+              {/* <button className="w-full mt-4 py-2 rounded-lg bg-gold-gradient text-white font-medium hover:bg-gold-gradient-hover transition-colors">
+                Contact via Email
+              </button>
+              <button className="w-full mt-2 py-2 rounded-lg border border-gold text-gold font-medium hover:bg-gold/10 transition-colors">
+                Call Now
+              </button> */}
+            </div>
+
+            {/* Location Info */}
+            {property.location && (
+              <div className="bg-white dark:bg-secondary-800/50 rounded-2xl p-6 border border-secondary-100 dark:border-secondary-700">
+                <h3 className="text-lg font-semibold text-secondary-900 dark:text-white mb-4 flex items-center gap-2">
+                  <MapPinIcon className="w-5 h-5 text-gold" />
+                  Location Details
+                </h3>
+                <div className="space-y-3 text-sm">
+                  <div>
+                    <span className="text-secondary-500 dark:text-secondary-400">District:</span>
+                    <p className="text-secondary-900 dark:text-white font-medium">
+                      {property.location.municipality.district.name}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-secondary-500 dark:text-secondary-400">Municipality:</span>
+                    <p className="text-secondary-900 dark:text-white font-medium">
+                      {property.location.municipality.name}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-secondary-500 dark:text-secondary-400">Ward:</span>
+                    <p className="text-secondary-900 dark:text-white font-medium">
+                      {property.location.name}
+                    </p>
+                  </div>
+                  {property.tole && (
+                    <div>
+                      <span className="text-secondary-500 dark:text-secondary-400">Tole:</span>
+                      <p className="text-secondary-900 dark:text-white font-medium">
+                        {property.tole}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Posted Date */}
+            <div className="bg-white dark:bg-secondary-800/50 rounded-2xl p-6 border border-secondary-100 dark:border-secondary-700">
+              <h3 className="text-lg font-semibold text-secondary-900 dark:text-white mb-2 flex items-center gap-2">
+                <CalendarIcon className="w-5 h-5 text-gold" />
+                Posted On
+              </h3>
+              <p className="text-secondary-600 dark:text-secondary-300">{formattedDate}</p>
+              <p className="text-xs text-secondary-400 dark:text-secondary-500 mt-2">
+                Property ID: {property.id.slice(0, 8)}...
+              </p>
+            </div>
+          </div>
+        </div>
+    </div>
+  )
+}

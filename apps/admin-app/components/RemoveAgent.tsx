@@ -1,17 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { act, useState } from "react";
 import { Undo } from "lucide-react";
 import { toast } from "sonner";
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@repo/ui/dialog";
 import { Button } from "@repo/ui/button";
-import { useDeactivateAgent } from "@repo/query-hook";
+
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useToggleActive } from "@repo/query-hook";
+
 
 interface Props {
     agentId: string;
+    activeStatus:boolean;
 }
 
 const generateConfirmationText = () => {
@@ -20,13 +22,12 @@ const generateConfirmationText = () => {
     return `Type "${randomWord}" to verify`;
 };
 
-export default function RemoveUser({ agentId }: Props) {
+export default function RemoveUser({ agentId,activeStatus }: Props) {
     const [open, setOpen] = useState(false);
     const [confirmationText, setConfirmationText] = useState("");
     const [userInput, setUserInput] = useState("");
-    const { mutate: deActivateAgent, isPending } = useDeactivateAgent();
+    const { mutate: deActivateAgent, isPending } = useToggleActive();
     const queryClient = useQueryClient();
-    const router = useRouter();
 
     const handleOpenDialog = () => {
         setOpen(true);
@@ -42,18 +43,17 @@ export default function RemoveUser({ agentId }: Props) {
             return;
         }
 
-        deActivateAgent({ agentId }, {
+        deActivateAgent({ agentId,activeStatus }, {
             onSuccess: () => {
                 toast.success("Operation Successful!!!!");
                 setOpen(false);
                 setUserInput("");
                 queryClient.invalidateQueries({
-                    queryKey: ["agents-list"]
+                    queryKey: ["all-users"]
                 });
                 queryClient.invalidateQueries({
                     queryKey: ["agent-detail", agentId]
                 })
-                router.replace("/admin/agent/list-agents");
             },
             onError: () => {
                 setUserInput("");
@@ -67,14 +67,14 @@ export default function RemoveUser({ agentId }: Props) {
         <>
             <button
                 onClick={handleOpenDialog}
-                className="w-full flex items-center gap-3 p-3 text-left hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors group text-red-600 dark:text-red-400"
+                className={`w-full flex items-center gap-3 p-3 text-left ${activeStatus ? "hover:bg-red-50 dark:hover:bg-red-900/20" :"hover:bg-green-50 dark:hover:bg-green-900/20"} rounded-lg transition-colors group ${activeStatus ? "text-red-600 dark:text-red-400" : "text-green-700 dark:text-green-500"}`}
             >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
                 <div>
-                    <div className="font-medium">Remove User</div>
-                    <div className="text-sm">Permanently delete user account</div>
+                    <div className="font-medium">{activeStatus ? "Deactivate Account" : "Activate Account"}</div>
+                    <div className="text-sm">{activeStatus ? "Temporarily deactivate the account" : "Make this account active"}</div>
                 </div>
             </button>
 
@@ -87,7 +87,7 @@ export default function RemoveUser({ agentId }: Props) {
                     {/* FIX: Use proper grid/flex layout */}
                     <div className="space-y-4">
                         <p className="text-secondary-600 dark:text-secondary-300 text-sm break-words whitespace-normal">
-                            Are you sure you want to deactivate this account? This action cannot be undone.
+                            Are you sure you want to {activeStatus ? "deactivate" : "activate"} this account? This action cannot be undone.
                         </p>
 
                         {/* Confirmation Challenge - Stack vertically */}

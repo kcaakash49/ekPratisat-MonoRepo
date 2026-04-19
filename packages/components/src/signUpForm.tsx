@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useCreateUser } from "@repo/query-hook";
+import { useCreateClientUser, useCreateUser } from "@repo/query-hook";
 import { UserSingUpSchema } from "@repo/validators";
 import { Button } from "@repo/ui/button";
 import AnimateLoader from "@repo/ui/animateLoader";
@@ -9,6 +9,7 @@ import { User, Mail, Phone, Lock, Eye, EyeOff, ImageIcon } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 type ErrorType = {
@@ -31,8 +32,9 @@ export default function SignupForm() {
     const [profileImage, setProfileImage] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [step, setStep] = useState<number>(1);
+    const queryClient = useQueryClient();
 
-    const signupMutation = useCreateUser();
+    const signupMutation = useCreateClientUser();
 
     // refs for each input
     const nameRef = useRef<HTMLInputElement>(null);
@@ -92,20 +94,17 @@ export default function SignupForm() {
         
         signupMutation.mutate(formData, {
             onSuccess: (data) => {
-                console.log(data);
-                if (data.status === 200 && "user" in data) {
-                    toast.success("User created successfully!");
-                    setError({})
-                    // router.replace("/");
-
-                } else if ("error" in data) {
-                    setError(data.fieldErrors || {});
-                    setStep(1);
-                    toast.error(data.error);
-                } else {
-                    toast.error("Something went wrong");
-                }
+                toast.success("Signup and Logged in Successfully!!!");
+                queryClient.invalidateQueries({
+                    queryKey:["user-info"]
+                })
+                router.replace("/");
             },
+            onError: (error) => {
+                setError(error.fieldErrors || {})
+                setStep(1);
+                toast.error(error.error || "Signup Failed!!!")
+            }
         });
     };
 
@@ -277,7 +276,7 @@ export default function SignupForm() {
                         <div className="h-20"></div>
                         <div className="flex justify-between">
                             <Button type="button" onClick={() => setStep(1)} variant="outline">← Back</Button>
-                            <Button type="submit" variant="destructive" disabled={signupMutation.isPending}>
+                            <Button type="submit" variant="destructive"  disabled={signupMutation.isPending}>
                                 {signupMutation.isPending ? <AnimateLoader /> : "Complete Signup"}
                             </Button>
                         </div>

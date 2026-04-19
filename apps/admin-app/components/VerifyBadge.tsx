@@ -46,7 +46,7 @@ export default function VerifyBadge({ userId, isVerified }: VerifyBadgeProps) {
         toast.success("Operation Successful!!!!");
         setOpen(false);
         queryClient.invalidateQueries({
-          queryKey: ["agents-list"]
+          queryKey: ["all-users"]
         });
         queryClient.invalidateQueries({
           queryKey: ["agent-detail", userId]

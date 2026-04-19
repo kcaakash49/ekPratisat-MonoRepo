@@ -13,6 +13,7 @@ export async function getAgentDetai(id: string) {
                 contact: true,
                 profileImageUrl:true,
                 isVerified: true,
+                isActive:true,
                 createdAt: true,
                 email: true,
                 secondContact:true,
