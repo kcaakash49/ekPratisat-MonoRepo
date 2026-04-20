@@ -13,6 +13,7 @@ import {
   getAllProperties,
   getUserListings,
   toggleFavourite,
+  updateProperty,
   uploadCategoryImageFile,
   verifyListing,
 } from "../controller/listingController.js";
@@ -38,6 +39,7 @@ listingRouter.post(
 listingRouter.post("/add-district", checkAuthentication, requireAdminOrStaff, addDistrictController);
 listingRouter.post("/add-municipality", checkAuthentication, requireAdminOrStaff, addMunicipalityController);
 listingRouter.post("/add-ward", checkAuthentication, requireAdminOrStaff, addWardController);
+listingRouter.put("/edit-property/:id", checkAuthentication, uploadUserFiles.any(), updateProperty);
 
 listingRouter.get("/my-listings", checkAuthentication, getUserListings);
 listingRouter.get("/my-favourites",checkAuthentication,fetchUserFavourites);

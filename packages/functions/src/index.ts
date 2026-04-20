@@ -11,3 +11,4 @@ export * from "./agentFunctions/editBasicInfo.js"
 export * from "./listFunctions/fetchListings.js"
 export * from "./listFunctions/fetchPropertyDetail.js"
 export * from "./geoZoneFunctions/createGeoZones.js"
+export * from "./listFunctions/updataListingFunction.js";

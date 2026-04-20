@@ -2,12 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { AddPropertyForm } from "@repo/components/addPropertyForm";
-import { useUser } from "@repo/query-hook";
+import { useCreateProperty, useUser } from "@repo/query-hook";
 import Loading from "../../loading";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function AddProperty() {
     const { data: user, isLoading } = useUser();
     const [isMounted, setIsMounted] = useState(false);
+    const { mutate, isPending } = useCreateProperty();
+    const queryClient = useQueryClient();
 
     // Ensure we only switch away from the loading state after the client has hydrated
     useEffect(() => {
@@ -36,10 +40,40 @@ export default function AddProperty() {
     }
 
     const userRole = user?.role;
+    const emptyState = {
+        title: "",
+        description: "",
+        type: "sale" as 'rent' | 'sale',
+        categoryId: "",
+        districtId: "",
+        municipalityId: "",
+        price: "",
+        noOfBedRooms: "",
+        noOfRestRooms: "",
+        landArea: "",
+        noOfFloors: "",
+        propertyAge: "",
+        facingDirection: "east",
+        floorArea: "",
+        roadSize: "",
+        verified: false,
+        locationId: "",
+        floorLevel: "",
+        tole: "",
+        lat: null,
+        lng: null,
+        images: []
+    }
 
     return (
-        <div className="p-4"> 
-            <AddPropertyForm user={userRole} />
+        <div className="p-4">
+            <AddPropertyForm user={userRole} initialData={emptyState} isLoading={isPending} onSubmit={(data: FormData) => mutate(data, {
+                onSuccess: (data) => {
+                    toast.success(data.message || "Property added successfully!!!");
+                    queryClient.invalidateQueries({ queryKey: ["all-properties"] });
+                    queryClient.invalidateQueries({ queryKey: ["zone"] });
+                }
+            })}  />
         </div>
     );
 }

@@ -58,3 +58,37 @@ export interface PropertyListing {
   }[];
   createdAt: Date | string;
 }
+
+
+type SaleType = "rent" | "sale";
+interface ImageType{
+  id : string;
+  url: string;
+}
+
+export interface PropertyFormdata{
+  title: string;
+  description: string;
+  type: SaleType;
+  categoryId: string;
+  districtId: string;
+  municipalityId: string;
+  locationId: string;
+  price: string;
+  tole: string;
+
+  lat: number | null;
+  lng: number | null;
+
+  noOfBedRooms?: string;
+  noOfRestRooms?: string;
+  landArea?: string;
+  noOfFloors?: string;
+  propertyAge?: string;
+  facingDirection?: string;
+  floorArea?: string;
+  roadSize?: string;
+  floorLevel?: string;
+  images: ImageType[];
+  verified?: boolean;
+};

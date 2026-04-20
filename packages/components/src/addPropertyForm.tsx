@@ -5,7 +5,7 @@ import { CategoryModal } from "./categoryModal";
 import { LocationModal } from "./locationModal";
 import { useCreateProperty, useGetCategories, useGetLocationTree } from "@repo/query-hook";
 import { toast } from "sonner";
-import { CreatePropertySchema } from "@repo/validators";
+import { CreatePropertySchema, PropertyFormdata } from "@repo/validators";
 import { Loader2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -16,6 +16,10 @@ import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 
 type Props = {
   user: string;
+  initialData: PropertyFormdata;
+  onSubmit: (data: FormData) => void;
+  isEditing?: boolean;
+  isLoading?: boolean;
 };
 
 interface FormSchema extends CreatePropertySchema {
@@ -33,6 +37,10 @@ type DirectionType =
   | "northwest"
   | "southeast"
   | "southwest";
+
+interface ExistingImageType {
+  url: string;
+}
 
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
@@ -228,31 +236,18 @@ function MapPicker({
     </div>
   );
 }
-export const AddPropertyForm: React.FC<Props> = ({ user }) => {
-  const [formData, setFormData] = useState<any>({
-    title: "",
-    description: "",
-    type: "sale" as SaleType,
-    categoryId: "",
-    districtId: "",
-    municipalityId: "",
-    price: "",
-    noOfBedRooms: "",
-    noOfRestRooms: "",
-    landArea: "",
-    noOfFloors: "",
-    propertyAge: "",
-    facingDirection: "east" as DirectionType,
-    floorArea: "",
-    roadSize: "",
-    verified: false,
-    locationId: "",
-    floorLevel: "",
-    tole: "",
-    // NEW
-    lat: null as number | null,
-    lng: null as number | null,
-  });
+export const AddPropertyForm: React.FC<Props> = ({ initialData,
+  onSubmit,
+  isEditing = false,
+  isLoading = false,
+  user }) => {
+  const [formData, setFormData] = useState<PropertyFormdata>(initialData)
+
+  const [existingImages, setExistingImages] = useState<ExistingImageType[]>(
+    (initialData as any)?.images || []
+  )
+  const [deleteImageIds, setDeleteImageIds] = useState<string[]>([]);
+
 
   const [images, setImages] = useState<{ file: File; preview: string }[]>([]);
   const allBlobUrls = useRef<string[]>([]);
@@ -271,7 +266,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
       landArea: "",
       noOfFloors: "",
       propertyAge: "",
-      facingDirection: "east" as DirectionType,
+      facingDirection: "",
       floorArea: "",
       roadSize: "",
       verified: false,
@@ -280,11 +275,21 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
       tole: "",
       lat: null,
       lng: null,
+      images: []
     });
     allBlobUrls.current.forEach(URL.revokeObjectURL);
     allBlobUrls.current = [];
     setImages([]);
   };
+
+  useEffect(() => {
+    setFormData(initialData);
+    setExistingImages((initialData as any)?.images || []);
+    allBlobUrls.current.forEach(URL.revokeObjectURL);
+    allBlobUrls.current = [];
+    setImages([]);
+    setDeleteImageIds([]);
+  }, [initialData]);
 
   useEffect(() => {
     return () => {
@@ -301,8 +306,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
 
   const { data: categories, isLoading: categoryLoading } = useGetCategories();
   const { data: locations, isLoading: locationLoading } = useGetLocationTree();
-  const { mutate, isPending } = useCreateProperty();
-  const queryClient = useQueryClient();
+  // const { mutate, isPending } = useCreateProperty();
 
   const selectedCategory = categories?.result.find((c) => c.id === formData.categoryId);
 
@@ -349,7 +353,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
   const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
 
-    if(name === "description") {
+    if (name === "description") {
       setFormData((prev: any) => ({
         ...prev,
         [name]: value.trim()
@@ -364,37 +368,82 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
     }));
   };
 
+  // const handleAddImages = (imageFiles: File[]) => {
+  //   const validFiles = imageFiles.filter((file) => {
+  //     if (file.size > 1024 * 1024 * 2) {
+  //       toast.error(`${file.name} is greater than 2MB and was skipped`);
+  //       return false;
+  //     }
+  //     return true;
+  //   });
+
+  //   setImages((prev: any) => {
+  //     const currentImages = prev;
+
+  //     if (currentImages.length + validFiles.length + existingImages.length - deleteImageIds.length > 5) {
+  //       toast.error("You can add maximum upto 5 images!!!");
+  //       return prev;
+  //     }
+
+  //     const newImages = validFiles.map((file) => {
+  //       const preview = URL.createObjectURL(file);
+  //       allBlobUrls.current.push(preview);
+  //       return { file, preview };
+  //     });
+
+  //     return [...currentImages, ...newImages];
+  //   });
+  // };
+
+
   const handleAddImages = (imageFiles: File[]) => {
-    const validFiles = imageFiles.filter((file) => {
-      if (file.size > 1024 * 1024 * 2) {
-        toast.error(`${file.name} is greater than 2MB and was skipped`);
-        return false;
-      }
-      return true;
-    });
+    setImages((prev) => {
+      const existing = prev;
 
-    setImages((prev: any) => {
-      const currentImages = prev;
+      const newFiles = imageFiles.filter((file) => {
+        if (file.size > 1024 * 1024 * 2) {
+          toast.error(`${file.name} > 2MB skipped`);
+          return false;
+        }
 
-      if (currentImages.length + validFiles.length > 5) {
-        toast.error("You can add maximum upto 5 images!!!");
+        // 🔥 dedup check (name + size)
+        const alreadyExists = existing.some(
+          (img) => img.file.name === file.name && img.file.size === file.size
+        );
+
+        if (alreadyExists) {
+          toast.warning(`${file.name} already added`);
+          return false;
+        }
+
+        return true;
+      });
+
+      if (
+        existing.length +
+        newFiles.length +
+        existingImages.length -
+        deleteImageIds.length >
+        5
+      ) {
+        toast.error("Max 5 images allowed");
         return prev;
       }
 
-      const newImages = validFiles.map((file) => {
+      const newImages = newFiles.map((file) => {
         const preview = URL.createObjectURL(file);
         allBlobUrls.current.push(preview);
         return { file, preview };
       });
 
-      return [...currentImages, ...newImages];
+      return [...existing, ...newImages];
     });
   };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    if (images.length === 0) {
+    if (images.length + existingImages.length - deleteImageIds.length === 0) {
       toast.error("Please add atleast 1 image");
       return;
     }
@@ -415,6 +464,10 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
 
     const form = new FormData();
 
+    if (deleteImageIds.length > 0) {
+      form.append("deleteImageIds", JSON.stringify(deleteImageIds));
+    }
+
     Object.entries(cleanedData).forEach(([key, value]) => {
       if (value === null || value === undefined) {
         form.append(key, "");
@@ -428,23 +481,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
       }
     });
     cleanedImages.forEach((file) => form.append("images", file));
-
-
-    mutate(form, {
-      onSuccess: (data) => {
-        toast.success(data.message || "Property added successfully!!!");
-        queryClient.invalidateQueries({ queryKey: ["all-properties"] });
-        queryClient.invalidateQueries({ queryKey: ["zone"] });
-        resetForm();
-      }
-    });
-    // mutate(cleanedData, {
-    //   onSuccess: (data) => {
-    //     toast.success(data.message || "Operation Successful!!!");
-    //     queryClient.invalidateQueries({ queryKey: ["listings"] });
-    //     resetForm();
-    //   },
-    // });
+    onSubmit(form);
   };
 
   return (
@@ -519,6 +556,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
               name="categoryId"
               value={formData.categoryId}
               onChange={handleChange}
+              disabled={isEditing}
               className="w-full px-3 py-2 rounded-md bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 focus:ring-2 focus:ring-primary-500 focus:outline-none placeholder-secondary-400 transition dark:border-transparent"
               required
             >
@@ -706,7 +744,7 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
         />
 
         {/* Dynamic fields */}
-         {selectedCategory && (
+        {selectedCategory && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {selectedCategory.isLandAreaNeeded && (
               <div>
@@ -866,6 +904,60 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
           </div>
         )}
 
+        {/* Existing Images */}
+
+        {
+          existingImages.length > 0 && (
+            <div>
+              <label className="block font-medium mb-1">Existing Images</label>
+
+              <div className="flex items-center gap-4">
+                <div className="flex gap-2 overflow-x-auto">
+                  {existingImages?.map((img: any) => {
+                    const isDeleted = deleteImageIds.includes(img.id);
+
+                    return (
+                      <div
+                        key={img.id}
+                        className={`relative group transition ${isDeleted ? "opacity-40" : ""
+                          }`}
+                      >
+                        <img
+                          src={`${process.env.NEXT_PUBLIC_BASE_URL}${img.url}`}
+                          alt="preview"
+                          className="w-20 h-20 object-cover rounded border"
+                        />
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setDeleteImageIds((prev) => {
+                              const set = new Set(prev);
+
+                              if (set.has(img.id)) {
+                                set.delete(img.id); // undo delete
+                              } else {
+                                set.add(img.id); // mark delete
+                              }
+
+                              return Array.from(set);
+                            });
+                          }}
+                          className="absolute top-0 right-0 bg-black/60 text-white text-xs px-1 rounded opacity-0 group-hover:opacity-100 transition"
+                        >
+                          {isDeleted ? "↺" : "✕"}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+          )
+        }
+
+
         {/* Images Upload */}
         <div>
           <label className="block font-medium mb-1">Images</label>
@@ -926,11 +1018,11 @@ export const AddPropertyForm: React.FC<Props> = ({ user }) => {
         <div className="flex justify-end gap-2 mt-4">
           <button
             type="submit"
-            disabled={isPending}
-            className={`px-4 py-2 bg-primary-500 text-white rounded transition ${isPending ? "opacity-70 cursor-not-allowed" : "hover:bg-primary-600"
+            disabled={isLoading}
+            className={`px-4 py-2 bg-primary-500 text-white rounded transition ${isLoading ? "opacity-70 cursor-not-allowed" : "hover:bg-primary-600"
               }`}
           >
-            {isPending ? <Loader2 className="animate-spin" /> : "Add Property"}
+            {isLoading ? <Loader2 className="animate-spin" /> : isEditing ? "Update Property" : "Add Property"}
           </button>
         </div>
       </form>
