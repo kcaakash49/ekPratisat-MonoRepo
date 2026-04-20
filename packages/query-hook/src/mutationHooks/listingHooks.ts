@@ -138,6 +138,24 @@ export const useCreateProperty = () => {
   });
 };
 
+//edit property 
+export const useEditProperty = (id:string) => {
+  return useMutation({
+     mutationFn: async (formData: FormData) => {
+      return authenticatedFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/edit-property/${id}`,
+        {
+          method: "PUT",
+          body: formData,
+        },
+      );
+    },
+    onError: (error) => {
+      toast.error(error.message || "Couldn't add property!!!");
+    },
+  })
+}
+
 //verify Property
 export const useVerifyProperty = () => {
   return useMutation({

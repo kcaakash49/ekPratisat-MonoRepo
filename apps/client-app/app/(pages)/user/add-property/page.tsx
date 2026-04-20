@@ -1,16 +1,17 @@
 "use client";
 import { AddPropertyForm } from "@repo/components/addPropertyForm";
 import { AddPropertySkeleton } from "@repo/components/addPropertySkeleton";
-import { useUser } from "@repo/query-hook";
+import { useCreateProperty, useUser } from "@repo/query-hook";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Loader2, LockKeyhole } from "lucide-react";
+import { toast } from "sonner";
 
 export default function AddProperty() {
   const { data: user, isLoading } = useUser();
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
-  console.log("User data:", user);
+  const { mutate, isPending } = useCreateProperty();
 
   useEffect(() => {
     setMounted(true);
@@ -61,11 +62,39 @@ export default function AddProperty() {
   }
 
   const role = user?.role;
-
+  const emptyState = {
+        title: "",
+        description: "",
+        type: "sale" as 'rent' | 'sale',
+        categoryId: "",
+        districtId: "",
+        municipalityId: "",
+        price: "",
+        noOfBedRooms: "",
+        noOfRestRooms: "",
+        landArea: "",
+        noOfFloors: "",
+        propertyAge: "",
+        facingDirection: "east",
+        floorArea: "",
+        roadSize: "",
+        verified: false,
+        locationId: "",
+        floorLevel: "",
+        tole: "",
+        lat: null,
+        lng: null,
+        images: []
+    }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 animate-in fade-in duration-500">
-      <AddPropertyForm user={role} />
+      <AddPropertyForm user={role} initialData={emptyState} isLoading={isPending} onSubmit={(data: FormData) => mutate(data, {
+                onSuccess: (data) => {
+                    toast.success(data.message || "Property added successfully!!!");
+                    router.replace("/user/my-listings")
+                }
+            })}  />
 
     </div>
 

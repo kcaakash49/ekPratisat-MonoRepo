@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
 import { uploadCategoryImage } from "./../middleware/uploadCategoryImage.js";
-import { addCategory, AppError, createListingFunction } from "@repo/functions";
+import {
+  addCategory,
+  AppError,
+  createListingFunction,
+  updateListingFunction,
+} from "@repo/functions";
 import { triggerFrontendUpdate } from "../utils/revalidator.js";
 import { Prisma, prisma } from "@repo/database";
 
@@ -479,6 +484,78 @@ export async function getAllProperties(req: Request, res: Response) {
     console.error(error);
     res.status(500).json({
       message: "Internal Server Error!!!",
+    });
+  }
+}
+
+//update Property
+export async function updateProperty(req: Request, res: Response) {
+  try {
+    console.log("Update listing is called");
+    const { id } = req.params;
+    console.log(id);
+    const user = req.user;
+    const body = req.body;
+    console.log(body);
+    const files = req.files as Express.Multer.File[];
+    const normalized = Object.fromEntries(
+      Object.entries(req.body).map(([key, value]) => [
+        key,
+        value === "" ? null : value,
+      ]),
+    );
+
+    let deleteImageIds: string[] = [];
+
+    try {
+      const parsedIds = body.deleteImageIds
+        ? JSON.parse(body.deleteImageIds)
+        : [];
+
+      deleteImageIds = Array.isArray(parsedIds) ? parsedIds : [];
+    } catch {
+      deleteImageIds = [];
+    }
+
+    const parsed = {
+      ...normalized,
+      lat: normalized.lat ? Number(normalized.lat) : null,
+      lng: normalized.lng ? Number(normalized.lng) : null,
+      verified: user.role === "admin" && normalized.verified === "true",
+      deleteImageIds,
+      propertyId: id
+    };
+    console.log(parsed);
+
+    const adaptedFiles = files.map((file) => ({
+      fieldname: file.fieldname,
+      buffer: file.buffer,
+      mimetype: file.mimetype,
+      originalname: file.originalname,
+    }));
+    console.log(adaptedFiles);
+
+    const result = await updateListingFunction({
+      body: parsed,
+      userInfo: { userId: user.id, userRole: user.role },
+      imageFiles: adaptedFiles,
+    });
+    console.log(result);
+    triggerFrontendUpdate("properties");
+    triggerFrontendUpdate(`listings-${result.ownerId}`);
+    return res.status(200).json({
+      ok: true,
+      message: "Listing Updated Successfully"
+    });
+  } catch (err) {
+     if (err instanceof AppError) {
+      return res.status(err.status).json({
+        message: err.message,
+      });
+    }
+    console.error(err);
+    return res.status(500).json({
+      message: "Internal Server Error",
     });
   }
 }

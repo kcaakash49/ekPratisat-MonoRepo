@@ -2,7 +2,7 @@
 
 import { useFeatureProperty, useFetchPropertyDetail, useVerifyProperty } from "@repo/query-hook";
 import PageLoading from "@repo/ui/pageloading";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import PropertyMap from "./propertyMap";
 import {
@@ -31,6 +31,7 @@ export default function AdminPropertyDetailComponent() {
   } = useFetchPropertyDetail(param.id as string);
   const { mutate: verifyMutate, isPending: verifyPending } = useVerifyProperty();
   const { mutate: featureMutate, isPending: featurePending } = useFeatureProperty();
+  const router = useRouter();
 
   if (isLoading) return <PageLoading />;
 
@@ -122,7 +123,7 @@ export default function AdminPropertyDetailComponent() {
 
             <div className="h-6 w-px bg-secondary-200 dark:bg-secondary-800 mx-1" />
 
-            <button className="p-2 text-secondary-600 hover:bg-secondary-100 dark:hover:bg-secondary-800 rounded-lg transition-colors">
+            <button className="p-2 text-secondary-600 hover:bg-secondary-100 dark:hover:bg-secondary-800 rounded-lg transition-colors" onClick={() => router.push(`/admin/properties/edit/${property.id}`)}>
               <Edit3 size={20} />
             </button>
             <button className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors">

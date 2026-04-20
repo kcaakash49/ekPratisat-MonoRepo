@@ -327,7 +327,9 @@ export const toggleActive = async (req: Request, res: Response) => {
               updateMany: {
                 where: {userId: agentId},
                 data: {
-                  isActive:false
+                  isActive:false,
+                  verified:false,
+                  isFeatured:false
                 }
               }
             }

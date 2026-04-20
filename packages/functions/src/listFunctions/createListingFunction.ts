@@ -125,6 +125,9 @@ export async function createListingFunction({
     "floorLevel",
     "tole";
 `;
+      if(!inserted.length){
+        throw new AppError(404, "Property creation failed!!!")
+      }
       const propertyRow = inserted[0];
 
       // Insert images referencing the new property
