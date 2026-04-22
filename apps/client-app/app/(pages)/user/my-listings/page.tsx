@@ -37,7 +37,7 @@ export default async function MyListingPage({
         cache: 'force-cache'
     });
 
-   
+
     // 3. Check for specific status codes (like 401/403)
     if (res.status === 401) redirect("/auth/signin");
 
@@ -126,13 +126,9 @@ export default async function MyListingPage({
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {listings.map((item: any) => (
                             item.verified ? (
-                                <Link
-                                    href={`/properties/${item.id}`}
-                                    key={item.id}
-                                    className="transition-transform duration-300 hover:-translate-y-2 block"
-                                >
+                                <div key={item.id}>
                                     <MyListingCard item={item} />
-                                </Link>
+                                </div>
                             ) : (
                                 <div
                                     key={item.id}
