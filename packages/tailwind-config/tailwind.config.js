@@ -18,9 +18,15 @@ export default {
       },
       backgroundImage: {
         // The metallic gradient you requested
-        'gold-gradient': 'linear-gradient(135deg, hsl(38 70% 50%), hsl(38 60% 70%))',
+        // "gold-gradient":
+        //   "linear-gradient(135deg, hsl(38 70% 50%), hsl(38 60% 70%))",
+        "gold-gradient":
+          "linear-gradient(135deg, #EBC044 0%, #F4CA3B 28%, #FFD33A 55%, #F4DC91 78%, #F4CA3B 100%)",
         // A slightly deeper version for interactive states
-        'gold-gradient-hover': 'linear-gradient(135deg, hsl(38 70% 45%), hsl(38 60% 65%))',
+        // "gold-gradient-hover":
+        //   "linear-gradient(135deg, hsl(38 70% 45%), hsl(38 60% 65%))",
+        "gold-gradient-hover":
+          "linear-gradient(135deg, #E4B424 0%, #F0C030 34%, #FCCC24 62%, #F0D884 82%, #EBC044 100%)",
       },
       colors: {
         primary: {
@@ -53,21 +59,23 @@ export default {
           900: "#0f172a",
         },
         gold: {
-          DEFAULT: "#C4A77D", // Accessible via 'bg-gold' or 'text-gold'
-          50: "#F9F6F1",
-          100: "#F1EBE0",
-          200: "#E2D6C0",
-          300: "#D4BC96",
-          400: "#C9B189",
-          500: "#C4A77D", // Same as DEFAULT
-          600: "#A68F6C",
-          700: "#887559",
-          800: "#695B45",
-          900: "#4B4132",
+          DEFAULT: "#F0C030", // Accessible via 'bg-gold' or 'text-gold'
+          50: "#FFF9DE",
+          100: "#FFF0AD",
+          200: "#F7DF84",
+          300: "#F0D884",
+          400: "#FCCC24",
+          500: "#F0C030", // Same as DEFAULT
+          600: "#E4B424",
+          700: "#B98A00",
+          800: "#906C00",
+          900: "#463500",
+          950: "#020617",
         },
       },
       fontFamily: {
         sans: ["Inter", "ui-sans-serif", "system-ui"],
+        serif: ["Georgia", "ui-serif", "serif"],
         mono: ["Fira Code", "ui-monospace", "SFMono-Regular"],
       },
       spacing: {

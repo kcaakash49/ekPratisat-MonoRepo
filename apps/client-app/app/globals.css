@@ -18,6 +18,65 @@
   }
 }
 
+
+/* Sugal */
+@layer utilities {
+  .motion-reveal-up {
+    animation: revealUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .motion-reveal-left {
+    animation: revealLeft 0.95s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .motion-drift {
+    animation: driftX 28s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .motion-reveal-up,
+    .motion-reveal-left,
+    .motion-drift {
+      animation: none;
+    }
+  }
+}
+
+@keyframes revealUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 34px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes revealLeft {
+  from {
+    opacity: 0;
+    transform: translate3d(40px, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes driftX {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+/* sugal */
+
 /*used in property detail page*/
 
 @keyframes marquee {

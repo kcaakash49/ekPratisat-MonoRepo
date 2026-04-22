@@ -44,7 +44,7 @@ const HeroSection = () => {
       </section>
 
       {/* Stats Section with Gold Numbers */}
-      <section className="bg-secondary-100 dark:bg-secondary-800 py-12 md:py-20 border-t border-secondary-200 dark:border-secondary-800">
+      {/* <section className="bg-secondary-100 dark:bg-secondary-800 py-12 md:py-20 border-t border-secondary-200 dark:border-secondary-800">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-12 gap-x-6">
             {[
@@ -54,7 +54,6 @@ const HeroSection = () => {
               { value: "15+", label: "Years Exp." },
             ].map((stat, index) => (
               <div key={index} className="flex flex-col items-center md:items-start group">
-                {/* GOLD NUMBERS */}
                 <span className="bg-gold-gradient bg-clip-text text-transparent text-4xl md:text-5xl font-black mb-2 transition-transform group-hover:scale-105 duration-300">
                   {stat.value}
                 </span>
@@ -65,7 +64,7 @@ const HeroSection = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
     </div>
   );
 };
