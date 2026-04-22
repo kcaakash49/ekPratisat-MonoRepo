@@ -234,7 +234,6 @@ export const signOut = (req: Request, res: Response) => {
 };
 
 export const myInfo = async (req: Request, res: Response) => {
-  console.log("Received request for myInfo");
   let token: string | undefined;
 
   const authHeader = req.headers.authorization;

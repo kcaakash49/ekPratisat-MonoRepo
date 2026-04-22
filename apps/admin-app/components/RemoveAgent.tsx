@@ -81,7 +81,7 @@ export default function RemoveUser({ agentId,activeStatus }: Props) {
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent onClose={() => setOpen(false)} className="max-w-lg">
                     <DialogHeader>
-                        <DialogTitle>Deactivate Account</DialogTitle>
+                        <DialogTitle>{activeStatus ? "Deactivate Account" : "Activate Account" }</DialogTitle>
                     </DialogHeader>
 
                     {/* FIX: Use proper grid/flex layout */}

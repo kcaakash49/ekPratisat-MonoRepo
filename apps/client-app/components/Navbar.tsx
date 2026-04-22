@@ -20,7 +20,6 @@ const navItems = [
 ];
 
 const Navbar = () => {
-  console.log("Rendering Navbar");
   const [isOpen, setIsOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const { data: user, isLoading } = useUser();
