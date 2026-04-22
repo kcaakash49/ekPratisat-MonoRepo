@@ -1,6 +1,7 @@
 "use client";
 
 import { Edit, Trash2, ShieldCheck, Clock, MapPin } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Listing {
   id: string;
@@ -15,9 +16,13 @@ interface Listing {
 
 export default function MyListingCard({ item }: { item: Listing }) {
   const mainImage = item.images?.[0]?.url || "/placeholder-property.jpg";
+  const router = useRouter();
 
   return (
-    <div className="group relative bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-800 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500">
+    <div className="group relative bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-800 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500 cursor-pointer" onClick={() => {
+      if(!item.verified) return;
+      router.push(`/properties/${item.id}`);
+    }}>
       {/* Status Badges */}
       <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
         {item.verified ? (
@@ -69,7 +74,10 @@ export default function MyListingCard({ item }: { item: Listing }) {
           </div>
           
           <div className="flex gap-2">
-            <button className="p-2.5 text-secondary-600 dark:text-secondary-400 bg-secondary-50 dark:bg-secondary-800 hover:bg-gold hover:text-white rounded-xl transition-all border border-transparent shadow-sm">
+            <button className="p-2.5 text-secondary-600 dark:text-secondary-400 bg-secondary-50 dark:bg-secondary-800 hover:bg-gold hover:text-white rounded-xl transition-all border border-transparent shadow-sm" onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/user/edit-property/${item.id}`)
+            }}>
               <Edit size={18} />
             </button>
             <button className="p-2.5 text-secondary-600 dark:text-secondary-400 bg-secondary-50 dark:bg-secondary-800 hover:bg-red-500 hover:text-white rounded-xl transition-all border border-transparent shadow-sm" onClick={(e) => {
