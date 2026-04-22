@@ -8,6 +8,7 @@ import {
   addProperty,
   checkFavourite,
   createCategory,
+  deactivateListing,
   featureListing,
   fetchUserFavourites,
   getAllProperties,
@@ -45,10 +46,11 @@ listingRouter.get("/my-listings", checkAuthentication, getUserListings);
 listingRouter.get("/my-favourites",checkAuthentication,fetchUserFavourites);
 listingRouter.get("/get-all",checkAuthentication,requireAdmin,getAllProperties);
 
-listingRouter.post("/mark-verified",checkAuthentication,requireAdmin,verifyListing);
-listingRouter.post("/mark-featured",checkAuthentication,requireAdmin,featureListing);
+listingRouter.put("/mark-verified",checkAuthentication,requireAdmin,verifyListing);
+listingRouter.put("/mark-featured",checkAuthentication,requireAdmin,featureListing);
 listingRouter.post("/toggle-favourite", checkAuthentication, toggleFavourite);
 listingRouter.post("/check-favourite", checkFavourite)
 
+listingRouter.delete("/:id", checkAuthentication, deactivateListing);
 
 export default listingRouter;

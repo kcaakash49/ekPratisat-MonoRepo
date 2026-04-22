@@ -491,12 +491,11 @@ export async function getAllProperties(req: Request, res: Response) {
 //update Property
 export async function updateProperty(req: Request, res: Response) {
   try {
-    console.log("Update listing is called");
     const { id } = req.params;
-    console.log(id);
+
     const user = req.user;
     const body = req.body;
-    console.log(body);
+
     const files = req.files as Express.Multer.File[];
     const normalized = Object.fromEntries(
       Object.entries(req.body).map(([key, value]) => [
@@ -523,7 +522,7 @@ export async function updateProperty(req: Request, res: Response) {
       lng: normalized.lng ? Number(normalized.lng) : null,
       verified: user.role === "admin" && normalized.verified === "true",
       deleteImageIds,
-      propertyId: id
+      propertyId: id,
     };
     console.log(parsed);
 
@@ -545,10 +544,10 @@ export async function updateProperty(req: Request, res: Response) {
     triggerFrontendUpdate(`listings-${result.ownerId}`);
     return res.status(200).json({
       ok: true,
-      message: "Listing Updated Successfully"
+      message: "Listing Updated Successfully",
     });
   } catch (err) {
-     if (err instanceof AppError) {
+    if (err instanceof AppError) {
       return res.status(err.status).json({
         message: err.message,
       });
@@ -556,6 +555,50 @@ export async function updateProperty(req: Request, res: Response) {
     console.error(err);
     return res.status(500).json({
       message: "Internal Server Error",
+    });
+  }
+}
+
+//deactivating listing
+
+export async function deactivateListing(req: Request, res: Response) {
+  try {
+    const id = req.params.id;
+    const user = req.user!;
+
+    if (!id || Array.isArray(id)) {
+      throw new AppError(400, "Invalid property id");
+    }
+
+    const result = await prisma.$transaction(async (tx) => {
+      const property = await tx.property.findUnique({ where: { id } });
+
+      if (!property) throw new AppError(404, "Property Not Found");
+
+      if (property.userId !== user.id && user.role !== "admin") {
+        throw new AppError(403, "Unauthorized!!!");
+      }
+
+      return tx.property.update({
+        where: { id },
+        data: { isActive: false },
+      });
+    });
+
+    if (result.verified) {
+      triggerFrontendUpdate("properties");
+    }
+
+    triggerFrontendUpdate(`listings-${result.userId}`);
+    triggerFrontendUpdate("favourite");
+
+    res.status(200).json({
+      message: "Property Deleted Successfully!!!",
+    });
+  } catch (error) {
+    if (error instanceof AppError) throw error;
+    res.status(500).json({
+      message: "Internal server error",
     });
   }
 }

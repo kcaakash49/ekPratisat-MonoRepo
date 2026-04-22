@@ -163,7 +163,7 @@ export const useVerifyProperty = () => {
       return authenticatedFetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/mark-verified`,
         {
-          method: "POST",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
@@ -190,7 +190,7 @@ export const useFeatureProperty = () => {
       return authenticatedFetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/mark-featured`,
         {
-          method: "POST",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
@@ -231,3 +231,22 @@ export const useToggleFavourite = () => {
     }
   });
 };
+
+
+//deactivate listing
+
+export const useDeactivateListing = () => {
+  return useMutation ({
+    mutationFn: async ({id} : {id:string}) => {
+       return authenticatedFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/${id}`,
+        {
+          method: "DELETE",
+        },
+      );
+    },
+    onError: (error) => {
+      toast.error(error.message || "Couldn't Delete property!!!");
+    },
+  });
+}

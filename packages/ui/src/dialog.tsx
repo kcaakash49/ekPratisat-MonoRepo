@@ -18,7 +18,15 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
           {/* background overlay */}
           <motion.div
             className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
-            onClick={() => onOpenChange(false)}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onOpenChange(false);
+            }}
+            // onClick={(e) => {
+            //   e.preventDefault();
+            //   e.stopPropagation();
+            // }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -50,7 +58,8 @@ export function DialogContent({
   return (
     <div
       className={`relative w-full max-w-lg rounded-2xl bg-white dark:bg-neutral-900 shadow-xl p-6 ${className}`}
-      onClick={(e) => e.stopPropagation()}
+      onClick={(e) => e.stopPropagation() }
+      onMouseDown={(e) => e.stopPropagation()}
     >
       {onClose && (
         <button
