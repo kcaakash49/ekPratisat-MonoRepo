@@ -1,3 +1,4 @@
+"use client";
 
 import { Edit, Trash2, ShieldCheck, Clock, MapPin } from "lucide-react";
 
@@ -71,7 +72,9 @@ export default function MyListingCard({ item }: { item: Listing }) {
             <button className="p-2.5 text-secondary-600 dark:text-secondary-400 bg-secondary-50 dark:bg-secondary-800 hover:bg-gold hover:text-white rounded-xl transition-all border border-transparent shadow-sm">
               <Edit size={18} />
             </button>
-            <button className="p-2.5 text-secondary-600 dark:text-secondary-400 bg-secondary-50 dark:bg-secondary-800 hover:bg-red-500 hover:text-white rounded-xl transition-all border border-transparent shadow-sm">
+            <button className="p-2.5 text-secondary-600 dark:text-secondary-400 bg-secondary-50 dark:bg-secondary-800 hover:bg-red-500 hover:text-white rounded-xl transition-all border border-transparent shadow-sm" onClick={(e) => {
+              e.stopPropagation();
+            }}>
               <Trash2 size={18} />
             </button>
           </div>
