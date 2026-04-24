@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import DeletePropertyButton from "./deletePropertyButton";
 // Assuming you have a way to call your backend mutations (axios/fetch)
 // import { verifyProperty, toggleFeature, deleteProperty } from "@/lib/api/admin";
 
@@ -155,6 +156,7 @@ export default function AdminPropertyDetailComponent() {
               <Trash2 size={18} fill={property.isActive ? "currentColor" : "none"} />
               {property.isActive ? "Deactivate" : "Activate"}
             </button>
+            <DeletePropertyButton id={property.id} isActive = {property.isActive}/>
           </div>
         </div>
       </div>

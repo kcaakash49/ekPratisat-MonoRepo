@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { uploadCategoryImage } from "./../middleware/uploadCategoryImage.js";
+import fs from "fs";
+import path from "path";
 import {
   addCategory,
   AppError,
@@ -482,7 +484,6 @@ export async function getAllProperties(req: Request, res: Response) {
       },
     });
   } catch (error) {
-    console.error(error);
     res.status(500).json({
       message: "Internal Server Error!!!",
     });
@@ -540,12 +541,12 @@ export async function updateProperty(req: Request, res: Response) {
       imageFiles: adaptedFiles,
     });
 
-    if(user.role === "admin"){
+    if (user.role === "admin") {
       triggerFrontendUpdate("properties");
       triggerFrontendUpdate(`listings-${result.ownerId}`);
       triggerFrontendUpdate("favourite");
     }
-   
+
     return res.status(200).json({
       ok: true,
       message: "Listing Updated Successfully",
@@ -607,7 +608,12 @@ export async function deactivateListing(req: Request, res: Response) {
       message: "Property Deleted Successfully!!!",
     });
   } catch (error) {
-    if (error instanceof AppError) throw error;
+    if (error instanceof AppError) {
+    return res.status(error.status).json({
+      message: error.message,
+    });
+  }
+
     res.status(500).json({
       message: "Internal server error",
     });
@@ -658,9 +664,82 @@ export async function toggleActivateListing(req: Request, res: Response) {
       message: "Listing status updated successfully",
     });
   } catch (error) {
-    if (error instanceof AppError) throw error;
+    if (error instanceof AppError) {
+      return res.status(error.status).json({
+        message: error.message,
+      });
+    }
+
     res.status(500).json({
       message: "Internal server error",
+    });
+  }
+}
+
+//delete property
+const IMAGE_DIR = "/var/www/ekPratisatMonorepo/images/propertyImage";
+
+export async function deleteProperty(req: Request, res: Response) {
+  try {
+    const id = req.params.id;
+    if (!id || Array.isArray(id)) {
+      throw new AppError(400, "Invalid property id");
+    }
+
+    let deleteImageUrl: string[] = [];
+
+    const result = await prisma.$transaction(async (tx) => {
+      const property = await tx.property.findUnique({
+        where: { id },
+        include: {
+          images: true,
+        },
+      });
+
+      if (!property) {
+        throw new AppError(404, "Property not found!!!");
+      }
+
+      if (property.isActive) {
+        throw new AppError(
+          403,
+          "Property is still Active, first deactivate to delete!!!",
+        );
+      }
+
+      property.images.forEach((img) => {
+        deleteImageUrl.push(img.url);
+      });
+
+      return tx.property.delete({
+        where: { id: property.id },
+      });
+    });
+
+    await Promise.all(
+      deleteImageUrl.map(async (url) => {
+        const filePath = path.join(IMAGE_DIR, path.basename(url));
+        try {
+          await fs.promises.unlink(filePath);
+        } catch (err) {
+          console.error(err);
+        }
+      }),
+    );
+
+    return res.status(200).json({
+      message: "Property Deleted Successfully!!!",
+      result,
+    });
+  } catch (error) {
+    if (error instanceof AppError) {
+      return res.status(error.status).json({
+        message: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      message: "Internal Server Error!!!",
     });
   }
 }
