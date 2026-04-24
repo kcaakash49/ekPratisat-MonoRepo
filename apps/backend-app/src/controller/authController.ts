@@ -322,16 +322,16 @@ export const toggleActive = async (req: Request, res: Response) => {
                 },
               },
             },
-            properties:{
+            properties: {
               updateMany: {
-                where: {userId: agentId},
+                where: { userId: agentId },
                 data: {
-                  isActive:false,
-                  verified:false,
-                  isFeatured:false
-                }
-              }
-            }
+                  isActive: false,
+                  verified: false,
+                  isFeatured: false,
+                },
+              },
+            },
           },
         }),
       ]);
@@ -352,14 +352,14 @@ export const toggleActive = async (req: Request, res: Response) => {
               },
             },
           },
-          properties:{
-              updateMany: {
-                where: {userId: agentId},
-                data: {
-                  isActive:true
-                }
-              }
-            }
+          properties: {
+            updateMany: {
+              where: { userId: agentId },
+              data: {
+                isActive: true,
+              },
+            },
+          },
         },
       });
       triggerFrontendUpdate("properties");

@@ -96,7 +96,7 @@ export const addProperty = async (req: Request, res: Response) => {
       triggerFrontendUpdate("properties");
     }
 
-    triggerFrontendUpdate(`listings-${result.listing.userId}`);
+    // triggerFrontendUpdate(`listings-${result.listing.userId}`);
 
     return res.status(201).json({
       ok: true,
@@ -194,7 +194,7 @@ export async function verifyListing(req: Request, res: Response) {
         verified: true,
       },
     });
-    console.log("Result", result);
+
     triggerFrontendUpdate("properties");
     triggerFrontendUpdate(`listings-${result.userId}`);
 
@@ -222,12 +222,13 @@ export async function featureListing(req: Request, res: Response) {
         message: "Property isn't verified, Verify First!!!",
       });
     }
-    await prisma.property.update({
+    const result = await prisma.property.update({
       where: { id: property.id },
       data: { isFeatured: !isFeatured },
     });
 
     triggerFrontendUpdate("properties");
+    triggerFrontendUpdate(`listings-${result.userId}`);
 
     return res.status(200).json({
       message: "Property Featured Successfully!!!",
@@ -257,7 +258,7 @@ export async function toggleFavourite(req: Request, res: Response) {
       await prisma.favourite.delete({
         where: { id: existing.id },
       });
-      triggerFrontendUpdate(`favourite-${id}`);
+      // triggerFrontendUpdate(`favourite-${id}`);
       return res.status(200).json({
         message: "Removed from Favourites!!!",
       });
@@ -268,7 +269,7 @@ export async function toggleFavourite(req: Request, res: Response) {
           propertyId,
         },
       });
-      triggerFrontendUpdate(`favourite-${id}`);
+      // triggerFrontendUpdate(`favourite-${id}`);
       return res.status(200).json({
         message: "Added to Favourites!!!",
       });
@@ -520,11 +521,11 @@ export async function updateProperty(req: Request, res: Response) {
       ...normalized,
       lat: normalized.lat ? Number(normalized.lat) : null,
       lng: normalized.lng ? Number(normalized.lng) : null,
-      verified: user.role === "admin" && normalized.verified === "true",
+      // verified: user.role === "admin" && normalized.verified === "true",
+      verified: normalized.verified === "true",
       deleteImageIds,
       propertyId: id,
     };
-    console.log(parsed);
 
     const adaptedFiles = files.map((file) => ({
       fieldname: file.fieldname,
@@ -532,16 +533,19 @@ export async function updateProperty(req: Request, res: Response) {
       mimetype: file.mimetype,
       originalname: file.originalname,
     }));
-    console.log(adaptedFiles);
 
     const result = await updateListingFunction({
       body: parsed,
       userInfo: { userId: user.id, userRole: user.role },
       imageFiles: adaptedFiles,
     });
-    console.log(result);
-    triggerFrontendUpdate("properties");
-    triggerFrontendUpdate(`listings-${result.ownerId}`);
+
+    if(user.role === "admin"){
+      triggerFrontendUpdate("properties");
+      triggerFrontendUpdate(`listings-${result.ownerId}`);
+      triggerFrontendUpdate("favourite");
+    }
+   
     return res.status(200).json({
       ok: true,
       message: "Listing Updated Successfully",
@@ -564,6 +568,7 @@ export async function updateProperty(req: Request, res: Response) {
 export async function deactivateListing(req: Request, res: Response) {
   try {
     const id = req.params.id;
+
     const user = req.user!;
 
     if (!id || Array.isArray(id)) {
@@ -579,21 +584,78 @@ export async function deactivateListing(req: Request, res: Response) {
         throw new AppError(403, "Unauthorized!!!");
       }
 
+      await tx.favourite.deleteMany({
+        where: { propertyId: property.id },
+      });
+
       return tx.property.update({
         where: { id },
         data: { isActive: false },
       });
     });
 
-    if (result.verified) {
-      triggerFrontendUpdate("properties");
-    }
+    // if (result.verified) {
+    //   triggerFrontendUpdate("properties");
+    // }
 
-    triggerFrontendUpdate(`listings-${result.userId}`);
-    triggerFrontendUpdate("favourite");
+    // await Promise.allSettled([
+    //   triggerFrontendUpdate(`listings-${result.userId}`),
+    //   triggerFrontendUpdate("favourite"),
+    // ]);
 
     res.status(200).json({
       message: "Property Deleted Successfully!!!",
+    });
+  } catch (error) {
+    if (error instanceof AppError) throw error;
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+}
+
+export async function toggleActivateListing(req: Request, res: Response) {
+  try {
+    const user = req.user;
+    const id = req.params.id;
+    if (!id || Array.isArray(id)) {
+      throw new AppError(400, "Invalid property id");
+    }
+
+    if (user.role !== "admin") {
+      throw new AppError(403, "Unauthorized!!!");
+    }
+
+    const result = await prisma.$transaction(async (tx) => {
+      const property = await tx.property.findUnique({
+        where: { id },
+      });
+
+      if (!property) {
+        throw new AppError(404, "Property not found!!!");
+      }
+
+      const willDeActivate = property.isActive;
+      if (willDeActivate) {
+        await tx.favourite.deleteMany({
+          where: { propertyId: property.id },
+        });
+      }
+
+      return tx.property.update({
+        where: { id: property.id },
+        data: {
+          isActive: !property.isActive,
+        },
+      });
+    });
+
+    triggerFrontendUpdate("properties");
+    triggerFrontendUpdate("favourite");
+    triggerFrontendUpdate(`listings-${result.userId}`);
+
+    return res.status(200).json({
+      message: "Listing status updated successfully",
     });
   } catch (error) {
     if (error instanceof AppError) throw error;

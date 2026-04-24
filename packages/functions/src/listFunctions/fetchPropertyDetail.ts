@@ -20,6 +20,7 @@ export async function fetchPropertyDetal(id: string) {
         noOfFloors: true,
         propertyAge: true,
         facingDirection: true,
+        isActive:true,
         floorArea: true,
         roadSize: true,
         floorLevel: true,
