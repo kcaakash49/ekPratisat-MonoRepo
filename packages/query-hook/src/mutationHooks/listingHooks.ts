@@ -250,3 +250,19 @@ export const useDeactivateListing = () => {
     },
   });
 }
+
+export const usetoggleActiveListing = () => {
+   return useMutation ({
+    mutationFn: async ({id} : {id:string}) => {
+       return authenticatedFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/${id}`,
+        {
+          method: "PUT",
+        },
+      );
+    },
+    onError: (error) => {
+      toast.error(error.message || "Status updated!!!");
+    },
+  });
+}

@@ -9,6 +9,7 @@ import { AlertCircle } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { revalidateTagPathAction } from "../../../../../actions/revalidateAction";
 
 
 export default function EditPropertyPage() {
@@ -77,14 +78,12 @@ export default function EditPropertyPage() {
         <div className="mx-auto max-w-7xl px-4 py-8 animate-in fade-in duration-500">
 
             <AddPropertyForm initialData={initialData} onSubmit={(data: FormData) => mutate(data, {
-                onSuccess: (data) => {
+                onSuccess: async(data) => {
                     toast.success(data.message || "Update successful");
                     queryClient.invalidateQueries({
                         queryKey: ["property-detail", params.id]
                     });
-                    queryClient.invalidateQueries({
-                        queryKey: ["all-properties"]
-                    })
+                    await revalidateTagPathAction({tag:["properties",`listings-${user.id}`,"favourite"]});
                     router.replace(`/user/my-listings`)
                     
                 }

@@ -86,7 +86,7 @@ export default function MyListingCard({ item }: { item: Listing }) {
             }}>
               <Trash2 size={18} />
             </button> */}
-            <ListingDeleteButton id={item.id} />
+            <ListingDeleteButton id={item.id} isVerified = {item.verified} />
           </div>
         </div>
       </div>

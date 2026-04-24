@@ -7,6 +7,7 @@ import { Heart as HeartIcon } from "lucide-react";
 import { Heart as HeartSolidIcon } from "lucide-react"; 
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { revalidateTagPathAction } from "../../actions/revalidateAction";
 
 export default function FavouriteButton({ property }: PropertyDetailClientProps) {
     const { data: user, isLoading: userLoading } = useUser();
@@ -34,11 +35,12 @@ export default function FavouriteButton({ property }: PropertyDetailClientProps)
         }
 
         mutate({propertyId:property.id}, {
-            onSuccess: (data) => {
-                toast.success(data.message || "Operation Successful!!!")
+            onSuccess: async(data) => {
+                toast.success(data.message || "Operation Successful!!!");
                 queryClient.invalidateQueries({
                     queryKey: ["favourite",user.id]
                 })
+                await revalidateTagPathAction({tag:[`favourite-${user.id}`]})
             }
         })
     }

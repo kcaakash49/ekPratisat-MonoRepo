@@ -9,8 +9,9 @@ import { useDeactivateListing } from "@repo/query-hook";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { revalidateTagPathAction, revalidateWithUserId } from "../../actions/revalidateAction";
 
-export default function ListingDeleteButton({ id }: { id: string }) {
+export default function ListingDeleteButton({ id, isVerified }: { id: string, isVerified: boolean }) {
     const [open,setOpen] = useState(false);
     const {mutate,isPending} = useDeactivateListing();
     const queryClient = useQueryClient();
@@ -18,14 +19,21 @@ export default function ListingDeleteButton({ id }: { id: string }) {
 
     const handleDelete = () => {
         mutate({id}, {
-            onSuccess: (data) => {
+            onSuccess: async(data) => {
                 toast.success(data.message || "Operation Successful!!!");
                 queryClient.invalidateQueries({
                     queryKey: ["property-detail", id]
                 });
-                setOpen(false);
-                router.replace("/user/my-listings");
+                if (isVerified){
+                    await revalidateTagPathAction({tag:["properties","favourite"], path: `/properties/${id}`});
+                    await revalidateWithUserId({tag:"listings"});
+                    router.refresh();
+                    return;
+                }
+
+                await revalidateWithUserId({tag:"listings"});
                 router.refresh();
+                
             }
         })
     }

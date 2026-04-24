@@ -1,6 +1,6 @@
 "use client";
 
-import { useFeatureProperty, useFetchPropertyDetail, useVerifyProperty } from "@repo/query-hook";
+import { useFeatureProperty, useFetchPropertyDetail, useToggleActive, usetoggleActiveListing, useVerifyProperty } from "@repo/query-hook";
 import PageLoading from "@repo/ui/pageloading";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
@@ -31,6 +31,8 @@ export default function AdminPropertyDetailComponent() {
   } = useFetchPropertyDetail(param.id as string);
   const { mutate: verifyMutate, isPending: verifyPending } = useVerifyProperty();
   const { mutate: featureMutate, isPending: featurePending } = useFeatureProperty();
+  const {mutate: activeMutate, isPending: activePending} = usetoggleActiveListing();
+  
   const router = useRouter();
 
   if (isLoading) return <PageLoading />;
@@ -63,7 +65,7 @@ export default function AdminPropertyDetailComponent() {
   };
 
   const handleToggleFeature = async () => {
-    if (confirm("Do you want to feature this listing?")) {
+    if (confirm(`Do you want to ${property.isFeatured ? "remove feature for" : "feature"} this listing?`)) {
       featureMutate({ propertyId: property.id, isFeatured: property.isFeatured }, {
         onSuccess: (data) => {
           toast.success(data.message || "Operation Successful!!!");
@@ -78,6 +80,23 @@ export default function AdminPropertyDetailComponent() {
     }
     refetch();
   };
+
+  const handleActiveToggle = async () => {
+    if (confirm(`Do you want to ${property.isActive ? "deactivate" : "activate"} this listing?`)) {
+      activeMutate({id: property.id }, {
+        onSuccess: (data) => {
+          toast.success(data.message || "Operation Successful!!!");
+          queryClient.invalidateQueries({
+            queryKey: ["all-properties"]
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["property-detail", property.id]
+          })
+        }
+      })
+    }
+    refetch();
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-secondary-900">
@@ -103,6 +122,7 @@ export default function AdminPropertyDetailComponent() {
             {!property.verified && (
               <button
                 onClick={handleVerify}
+                disabled={verifyPending}
                 className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-bold transition-all"
               >
                 <ShieldCheck size={18} /> Verify Property
@@ -112,6 +132,7 @@ export default function AdminPropertyDetailComponent() {
             {/* Toggle Feature Button */}
             <button
               onClick={handleToggleFeature}
+              disabled={featurePending}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all border ${property.isFeatured
                   ? "border-amber-500 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20"
                   : "bg-amber-500 hover:bg-amber-600 text-white"
@@ -124,10 +145,15 @@ export default function AdminPropertyDetailComponent() {
             <div className="h-6 w-px bg-secondary-200 dark:bg-secondary-800 mx-1" />
 
             <button className="p-2 text-secondary-600 hover:bg-secondary-100 dark:hover:bg-secondary-800 rounded-lg transition-colors" onClick={() => router.push(`/admin/properties/edit/${property.id}`)}>
-              <Edit3 size={20} />
+              <Edit3 size={20} /> 
             </button>
-            <button className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors">
-              <Trash2 size={20} />
+            <button className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all border ${property.isActive
+                  ? "border-amber-500 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                  : "bg-amber-500 hover:bg-amber-600 text-white"
+                }`} onClick={handleActiveToggle}>
+              {/* <Trash2 size={20} /> */}
+              <Trash2 size={18} fill={property.isActive ? "currentColor" : "none"} />
+              {property.isActive ? "Deactivate" : "Activate"}
             </button>
           </div>
         </div>

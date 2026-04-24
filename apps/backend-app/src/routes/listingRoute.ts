@@ -13,6 +13,7 @@ import {
   fetchUserFavourites,
   getAllProperties,
   getUserListings,
+  toggleActivateListing,
   toggleFavourite,
   updateProperty,
   uploadCategoryImageFile,
@@ -52,5 +53,6 @@ listingRouter.post("/toggle-favourite", checkAuthentication, toggleFavourite);
 listingRouter.post("/check-favourite", checkFavourite)
 
 listingRouter.delete("/:id", checkAuthentication, deactivateListing);
+listingRouter.put("/:id", checkAuthentication, requireAdmin, toggleActivateListing);
 
 export default listingRouter;

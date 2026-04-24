@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Loader2, LockKeyhole } from "lucide-react";
 import { toast } from "sonner";
+import { revalidateTagPathAction } from "../../../../actions/revalidateAction";
 
 export default function AddProperty() {
   const { data: user, isLoading } = useUser();
@@ -90,7 +91,8 @@ export default function AddProperty() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 animate-in fade-in duration-500">
       <AddPropertyForm user={role} initialData={emptyState} isLoading={isPending} onSubmit={(data: FormData) => mutate(data, {
-                onSuccess: (data) => {
+                onSuccess: async (data) => {
+                    await revalidateTagPathAction({tag:[`listings-${user.id}`]})
                     toast.success(data.message || "Property added successfully!!!");
                     router.replace("/user/my-listings")
                 }
