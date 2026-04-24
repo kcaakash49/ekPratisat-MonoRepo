@@ -232,7 +232,8 @@ model Image {
   id         String   @unique @default(uuid())
   url        String
   propertyId String
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  @@index([propertyId])
 }
 
 enum UserRole {

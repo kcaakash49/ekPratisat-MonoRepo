@@ -266,3 +266,22 @@ export const usetoggleActiveListing = () => {
     },
   });
 }
+
+
+
+export const useDeleteProperty = () => {
+  return useMutation ({
+    mutationFn: async ({id} : {id:string}) => {
+       return authenticatedFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/delete/${id}`,
+        {
+          method: "DELETE",
+        },
+      );
+    },
+    onError: (error) => {
+      console.log("error message", error);
+      toast.error(error.message || "Operation Failed!!!");
+    },
+  });
+}

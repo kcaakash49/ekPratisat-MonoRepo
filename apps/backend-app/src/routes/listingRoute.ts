@@ -9,6 +9,7 @@ import {
   checkFavourite,
   createCategory,
   deactivateListing,
+  deleteProperty,
   featureListing,
   fetchUserFavourites,
   getAllProperties,
@@ -54,5 +55,7 @@ listingRouter.post("/check-favourite", checkFavourite)
 
 listingRouter.delete("/:id", checkAuthentication, deactivateListing);
 listingRouter.put("/:id", checkAuthentication, requireAdmin, toggleActivateListing);
+
+listingRouter.delete("/delete/:id", checkAuthentication, requireAdmin, deleteProperty);
 
 export default listingRouter;
