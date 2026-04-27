@@ -124,6 +124,50 @@ function MapPicker({
         proximity: { longitude: startCenter[0], latitude: startCenter[1] },
         types: "country,region,place,locality,neighborhood,address,poi",
         limit: 6,
+        localGeocoder: (query: string) => {
+          const cleaned = query.trim();
+
+          // supports:
+          // 27.7172, 85.3240
+          // 27.7172 85.3240
+          const match = cleaned.match(
+            /^(-?\d+(\.\d+)?)\s*,?\s*(-?\d+(\.\d+)?)$/
+          );
+
+          if (!match) return [];
+
+          const first = parseFloat(match[1]!);
+          const second = parseFloat(match[3]!);
+
+          // assume input = lat, lng
+          const lat = first;
+          const lng = second;
+        
+          // Nepal sanity check
+          if (
+            lat < 26 ||
+            lat > 31 ||
+            lng < 80 ||
+            lng > 89
+          ) {
+            return [];
+          }
+
+          return [
+            {
+              type: "Feature",
+              place_name: `Coordinates: ${lat}, ${lng}`,
+              center: [lng, lat],
+              geometry: {
+                type: "Point",
+                coordinates: [lng, lat],
+              },
+              properties: {},
+              place_type: ["coordinate"],
+              text: `${lat}, ${lng}`,
+            },
+          ];
+        },
       });
 
       geocoderContainerRef.current.innerHTML = "";
@@ -285,14 +329,15 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
     setImages([]);
   };
 
-  useEffect(() => {
-    setFormData(initialData);
-    setExistingImages((initialData as any)?.images || []);
-    allBlobUrls.current.forEach(URL.revokeObjectURL);
-    allBlobUrls.current = [];
-    setImages([]);
-    setDeleteImageIds([]);
-  }, [initialData]);
+  // useEffect(() => {
+  //   if(!isEditing) return;
+  //   setFormData(initialData);
+  //   setExistingImages((initialData as any)?.images || []);
+  //   allBlobUrls.current.forEach(URL.revokeObjectURL);
+  //   allBlobUrls.current = [];
+  //   setImages([]);
+  //   setDeleteImageIds([]);
+  // }, [initialData, isEditing]);
 
   useEffect(() => {
     return () => {
@@ -635,7 +680,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
                 )}
               </select>
 
-              {user === "admin" && (
+              {(user === "admin" || user === "staff") && (
                 <button
                   type="button"
                   className="px-2 py-1 bg-primary-500 text-white rounded"
@@ -675,7 +720,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
                     ))}
               </select>
 
-              {user === "admin" && formData.districtId && (
+              {(user === "admin" || user === "staff") && formData.districtId && (
                 <button
                   type="button"
                   className="px-2 py-1 bg-primary-500 text-white rounded"
@@ -713,7 +758,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
                     ))}
               </select>
 
-              {user === "admin" && formData.municipalityId && (
+              {(user === "admin" || user === "staff") && formData.municipalityId && (
                 <button
                   type="button"
                   className="px-2 py-1 bg-primary-500 text-white rounded"
@@ -998,7 +1043,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
               ))}
             </div>
           </div>
-          <p className="text-sm text-gray-500 mt-1">Max 5 images, each not more than 2MB.</p>
+          <p className="text-sm text-gray-500 mt-1">Max 5 images, each not more than 10MB.</p>
         </div>
 
         {user === "admin" && (
