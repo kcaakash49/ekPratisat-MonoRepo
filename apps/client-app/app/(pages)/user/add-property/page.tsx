@@ -8,6 +8,33 @@ import { Loader2, LockKeyhole } from "lucide-react";
 import { toast } from "sonner";
 import { revalidateTagPathAction } from "../../../../actions/revalidateAction";
 
+
+  const emptyState = {
+        title: "",
+        description: "",
+        type: "sale" as 'rent' | 'sale',
+        categoryId: "",
+        districtId: "",
+        municipalityId: "",
+        price: "",
+        noOfBedRooms: "",
+        noOfRestRooms: "",
+        landArea: "",
+        noOfFloors: "",
+        propertyAge: "",
+        facingDirection: "east",
+        floorArea: "",
+        roadSize: "",
+        verified: false,
+        locationId: "",
+        floorLevel: "",
+        tole: "",
+        lat: null,
+        lng: null,
+        images: []
+    }
+
+
 export default function AddProperty() {
   const { data: user, isLoading } = useUser();
   const [mounted, setMounted] = useState(false);
@@ -63,30 +90,7 @@ export default function AddProperty() {
   }
 
   const role = user?.role;
-  const emptyState = {
-        title: "",
-        description: "",
-        type: "sale" as 'rent' | 'sale',
-        categoryId: "",
-        districtId: "",
-        municipalityId: "",
-        price: "",
-        noOfBedRooms: "",
-        noOfRestRooms: "",
-        landArea: "",
-        noOfFloors: "",
-        propertyAge: "",
-        facingDirection: "east",
-        floorArea: "",
-        roadSize: "",
-        verified: false,
-        locationId: "",
-        floorLevel: "",
-        tole: "",
-        lat: null,
-        lng: null,
-        images: []
-    }
+
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 animate-in fade-in duration-500">
