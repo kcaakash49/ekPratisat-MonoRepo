@@ -46,7 +46,7 @@ listingRouter.put("/edit-property/:id", checkAuthentication, uploadUserFiles.any
 
 listingRouter.get("/my-listings", checkAuthentication, getUserListings);
 listingRouter.get("/my-favourites",checkAuthentication,fetchUserFavourites);
-listingRouter.get("/get-all",checkAuthentication,requireAdmin,getAllProperties);
+listingRouter.get("/get-all",checkAuthentication,requireAdminOrStaff,getAllProperties);
 
 listingRouter.put("/mark-verified",checkAuthentication,requireAdmin,verifyListing);
 listingRouter.put("/mark-featured",checkAuthentication,requireAdmin,featureListing);

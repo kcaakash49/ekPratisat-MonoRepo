@@ -8,6 +8,8 @@ import { triggerFrontendUpdate } from "../utils/revalidator.js";
 
 export const signIn = async (req: Request, res: Response) => {
   try {
+    console.log("Signin called");
+    console.log(req.body);
     const result = userSigninSchema.safeParse(req.body);
     if (!result.success) {
       return res.status(400).json({ error: result.error.issues });

@@ -44,6 +44,7 @@ const Navbar = () => {
         toast.success("Logged out");
         router.replace("/");
         setShowDropdown(false);
+        setIsOpen(false);
       }
     } catch (err) {
       toast.error("Logout failed");
@@ -184,21 +185,21 @@ const Navbar = () => {
         <div className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 p-6 space-y-4 animate-in slide-in-from-top duration-300">
 
           {navItems.map((item) => (
-    <Link
-      key={item.name}
-      href={item.href}
-      className="flex items-center gap-4 px-4 py-4 text-base font-bold text-secondary-200 hover:text-gold border-b border-secondary-800/50 transition-all group"
-      onClick={() => setIsOpen(false)}
-    >
-      {/* Icon with a subtle glow on hover */}
-      <item.icon className="h-5 w-5 text-secondary-500 group-hover:text-gold transition-colors" />
-      
-      <span className="flex-1">{item.name}</span>
-      
-      {/* Optional: Small arrow to emphasize the 'drawer' feel */}
-      <ChevronRight className="h-4 w-4 text-secondary-700 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
-    </Link>
-  ))}
+            <Link
+              key={item.name}
+              href={item.href}
+              className="flex items-center gap-4 px-4 py-4 text-base font-bold text-secondary-200 hover:text-gold border-b border-secondary-800/50 transition-all group"
+              onClick={() => setIsOpen(false)}
+            >
+              {/* Icon with a subtle glow on hover */}
+              <item.icon className="h-5 w-5 text-secondary-500 group-hover:text-gold transition-colors" />
+
+              <span className="flex-1">{item.name}</span>
+
+              {/* Optional: Small arrow to emphasize the 'drawer' feel */}
+              <ChevronRight className="h-4 w-4 text-secondary-700 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
+            </Link>
+          ))}
 
           <hr className="border-gray-100 dark:border-gray-800" />
 
@@ -206,11 +207,11 @@ const Navbar = () => {
 
             <div className="space-y-3">
 
-              <Link href="/user/my-listings" className="block text-sm">My Listings</Link>
+              <Link href="/user/my-listings" className="block text-sm" onClick={() => setIsOpen(false)}>My Listings</Link>
 
-              <Link href="/user/my-favourites" className="block text-sm">Favorites</Link>
+              <Link href="/user/my-favourites" className="block text-sm" onClick={() => setIsOpen(false)}>Favorites</Link>
 
-              <button onClick={handleLogout} className="text-red-500 font-medium">Logout</button>
+              <button onClick={handleLogout} className="text-red-500 font-medium" >Logout</button>
 
             </div>
 
@@ -223,8 +224,10 @@ const Navbar = () => {
             </Link>
 
           )}
+          <Link href="/user/add-property">
+            <Button className="w-full bg-gray-100 dark:bg-gray-800 text-yellow-600 border border-yellow-600">List Property</Button>
+          </Link>
 
-          <Button className="w-full bg-gray-100 dark:bg-gray-800 text-yellow-600 border border-yellow-600">List Property</Button>
 
         </div>
 
