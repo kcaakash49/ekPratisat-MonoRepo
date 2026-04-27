@@ -107,6 +107,9 @@ function MapPicker({
       } else {
         toast.success(`Location detected (~${Math.round(accuracy)}m accuracy)`);
       }
+
+      // IMPORTANT: stop continuous tracking after first result
+      geolocate._watchState = "OFF";
     });
 
     // ✅ Nepal-biased search
