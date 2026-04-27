@@ -34,7 +34,7 @@ export const uploadCategoryImage = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit
+    fileSize: 10 * 1024 * 1024, // 5MB limit
   }
 });
 
@@ -43,3 +43,4 @@ export const deleteFile = (filePath: string) => {
   const fs = require('fs').promises;
   return fs.unlink(filePath).catch(() => {});
 };
+

@@ -404,8 +404,8 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
       const existing = prev;
 
       const newFiles = imageFiles.filter((file) => {
-        if (file.size > 1024 * 1024 * 2) {
-          toast.error(`${file.name} > 2MB skipped`);
+        if (file.size > 1024 * 1024 * 10) {
+          toast.error(`${file.name} > 10MB skipped`);
           return false;
         }
 
