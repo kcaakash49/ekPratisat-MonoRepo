@@ -224,7 +224,7 @@ const Navbar = () => {
             </Link>
 
           )}
-          <Link href="/user/add-property">
+          <Link href="/user/add-property" onClick={() => setIsOpen(false)}>
             <Button className="w-full bg-gray-100 dark:bg-gray-800 text-yellow-600 border border-yellow-600">List Property</Button>
           </Link>
 
