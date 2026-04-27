@@ -165,7 +165,7 @@ function MapPicker({
               properties: {},
               place_type: ["coordinate"],
               text: `${lat}, ${lng}`,
-            },
+            } as any,
           ];
         },
       });
