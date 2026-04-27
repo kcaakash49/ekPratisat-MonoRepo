@@ -87,7 +87,7 @@ function MapPicker({
     // ✅ Current location button
     const geolocate = new mapboxgl.GeolocateControl({
       positionOptions: { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 },
-      trackUserLocation: true,
+      trackUserLocation: false,
       showUserHeading: true,
     });
     map.addControl(geolocate, "top-right");
