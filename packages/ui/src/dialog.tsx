@@ -18,15 +18,14 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
           {/* background overlay */}
           <motion.div
             className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
-            onMouseDown={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onOpenChange(false);
-            }}
-            // onClick={(e) => {
+            // onMouseDown={(e) => {
             //   e.preventDefault();
             //   e.stopPropagation();
+            //   onOpenChange(false);
             // }}
+            onClick={(e) => {
+              onOpenChange(false);
+            }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
