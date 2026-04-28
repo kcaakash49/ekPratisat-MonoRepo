@@ -32,8 +32,8 @@ export default function AdminPropertyDetailComponent() {
   } = useFetchPropertyDetail(param.id as string);
   const { mutate: verifyMutate, isPending: verifyPending } = useVerifyProperty();
   const { mutate: featureMutate, isPending: featurePending } = useFeatureProperty();
-  const {mutate: activeMutate, isPending: activePending} = usetoggleActiveListing();
-  
+  const { mutate: activeMutate, isPending: activePending } = usetoggleActiveListing();
+
   const router = useRouter();
 
   if (isLoading) return <PageLoading />;
@@ -84,7 +84,7 @@ export default function AdminPropertyDetailComponent() {
 
   const handleActiveToggle = async () => {
     if (confirm(`Do you want to ${property.isActive ? "deactivate" : "activate"} this listing?`)) {
-      activeMutate({id: property.id }, {
+      activeMutate({ id: property.id }, {
         onSuccess: (data) => {
           toast.success(data.message || "Operation Successful!!!");
           queryClient.invalidateQueries({
@@ -103,7 +103,7 @@ export default function AdminPropertyDetailComponent() {
     <div className="flex flex-col min-h-screen bg-white dark:bg-secondary-900">
 
       {/* ---------------- ADMIN MANAGEMENT BAR ---------------- */}
-      <div className="sticky top-0 z-50 bg-white/80 dark:bg-secondary-900/80 backdrop-blur-md border-b border-secondary-200 dark:border-secondary-800 px-4 py-4">
+      <div className="z-50 bg-white/80 dark:bg-secondary-900/80  border-b border-secondary-200 dark:border-secondary-800 px-4 py-4">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${property.verified ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
@@ -135,8 +135,8 @@ export default function AdminPropertyDetailComponent() {
               onClick={handleToggleFeature}
               disabled={featurePending}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all border ${property.isFeatured
-                  ? "border-amber-500 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20"
-                  : "bg-amber-500 hover:bg-amber-600 text-white"
+                ? "border-amber-500 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                : "bg-amber-500 hover:bg-amber-600 text-white"
                 }`}
             >
               <Star size={18} fill={property.isFeatured ? "currentColor" : "none"} />
@@ -146,17 +146,18 @@ export default function AdminPropertyDetailComponent() {
             <div className="h-6 w-px bg-secondary-200 dark:bg-secondary-800 mx-1" />
 
             <button className="p-2 text-secondary-600 hover:bg-secondary-100 dark:hover:bg-secondary-800 rounded-lg transition-colors" onClick={() => router.push(`/admin/properties/edit/${property.id}`)}>
-              <Edit3 size={20} /> 
+              <Edit3 size={20} />
             </button>
             <button className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all border ${property.isActive
-                  ? "border-amber-500 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20"
-                  : "bg-amber-500 hover:bg-amber-600 text-white"
-                }`} onClick={handleActiveToggle}>
+              ? "border-amber-500 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+              : "bg-amber-500 hover:bg-amber-600 text-white"
+              }`} onClick={handleActiveToggle}>
               {/* <Trash2 size={20} /> */}
-              <Trash2 size={18} fill={property.isActive ? "currentColor" : "none"} />
+              {/* <Trash2 size={18} fill={property.isActive ? "currentColor" : "none"} /> */}
               {property.isActive ? "Deactivate" : "Activate"}
             </button>
-            <DeletePropertyButton id={property.id} isActive = {property.isActive}/>
+            <DeletePropertyButton id={property.id} isActive={property.isActive} />
+
           </div>
         </div>
       </div>
@@ -200,8 +201,10 @@ export default function AdminPropertyDetailComponent() {
             <div>
               <p className="text-xs text-secondary-500 font-bold uppercase">Posted by</p>
               <p className="font-bold text-secondary-900 dark:text-secondary-100">{property.user?.name}</p>
+
             </div>
           </div>
+
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
