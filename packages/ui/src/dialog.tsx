@@ -3,6 +3,7 @@
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import { createPortal } from "react-dom";
 
 interface DialogProps {
   open: boolean;
@@ -10,38 +11,74 @@ interface DialogProps {
   children: React.ReactNode;
 }
 
+// export function Dialog({ open, onOpenChange, children }: DialogProps) {
+//   return (
+//     <AnimatePresence>
+//       {open && (
+//         <>
+//           {/* background overlay */}
+//           <motion.div
+//             className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+//             // onMouseDown={(e) => {
+//             //   e.preventDefault();
+//             //   e.stopPropagation();
+//             //   onOpenChange(false);
+//             // }}
+//             onClick={(e) => {
+//               onOpenChange(false);
+//             }}
+//             initial={{ opacity: 0 }}
+//             animate={{ opacity: 1 }}
+//             exit={{ opacity: 0 }}
+//           />
+//           {/* modal container */}
+//           <motion.div
+//             className="fixed inset-0 z-50 flex items-center justify-center"
+//             initial={{ opacity: 0, scale: 0.95 }}
+//             animate={{ opacity: 1, scale: 1 }}
+//             exit={{ opacity: 0, scale: 0.95 }}
+//           >
+//             {children}
+//           </motion.div>
+//         </>
+//       )}
+//     </AnimatePresence>
+//   );
+// }
+
 export function Dialog({ open, onOpenChange, children }: DialogProps) {
-  return (
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || !open) return null;
+
+  return createPortal(
     <AnimatePresence>
-      {open && (
-        <>
-          {/* background overlay */}
-          <motion.div
-            className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
-            // onMouseDown={(e) => {
-            //   e.preventDefault();
-            //   e.stopPropagation();
-            //   onOpenChange(false);
-            // }}
-            onClick={(e) => {
-              onOpenChange(false);
-            }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          />
-          {/* modal container */}
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-          >
-            {children}
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+      <>
+        {/* background overlay */}
+        <motion.div
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+          onClick={() => onOpenChange(false)}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        />
+
+        {/* modal container */}
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+        >
+          {children}
+        </motion.div>
+      </>
+    </AnimatePresence>,
+    document.body
   );
 }
 
