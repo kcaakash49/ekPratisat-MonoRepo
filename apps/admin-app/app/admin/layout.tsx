@@ -14,7 +14,8 @@ export default async function AdminLayout({ children }: Props) {
       
       <div className="min-h-screen flex bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
         <AdminSidebarClient />
-        <div className="flex-1 flex flex-col min-h-0">
+        {/* added ml:64 to compensate with navbar width */}
+        <div className="flex-1 flex flex-col min-h-0 md:ml-64">
           <main className="flex-1 overflow-auto pt-16 md:pt-0">
             {children}
           </main>

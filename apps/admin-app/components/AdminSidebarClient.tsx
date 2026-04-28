@@ -12,7 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 const navSections = [
   { name: "Dashboard", path: "/admin/dashboard", accessibleRoles: ["admin"] },
   { name: "Users", path: "/admin/users", accessibleRoles: ["admin"] },
-  { name: "Properties", path: "/admin/properties", accessibleRoles: ["admin","staff"] },
+  { name: "Properties", path: "/admin/properties", accessibleRoles: ["admin", "staff"] },
 
   { name: "Geozones", path: "/admin/geo-zones", accessibleRoles: ["admin"] },
   { name: "List-Zones", path: "/admin/geo-zones/list-zones", accessibleRoles: ["admin"] },
@@ -38,7 +38,7 @@ export default function AdminSidebarClient() {
   const isSectionActive = (children: { path: string }[]) => {
     return children.some(child => pathname === child.path);
   };
-  const userRole = user?.role?.toLowerCase(); 
+  const userRole = user?.role?.toLowerCase();
   console.log("User Role in Sidebar:", userRole);
 
   // Helper to check if a user has permission for a specific item
@@ -104,31 +104,33 @@ export default function AdminSidebarClient() {
       )}
 
       {/* Sidebar */}
+      {/* remove md:static so navbar is independent of children height  */}
       <nav
-        className={`fixed inset-y-0 md:static top-0 left-0 w-64 bg-gray-100 dark:bg-gray-800 p-6 flex flex-col z-40
+        className={`fixed inset-y-0 top-0 left-0 w-64 bg-gray-100 dark:bg-gray-800 p-6 flex flex-col z-40
           transform transition-transform duration-300 ease-in-out
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0 md:mt-0 mt-16`}
+
       >
         {/* Hidden on mobile since we have the mobile navbar */}
         <h2 className="hidden md:block text-lg sm:text-xl md:text-2xl font-bold mb-5 md:mb-8">
           Welcome, {user?.name?.split(" ")[0]}
         </h2>
 
-       <div className="flex flex-col space-y-2 text-sm sm:text-base">
+        <div className="flex flex-col space-y-2 text-sm sm:text-base">
           {filteredSections.map((section) =>
-            (
-              <Link
-                key={section!.path} href={section!.path!}
-                onClick={() => setSidebarOpen(false)}
-                className={`block px-4 py-3 rounded-lg transition-all duration-200 ${pathname === section!.path
-                  ? "bg-primary-500 text-white shadow-sm"
-                  : "text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 dark:hover:text-primary-400"
-                  }`}
-              >
-                {section!.name}
-              </Link>
-            )
+          (
+            <Link
+              key={section!.path} href={section!.path!}
+              onClick={() => setSidebarOpen(false)}
+              className={`block px-4 py-3 rounded-lg transition-all duration-200 ${pathname === section!.path
+                ? "bg-primary-500 text-white shadow-sm"
+                : "text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 dark:hover:text-primary-400"
+                }`}
+            >
+              {section!.name}
+            </Link>
+          )
           )}
         </div>
 
