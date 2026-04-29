@@ -25,6 +25,7 @@
     "bcrypt": "^6.0.0",
     "lucide-react": "^0.542.0",
     "framer-motion": "^12.23.24",
+    "browser-image-compression": "^2.0.2",
     "mapbox-gl": "^3.18.1",
     "next": "^15.5.0",
     "react": "^19.1.0",

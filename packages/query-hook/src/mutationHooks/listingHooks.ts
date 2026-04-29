@@ -280,7 +280,6 @@ export const useDeleteProperty = () => {
       );
     },
     onError: (error) => {
-      console.log("error message", error);
       toast.error(error.message || "Operation Failed!!!");
     },
   });

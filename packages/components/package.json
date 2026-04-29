@@ -27,6 +27,7 @@
     "@repo/query-hook": "*",
     "@repo/ui": "*",
     "@tanstack/react-query": "^5.85.9",
+    "browser-image-compression": "^2.0.2",
     "sonner": "^2.0.7",
     "mapbox-gl": "^3.18.1",
     "@mapbox/mapbox-gl-geocoder": "^5.1.2"

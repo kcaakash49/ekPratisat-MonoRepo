@@ -12,6 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 // Mapbox
 import mapboxgl from "mapbox-gl";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+import { compressImage } from "./utils/image-compression";
 
 
 type Props = {
@@ -294,6 +295,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
     (initialData as any)?.images || []
   )
   const [deleteImageIds, setDeleteImageIds] = useState<string[]>([]);
+  const [compressing, setCompressing] = useState(false);
 
 
   const [images, setImages] = useState<{ file: File; preview: string }[]>([]);
@@ -488,7 +490,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
     });
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (images.length + existingImages.length - deleteImageIds.length === 0) {
@@ -508,7 +510,11 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
     ) as CreatePropertySchema;
 
     const cleanedImages = images.map((img) => img.file);
-
+    setCompressing(true);
+    const compressedImages = await Promise.all(
+      images.map((img) => compressImage(img.file))
+    );
+    setCompressing(false);
 
     const form = new FormData();
 
@@ -528,7 +534,10 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
         form.append(key, value);
       }
     });
-    cleanedImages.forEach((file) => form.append("images", file));
+    // cleanedImages.forEach((file) => form.append("images", file));
+    console.log(compressedImages);
+  
+    compressedImages.forEach((file) => form.append("images", file));
     onSubmit(form);
   };
 
@@ -1066,11 +1075,11 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
         <div className="flex justify-end gap-2 mt-4">
           <button
             type="submit"
-            disabled={isLoading}
-            className={`px-4 py-2 bg-primary-500 text-white rounded transition ${isLoading ? "opacity-70 cursor-not-allowed" : "hover:bg-primary-600"
+            disabled={isLoading || compressing}
+            className={`px-4 py-2 bg-primary-500 text-white rounded transition ${(isLoading || compressing) ? "opacity-70 cursor-not-allowed" : "hover:bg-primary-600"
               }`}
           >
-            {isLoading ? <Loader2 className="animate-spin" /> : isEditing ? "Update Property" : "Add Property"}
+            {(isLoading || compressing) ? <Loader2 className="animate-spin" /> : isEditing ? "Update Property" : "Add Property"}
           </button>
         </div>
       </form>

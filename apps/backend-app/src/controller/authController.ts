@@ -83,6 +83,7 @@ export const createClientUser = async (req: Request, res: Response) => {
       buffer: file.buffer,
       mimetype: file.mimetype,
       originalname: file.originalname,
+      size:file.size
     }));
     // 🔥 CALL SERVICE (IMPORTANT)
     const result = await createUser({
@@ -158,6 +159,7 @@ export const createAgentAdminStaff = async (req: Request, res: Response) => {
       buffer: file.buffer,
       mimetype: file.mimetype,
       originalname: file.originalname,
+      size: file.size
     }));
     // 🔥 CALL SERVICE (IMPORTANT)
     const result = await createUser({
