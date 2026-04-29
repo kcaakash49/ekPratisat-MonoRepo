@@ -5,6 +5,7 @@ import { Button } from "@repo/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@repo/ui/dialog";
 import { useQueryClient } from "@tanstack/react-query";
 import { Trash } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -26,6 +27,7 @@ export default function DeletePropertyButton({ id, isActive }: Props) {
     const [userInput, setUserInput] = useState("");
     const { mutate, isPending } = useDeleteProperty();
     const queryClient = useQueryClient();
+    const router = useRouter();
 
     const handleDeleteDialog = () => {
         setOpen(true);
@@ -41,6 +43,13 @@ export default function DeletePropertyButton({ id, isActive }: Props) {
             return;
         }
 
+        if(isActive){
+            toast.error("Property is still active, please deactivate before deleting!!!");
+            setOpen(false);
+            setUserInput("");
+            return;
+        }
+
         mutate({id}, {
             onSuccess: (data) => {
                 toast.success(data.message || "Operation Successful!!!");
@@ -52,6 +61,7 @@ export default function DeletePropertyButton({ id, isActive }: Props) {
                 });
                 setOpen(false);
                 setUserInput("");
+                router.replace("/admin/properties");
             },
             onError: () => {
                 setUserInput("");

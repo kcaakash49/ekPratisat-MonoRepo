@@ -29,6 +29,7 @@ export async function createCategory(req: Request, res: Response) {
           buffer: req.file.buffer,
           mimetype: req.file.mimetype,
           originalname: req.file.originalname,
+          size: req.file.size
         }
       : null;
 
@@ -60,6 +61,7 @@ export const addProperty = async (req: Request, res: Response) => {
     const user = req.user;
     const body = req.body;
     const files = req.files as Express.Multer.File[];
+
     const normalized = Object.fromEntries(
       Object.entries(req.body).map(([key, value]) => [
         key,
@@ -86,13 +88,13 @@ export const addProperty = async (req: Request, res: Response) => {
       buffer: file.buffer,
       mimetype: file.mimetype,
       originalname: file.originalname,
+      size: file.size
     }));
 
     const result = await createListingFunction({
       body: parsed,
       imageFiles: adaptedFiles,
     });
-    console.log(result);
 
     if (result.listing.verified) {
       triggerFrontendUpdate("properties");
@@ -533,6 +535,7 @@ export async function updateProperty(req: Request, res: Response) {
       buffer: file.buffer,
       mimetype: file.mimetype,
       originalname: file.originalname,
+      size: file.size
     }));
 
     const result = await updateListingFunction({

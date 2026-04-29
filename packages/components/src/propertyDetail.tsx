@@ -151,7 +151,7 @@ export default function AdminPropertyDetailComponent() {
             <button className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all border ${property.isActive
               ? "border-amber-500 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20"
               : "bg-amber-500 hover:bg-amber-600 text-white"
-              }`} onClick={handleActiveToggle}>
+              }`} onClick={handleActiveToggle} disabled={activePending}>
               {/* <Trash2 size={20} /> */}
               {/* <Trash2 size={18} fill={property.isActive ? "currentColor" : "none"} /> */}
               {property.isActive ? "Deactivate" : "Activate"}

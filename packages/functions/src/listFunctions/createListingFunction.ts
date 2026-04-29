@@ -8,19 +8,16 @@ import { AppError } from "../error.js";
 import { randomUUID } from "crypto";
 import { UploadedFile } from "../authFunctions/addUserFunction.js";
 
-
 const IMAGE_DIR = "/var/www/ekPratisatMonorepo/images/propertyImage";
 const MAX_CONCURRENT_IMAGES = 5; // limit parallel Sharp processes
 
 export async function createListingFunction({
   body,
-  imageFiles
+  imageFiles,
 }: {
   body: any;
   imageFiles: UploadedFile[];
 }) {
-  
-
   const parsed = createPropertySchema.safeParse(body);
   if (!parsed.success) throw new AppError(422, "Validation Failed!!!");
 
@@ -28,22 +25,65 @@ export async function createListingFunction({
   const limit = pLimit(MAX_CONCURRENT_IMAGES);
 
   // Process images in parallel, streaming to disk immediately
+  // const imageUrls = await Promise.all(
+  //   imageFiles.map((file) =>
+  //     limit(async () => {
+  //       // const safeName = path.basename(file.originalname);
+  //       // const finalFilename = `${Date.now()}-${safeName.replace(path.extname(safeName), ".webp")}`;
+  //       const ext = path.extname(file.originalname);
+  //       const baseName = path
+  //         .basename(file.originalname, ext)
+  //         .replace(/\s+/g, "-")
+  //         .replace(/[^a-zA-Z0-9-_]/g, "")
+  //         .toLowerCase();
+
+  //       const finalFilename = `${Date.now()}-${baseName || "property-image"}.webp`;
+  //       const filePath = path.join(IMAGE_DIR, finalFilename);
+
+  //       await sharp(Buffer.from(file.buffer))
+  //         .resize(1200)
+  //         .toFormat("webp", { quality: 90 })
+  //         .toFile(filePath);
+
+  //       return `/image/propertyImage/${finalFilename}`;
+  //     }),
+  //   ),
+  // );
+
   const imageUrls = await Promise.all(
-    imageFiles.map((file) =>
-      limit(async () => {
-        const safeName = path.basename(file.originalname);
-        const finalFilename = `${Date.now()}-${safeName.replace(path.extname(safeName), ".webp")}`;
-        const filePath = path.join(IMAGE_DIR, finalFilename);
+  imageFiles.map((file) =>
+    limit(async () => {
+      const ext = path.extname(file.originalname);
 
-        await sharp(Buffer.from(file.buffer))
-          .resize(1200)
-          .toFormat("webp", { quality: 90 })
-          .toFile(filePath);
+      const baseName = path
+        .basename(file.originalname, ext)
+        .replace(/\s+/g, "-")
+        .replace(/[^a-zA-Z0-9-_]/g, "")
+        .toLowerCase();
 
-        return `/image/propertyImage/${finalFilename}`;
-      })
-    )
-  );
+      const finalFilename = `${Date.now()}-${baseName || "property-image"}.webp`;
+      const filePath = path.join(IMAGE_DIR, finalFilename);
+
+      const fileSizeMB = file.size / (1024 * 1024);
+
+      let sharpInstance = sharp(Buffer.from(file.buffer));
+
+      // Always convert to webp
+      // Only resize/compress aggressively if file > 1MB
+      if (fileSizeMB > 1) {
+        sharpInstance = sharpInstance.resize(1600);
+      }
+
+      await sharpInstance
+        .toFormat("webp", {
+          quality: fileSizeMB > 1 ? 85 : 90,
+        })
+        .toFile(filePath);
+
+      return `/image/propertyImage/${finalFilename}`;
+    })
+  )
+);
 
   const { images: _images, lat, lng, ...data } = parsed.data;
 
@@ -125,8 +165,8 @@ export async function createListingFunction({
     "floorLevel",
     "tole";
 `;
-      if(!inserted.length){
-        throw new AppError(404, "Property creation failed!!!")
+      if (!inserted.length) {
+        throw new AppError(404, "Property creation failed!!!");
       }
       const propertyRow = inserted[0];
 
