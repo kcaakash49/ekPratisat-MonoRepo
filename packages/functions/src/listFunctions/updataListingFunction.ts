@@ -25,22 +25,58 @@ export async function updateListingFunction({
 }) {
   const limit = pLimit(MAX_CONCURRENT_IMAGES);
 
-  const imageUrls = await Promise.all(
+  // const imageUrls = await Promise.all(
+  //   imageFiles.map((file) =>
+  //     limit(async () => {
+  //       const safeName = path.basename(file.originalname);
+  //       const finalFilename = `${Date.now()}-${safeName.replace(path.extname(safeName), ".webp")}`;
+  //       const filePath = path.join(IMAGE_DIR, finalFilename);
+
+  //       await sharp(Buffer.from(file.buffer))
+  //         .resize(1200)
+  //         .toFormat("webp", { quality: 90 })
+  //         .toFile(filePath);
+
+  //       return `/image/propertyImage/${finalFilename}`;
+  //     }),
+  //   ),
+  // );
+
+   const imageUrls = await Promise.all(
     imageFiles.map((file) =>
       limit(async () => {
-        const safeName = path.basename(file.originalname);
-        const finalFilename = `${Date.now()}-${safeName.replace(path.extname(safeName), ".webp")}`;
+        const ext = path.extname(file.originalname);
+  
+        const baseName = path
+          .basename(file.originalname, ext)
+          .replace(/\s+/g, "-")
+          .replace(/[^a-zA-Z0-9-_]/g, "")
+          .toLowerCase();
+  
+        const finalFilename = `${Date.now()}-${baseName || "property-image"}.webp`;
         const filePath = path.join(IMAGE_DIR, finalFilename);
-
-        await sharp(Buffer.from(file.buffer))
-          .resize(1200)
-          .toFormat("webp", { quality: 90 })
+  
+        const fileSizeMB = file.size / (1024 * 1024);
+  
+        let sharpInstance = sharp(Buffer.from(file.buffer));
+  
+        // Always convert to webp
+        // Only resize/compress aggressively if file > 1MB
+        if (fileSizeMB > 1) {
+          sharpInstance = sharpInstance.resize(1600);
+        }
+  
+        await sharpInstance
+          .toFormat("webp", {
+            quality: fileSizeMB > 1 ? 85 : 90,
+          })
           .toFile(filePath);
-
+  
         return `/image/propertyImage/${finalFilename}`;
-      }),
-    ),
+      })
+    )
   );
+  
   const data = body;
   const deleteImageIds: string[] = Array.isArray(body.deleteImageIds)
     ? body.deleteImageIds
