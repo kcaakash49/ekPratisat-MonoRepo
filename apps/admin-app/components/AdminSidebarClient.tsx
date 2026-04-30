@@ -135,6 +135,10 @@ export default function AdminSidebarClient() {
         </div>
 
         <div className="mt-auto flex flex-col space-y-3 text-sm">
+           <div className="flex items-center justify-center">
+            <ToggleTheme />
+
+          </div>
           <button
             onClick={async () => {
               const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signout`, {
@@ -154,8 +158,7 @@ export default function AdminSidebarClient() {
           >
             Log Out
           </button>
-
-          <ToggleTheme />
+         
         </div>
       </nav>
     </>

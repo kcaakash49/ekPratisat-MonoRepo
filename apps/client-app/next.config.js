@@ -5,7 +5,7 @@ const nextConfig = {
   ...baseConfig,
   reactStrictMode: true,
    images: {
-    domains: ['192.168.2.249', 'www.ekpratishat.com', "images.unsplash.com",'192.168.0.102'], 
+    domains: ['192.168.2.249', 'www.ekpratishat.com', "images.unsplash.com",'192.168.0.103'], 
     remotePatterns: [
       {
         protocol: 'http',
@@ -14,7 +14,7 @@ const nextConfig = {
       },
       {
         protocol: 'http',
-        hostname: '192.168.0.102',
+        hostname: '192.168.0.103',
         pathname: '/**',
       },
       {
