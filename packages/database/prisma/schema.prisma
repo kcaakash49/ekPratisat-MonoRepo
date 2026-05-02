@@ -142,6 +142,7 @@ model Category {
 
 model Property {
   id              String                               @unique @default(uuid())
+  propertyCode    Int                                  @unique @default(autoincrement())
   title           String
   description     String
   price           String
@@ -183,8 +184,8 @@ model Favourite {
   userId     String
   propertyId String
 
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property  Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
   @@unique([userId, propertyId])
@@ -199,6 +200,7 @@ model District {
   addedById      String
   addedBy        User           @relation(fields: [addedById], references: [id])
   createdAt      DateTime       @default(now())
+
   @@index([name])
 }
 
@@ -211,6 +213,7 @@ model Municipality {
   addedById  String
   addedBy    User     @relation(fields: [addedById], references: [id])
   createdAt  DateTime @default(now())
+
   @@index([name])
 }
 
@@ -233,6 +236,7 @@ model Image {
   url        String
   propertyId String
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
   @@index([propertyId])
 }
 
