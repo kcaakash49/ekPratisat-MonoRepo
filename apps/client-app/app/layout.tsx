@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ClientProvider } from "./clientProvider";
 import { Toaster } from "sonner";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: {
@@ -36,7 +37,7 @@ export const metadata: Metadata = {
     images: ["/ogMedia.png"],
   },
 };
-
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -47,8 +48,28 @@ export default function RootLayout({
       <body>
         <ClientProvider>
           {children}
-          <Toaster richColors position="top-center" duration={1500}/>
+          <Toaster richColors position="top-center" duration={1500} />
         </ClientProvider>
+        {
+          GA_ID && (
+            <>
+              <Script
+                src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+                strategy="afterInteractive"
+              />
+
+              <Script id="google-analytics" strategy="afterInteractive">
+                {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_ID}');
+          `}
+              </Script>
+
+            </>
+          )
+        }
       </body>
     </html>
   );
