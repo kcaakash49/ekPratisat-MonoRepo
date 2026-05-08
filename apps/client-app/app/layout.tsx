@@ -7,18 +7,24 @@ import Script from "next/script";
 
 export const metadata: Metadata = {
   title: {
-    default: "Ek Pratishat | Premium Real Estate in Nepal",
-    template: "%s | Ek Pratishat"
+    default: "EkPratishat Real Estate",
+    template: "%s | EkPratishat"
+  },
+   verification: {
+    other: {
+      "trustpilot-one-time-domain-verification-id":
+        "40841453-68cb-47da-b044-5fc7a9af9f80",
+    },
   },
   description: "Buy, sell, and rent premium properties with 1% commission. The most trusted real estate marketplace for luxury homes, land, and commercial spaces.",
   keywords: ["Real Estate Nepal", "Property Listing", "Buy House Nepal", "1 Percent Commission", "Luxury Homes", "Rent rooms", "Rent flat"],
-  authors: [{ name: "Ek Pratishat Team" }],
-  creator: "Ek Pratishat",
+  authors: [{ name: "EkPratishat Team" }],
+  creator: "EkPratishat",
   openGraph: {
-    title: "Ek Pratishat | Premium Real Estate",
+    title: "EkPratishat Real Estate",
     description: "Discover your dream property with just 1% commission. Transparent, reliable, and premium real estate services.",
     url: "https://ekpratishat.com",
-    siteName: "Ek Pratishat",
+    siteName: "EkPratishat",
     images: [
       {
         url: "/ogMedia.png",
@@ -32,7 +38,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ek Pratishat | Real Estate",
+    title: "EkPratishat Real Estate",
     description: "Find your perfect home with Nepal's premium property marketplace.",
     images: ["/ogMedia.png"],
   },
