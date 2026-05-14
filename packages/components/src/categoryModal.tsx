@@ -2,7 +2,7 @@
 
 import { useCreateCategory } from "@repo/query-hook";
 import ButtonLoader from "@repo/ui/buttonLoader";
-import { CategorySchema, SessionUser } from "@repo/validators";
+import { CategorySchema } from "@repo/validators";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { toast } from "sonner";
@@ -91,10 +91,10 @@ export const CategoryModal: React.FC<Props> = ({ onClose, user }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 dark:bg-black/60 z-50 p-2 overflow-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-black/45 p-2 backdrop-blur-[2px] dark:bg-black/60">
   <form
     onSubmit={handleSubmit}
-    className="bg-white dark:bg-secondary-800 rounded-lg shadow-lg w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl p-4 sm:p-6 md:p-8 m-auto"
+    className="ek-form-shell m-auto w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl"
   >
     <h2 className="text-xl sm:text-2xl font-bold mb-4 text-secondary-900 dark:text-secondary-50">
       Add Category
@@ -164,13 +164,13 @@ export const CategoryModal: React.FC<Props> = ({ onClose, user }) => {
       <button
         type="button"
         onClick={onClose}
-        className="px-4 py-2 rounded bg-secondary-300 dark:bg-secondary-700 text-secondary-900 dark:text-secondary-50 hover:bg-secondary-400 dark:hover:bg-secondary-600"
+        className="ek-secondary-button"
       >
         Cancel
       </button>
       <button
         type="submit"
-        className="px-4 py-2 rounded bg-primary-500 dark:bg-primary-600 text-white hover:bg-primary-600 dark:hover:bg-primary-700"
+        className="ek-primary-button"
       >
         {createCategory.isPending ? <ButtonLoader /> : "Add"}
       </button>

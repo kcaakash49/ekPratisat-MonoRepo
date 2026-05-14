@@ -121,7 +121,7 @@ export default function DeletePropertyButton({ id, isActive }: Props) {
                         <Button
                             onClick={handleDelete}
                             disabled={isConfirmButtonDisabled}
-                            className="bg-primary-600 hover:bg-primary-700 text-white"
+                            className="bg-red-600 text-white hover:bg-red-700"
                         >
                             {isPending ? "Deleting........" : "Delete"}
                         </Button>
