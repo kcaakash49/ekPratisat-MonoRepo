@@ -17,7 +17,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useUser } from "@repo/query-hook";
-import type { User } from "@repo/query-hook";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import ScrollLogoTransition from "./hero/ScrollLogoTransition";
@@ -73,21 +72,22 @@ const getUserInitials = (name?: string | null) => {
     .join("");
 };
 
-type NavbarProps = {
-  initialUser?: User;
-};
-
-const Navbar = ({ initialUser }: NavbarProps) => {
+const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { data: user, isLoading } = useUser(initialUser);
+  const { data: user, isLoading } = useUser();
   const { isMounted: isHeroPerformanceMounted } = useHeroPerformanceMode();
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
   const [homeLogoOwner, setHomeLogoOwner] = useState<HomeLogoOwner>("hero");
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!user) setIsAccountOpen(false);
@@ -230,7 +230,7 @@ const Navbar = ({ initialUser }: NavbarProps) => {
     : isSolid;
   const showHandoffNavLogo =
     isHomePage && !shouldUseScrollLogo && homeLogoOwner === "transitioning";
-  const shouldShowAuthControl = !isLoading;
+  const shouldShowAuthControl = mounted && !isLoading;
   const userInitials = getUserInitials(user?.name);
 
   useEffect(() => {

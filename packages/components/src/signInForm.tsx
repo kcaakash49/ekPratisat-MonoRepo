@@ -5,7 +5,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Lock, Phone, Eye, EyeOff } from "lucide-react";
 import { Button } from "@repo/ui/button";
 import Link from "next/link";
@@ -26,12 +26,6 @@ export default function SignInForm({ label }: SignInProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const nextPath = searchParams.get("next");
-  const safeNextPath =
-    nextPath && nextPath.startsWith("/") && !nextPath.startsWith("//")
-      ? nextPath
-      : "/";
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,11 +40,10 @@ export default function SignInForm({ label }: SignInProps) {
       onSuccess: (data) => {
         if (data?.ok) {
           toast.success("Login Successful!!!");
-          queryClient.setQueryData(["user-info"], data.user ?? null);
           queryClient.invalidateQueries({
             queryKey: ["user-info"],
           });
-          router.replace(safeNextPath);
+          router.replace("/");
         } else if (data?.error) {
           toast.error(data.error || "Something Happened");
         } else {

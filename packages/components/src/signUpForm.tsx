@@ -95,7 +95,6 @@ export default function SignupForm() {
         signupMutation.mutate(formData, {
             onSuccess: (data) => {
                 toast.success("Signup and Logged in Successfully!!!");
-                queryClient.setQueryData(["user-info"], data?.result?.user ?? null);
                 queryClient.invalidateQueries({
                     queryKey:["user-info"]
                 })
