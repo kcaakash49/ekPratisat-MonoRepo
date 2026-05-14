@@ -27,18 +27,12 @@ export default function EditPropertyPage() {
     } = useFetchPropertyDetail(params.id as string);
     const { data: user, isLoading: userLoading } = useUser();
 
-     useEffect(() => {
+    useEffect(() => {
         setIsMounted(true);
     }, []);
 
-    useEffect(() => {
-        if (isMounted && !userLoading && !user) {
-            router.replace("/auth/signin");
-        }
-    }, [isMounted, userLoading, user, router]);
 
-
-    if (isLoading || userLoading || !isMounted || !user) {
+    if (isLoading || userLoading || !isMounted) {
         return (
             <div className="min-h-screen flex items-center justify-center"><PageLoading/></div>
         )
