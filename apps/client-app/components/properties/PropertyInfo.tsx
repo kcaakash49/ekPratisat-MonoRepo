@@ -1,12 +1,9 @@
 import { PropertyDetailClientProps } from "./PropertyDetailClient";
 import {
-  HeartIcon,
-  ShareIcon,
   MapPinIcon,
   HomeIcon,
   ArrowsPointingOutIcon,
   CalendarIcon,
-  CheckBadgeIcon,
   BuildingOfficeIcon,
   CursorArrowRippleIcon,
   DocumentTextIcon,
@@ -39,33 +36,33 @@ export default function PropertyInfo({property}:PropertyDetailClientProps){
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Description */}
-            <div className="bg-white dark:bg-secondary-800/50 rounded-2xl p-6 border border-secondary-100 dark:border-secondary-700">
-              <h2 className="text-xl font-semibold text-secondary-900 dark:text-white mb-4 flex items-center gap-2">
+            <div className="rounded-2xl border border-[var(--ek-border-soft)] bg-[var(--ek-bg-card)] p-6 shadow-sm dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)]">
+              <h2 className="text-xl font-semibold text-[var(--ek-text-primary)] dark:text-[var(--ek-dark-text)] mb-4 flex items-center gap-2">
                 <DocumentTextIcon className="w-5 h-5 text-gold" />
                 Description
               </h2>
-              <p className="text-secondary-600 dark:text-secondary-300 leading-relaxed whitespace-break-spaces">
+              <p className="text-[var(--ek-text-secondary)] dark:text-[var(--ek-dark-muted)] leading-relaxed whitespace-break-spaces">
                 {property.description || "No description provided."}
               </p>
             </div>
 
             {/* Specifications */}
-            <div className="bg-white dark:bg-secondary-800/50 rounded-2xl p-6 border border-secondary-100 dark:border-secondary-700">
-              <h2 className="text-xl font-semibold text-secondary-900 dark:text-white mb-6">
+            <div className="rounded-2xl border border-[var(--ek-border-soft)] bg-[var(--ek-bg-card)] p-6 shadow-sm dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)]">
+              <h2 className="text-xl font-semibold text-[var(--ek-text-primary)] dark:text-[var(--ek-dark-text)] mb-6">
                 Specifications
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {specifications.map((spec, idx) => (
                   <div
                     key={idx}
-                    className="flex items-start gap-3 p-3 rounded-xl bg-secondary-50 dark:bg-secondary-800/80"
+                    className="flex items-start gap-3 rounded-xl bg-[var(--ek-bg-card-soft)] p-3 dark:bg-[var(--ek-dark-elevated)]"
                   >
                     <spec.icon className="w-5 h-5 text-gold mt-0.5" />
                     <div>
                       <p className="text-xs text-secondary-500 dark:text-secondary-400 uppercase tracking-wide">
                         {spec.label}
                       </p>
-                      <p className="text-secondary-900 dark:text-white font-medium capitalize">
+                      <p className="text-[var(--ek-text-primary)] dark:text-[var(--ek-dark-text)] font-medium capitalize">
                         {spec.value}
                       </p>
                     </div>
@@ -78,14 +75,14 @@ export default function PropertyInfo({property}:PropertyDetailClientProps){
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Agent Card */}
-            <div className="bg-white dark:bg-secondary-800/50 rounded-2xl p-6 border border-secondary-100 dark:border-secondary-700 text-center">
+            <div className="rounded-2xl border border-[var(--ek-border-soft)] bg-[var(--ek-bg-card)] p-6 text-center shadow-sm dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)]">
               <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gold-gradient flex items-center justify-center">
-                <span className="text-2xl font-bold text-white">A</span>
+                <span className="text-2xl font-bold text-[#151006]">A</span>
               </div>
-              <h3 className="text-lg font-semibold text-secondary-900 dark:text-white">
+              <h3 className="text-lg font-semibold text-[var(--ek-text-primary)] dark:text-[var(--ek-dark-text)]">
                 Verified By
               </h3>
-              <p className="text-secondary-500 dark:text-secondary-400 text-sm mt-1">
+              <p className="text-[var(--ek-text-muted)] dark:text-[var(--ek-dark-soft)] text-sm mt-1">
                 Licensed Real Estate Professional
               </p>
               {/* <button className="w-full mt-4 py-2 rounded-lg bg-gold-gradient text-white font-medium hover:bg-gold-gradient-hover transition-colors">
@@ -98,34 +95,34 @@ export default function PropertyInfo({property}:PropertyDetailClientProps){
 
             {/* Location Info */}
             {property.location && (
-              <div className="bg-white dark:bg-secondary-800/50 rounded-2xl p-6 border border-secondary-100 dark:border-secondary-700">
-                <h3 className="text-lg font-semibold text-secondary-900 dark:text-white mb-4 flex items-center gap-2">
+              <div className="rounded-2xl border border-[var(--ek-border-soft)] bg-[var(--ek-bg-card)] p-6 shadow-sm dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)]">
+                <h3 className="text-lg font-semibold text-[var(--ek-text-primary)] dark:text-[var(--ek-dark-text)] mb-4 flex items-center gap-2">
                   <MapPinIcon className="w-5 h-5 text-gold" />
                   Location Details
                 </h3>
                 <div className="space-y-3 text-sm">
                   <div>
                     <span className="text-secondary-500 dark:text-secondary-400">District:</span>
-                    <p className="text-secondary-900 dark:text-white font-medium">
+                    <p className="text-[var(--ek-text-primary)] dark:text-[var(--ek-dark-text)] font-medium">
                       {property.location.municipality.district.name}
                     </p>
                   </div>
                   <div>
                     <span className="text-secondary-500 dark:text-secondary-400">Municipality:</span>
-                    <p className="text-secondary-900 dark:text-white font-medium">
+                    <p className="text-[var(--ek-text-primary)] dark:text-[var(--ek-dark-text)] font-medium">
                       {property.location.municipality.name}
                     </p>
                   </div>
                   <div>
                     <span className="text-secondary-500 dark:text-secondary-400">Ward:</span>
-                    <p className="text-secondary-900 dark:text-white font-medium">
+                    <p className="text-[var(--ek-text-primary)] dark:text-[var(--ek-dark-text)] font-medium">
                       {property.location.name}
                     </p>
                   </div>
                   {property.tole && (
                     <div>
                       <span className="text-secondary-500 dark:text-secondary-400">Tole:</span>
-                      <p className="text-secondary-900 dark:text-white font-medium">
+                      <p className="text-[var(--ek-text-primary)] dark:text-[var(--ek-dark-text)] font-medium">
                         {property.tole}
                       </p>
                     </div>
@@ -135,8 +132,8 @@ export default function PropertyInfo({property}:PropertyDetailClientProps){
             )}
 
             {/* Posted Date */}
-            <div className="bg-white dark:bg-secondary-800/50 rounded-2xl p-6 border border-secondary-100 dark:border-secondary-700">
-              <h3 className="text-lg font-semibold text-secondary-900 dark:text-white mb-2 flex items-center gap-2">
+            <div className="rounded-2xl border border-[var(--ek-border-soft)] bg-[var(--ek-bg-card)] p-6 shadow-sm dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)]">
+              <h3 className="text-lg font-semibold text-[var(--ek-text-primary)] dark:text-[var(--ek-dark-text)] mb-2 flex items-center gap-2">
                 <CalendarIcon className="w-5 h-5 text-gold" />
                 Posted On
               </h3>

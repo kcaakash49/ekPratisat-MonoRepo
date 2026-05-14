@@ -10,13 +10,13 @@ export async function Categories() {
     if (categories.length === 0) return null;
 
     return (
-        <section id="category-section" className="bg-white dark:bg-secondary-900 py-16 transition-colors duration-300">
+        <section id="category-section" className="bg-[var(--ek-bg-card)] py-16 transition-colors duration-200 [content-visibility:auto] [contain-intrinsic-size:1px_760px] dark:bg-[var(--ek-dark-page)]">
             <div className="max-w-7xl mx-auto px-6">
                 {/* Section Header */}
                 <div className="text-center mb-12">
-                    <span className="text-gold font-bold tracking-[0.2em] text-sm uppercase">Explore by Type</span>
-                    <h2 className="text-secondary-900 dark:text-white text-3xl md:text-4xl font-black mt-2">
-                        Browse <span className="text-gold">Properties</span>
+                    <span className="text-[var(--ek-gold-text)] font-bold tracking-[0.2em] text-sm uppercase dark:text-[var(--ek-dark-gold)]">Explore by Type</span>
+                    <h2 className="text-[var(--ek-text-primary)] dark:text-[var(--ek-dark-text)] text-3xl md:text-4xl font-black mt-2">
+                        Browse <span className="text-[var(--ek-gold-text)] dark:text-[var(--ek-dark-gold)]">Properties</span>
                     </h2>
                     <div className="h-1 w-20 bg-gold-gradient mx-auto mt-4 rounded-full" />
                 </div>

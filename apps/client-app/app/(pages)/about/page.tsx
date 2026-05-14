@@ -11,11 +11,11 @@ import {
   MarketingPageSection,
   PageCta,
   ServiceFeaturedCard,
-} from "../../../components/marketing/MarketingSections"
+} from "../../../components/marketing/MarketingSections";
 
 export default function AboutPage() {
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-[#f8f5ef] text-secondary-900 selection:bg-gold-500/30">
+    <div className="relative min-h-screen overflow-x-hidden bg-[#f8f5ef] text-secondary-900 selection:bg-gold-500/30 dark:bg-[var(--ek-dark-page)] dark:text-[var(--ek-dark-text)]">
       <AboutIntroMotion />
 
       <MarketingPageSection>
@@ -70,25 +70,24 @@ export default function AboutPage() {
             <div
               className="aspect-[4/3] h-full min-h-[320px] bg-cover bg-center transition duration-700 hover:scale-105"
               style={{
-                backgroundImage:
-                  "url('https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80')",
+                backgroundImage: "url('/marketing/about-belief-1200.jpg')",
               }}
               role="img"
               aria-label="Modern property exterior"
             />
           </div>
 
-          <div className="motion-reveal-left flex flex-col justify-center rounded-[20px] border border-[#e2d9c8] bg-[#f8f5ef] px-8 py-10 sm:px-10">
+          <div className="motion-reveal-left flex flex-col justify-center rounded-[20px] border border-[#e2d9c8] bg-[#f8f5ef] px-8 py-10 dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)] sm:px-10">
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-gold-700">
               What We Believe
             </p>
 
-            <blockquote className="mt-4 max-w-3xl text-3xl font-black leading-[1.08] text-secondary-900 sm:text-4xl">
+            <blockquote className="mt-4 max-w-3xl text-3xl font-black leading-[1.08] text-secondary-900 dark:text-[var(--ek-dark-text)] sm:text-4xl">
               Property should feel easier to understand before it becomes a big
               decision.
             </blockquote>
 
-            <p className="mt-6 max-w-2xl text-[15px] leading-8 text-secondary-600">
+            <p className="mt-6 max-w-2xl text-[15px] leading-8 text-secondary-600 dark:text-[var(--ek-dark-muted)]">
               The role of EkPratishat is not only to show properties. It is to
               make the process around property feel clearer: who the property is
               for, what needs to be checked, what documents matter, and what the
@@ -108,7 +107,7 @@ export default function AboutPage() {
               ].map(({ icon: Icon, title }) => (
                 <div
                   key={title}
-                  className="flex items-center gap-3 rounded-[16px] border border-[#e2d9c8] bg-white px-4 py-4 text-sm font-semibold text-secondary-800"
+                  className="flex items-center gap-3 rounded-[16px] border border-[#e2d9c8] bg-white px-4 py-4 text-sm font-semibold text-secondary-800 dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-elevated)] dark:text-[var(--ek-dark-text)]"
                 >
                   <Icon className="h-5 w-5 text-gold-700" strokeWidth={1.5} />
                   {title}

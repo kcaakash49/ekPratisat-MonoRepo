@@ -4,18 +4,10 @@
 import { useState } from "react";
 import Image from "next/image";
 import {
-  HeartIcon,
   ShareIcon,
   MapPinIcon,
-  HomeIcon,
-  ArrowsPointingOutIcon,
-  CalendarIcon,
   CheckBadgeIcon,
-  BuildingOfficeIcon,
-  CursorArrowRippleIcon,
-  DocumentTextIcon,
 } from "@heroicons/react/24/outline";
-import { HeartIcon as HeartSolidIcon } from "@heroicons/react/24/solid";
 import FavouriteButton from "./FavouriteButton";
 import { toast } from "sonner";
 
@@ -99,14 +91,14 @@ export function PropertyDetailClient({ property }: PropertyDetailClientProps) {
   const images = property.images.length > 0 ? property.images : [{ url: "/placeholder-property.jpg" }];
 
   return (
-    <div className={`transition-colors duration-300}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main className="min-h-screen bg-[#f7f3ea] text-[#10151f] transition-colors duration-200 dark:bg-[#171512] dark:text-[#f7f1e3]">
+    <div className="ek-nav-safe-page mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8 lg:pb-16">
         {/* Header with actions */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
             <div className="flex items-center gap-3 flex-wrap">
               {property.isFeatured && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gold/20 text-gold border border-gold/30">
+                <span className="inline-flex items-center rounded-full border border-[var(--ek-border-soft)] bg-[rgba(214,169,54,0.12)] px-3 py-1 text-xs font-semibold text-[var(--ek-gold-text)] dark:border-[var(--ek-dark-border)] dark:bg-[rgba(229,184,62,0.12)] dark:text-[var(--ek-dark-gold)]">
                   <CheckBadgeIcon className="w-3.5 h-3.5 mr-1" />
                   Featured
                 </span>
@@ -114,11 +106,11 @@ export function PropertyDetailClient({ property }: PropertyDetailClientProps) {
               <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 uppercase">
                 {property.type || "Property"}
               </span>
-              <span className="text-secondary-500 dark:text-secondary-400 text-sm">
+              <span className="text-secondary-500 dark:text-[var(--ek-dark-soft)] text-sm">
                 Listed on {formattedDate}
               </span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-secondary-900 dark:text-white mt-3">
+            <h1 className="text-3xl sm:text-4xl font-bold text-[var(--ek-text-primary)] dark:text-[var(--ek-dark-text)] mt-3">
               {property.title}
             </h1>
             <div className="flex items-center gap-2 mt-2 text-secondary-600 dark:text-secondary-300">
@@ -145,7 +137,7 @@ export function PropertyDetailClient({ property }: PropertyDetailClientProps) {
               </span>
             </button> */}
             <FavouriteButton property={property}/>
-            <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-secondary-200 dark:border-secondary-700 hover:border-gold dark:hover:border-gold transition-all duration-200 bg-white dark:bg-secondary-800" onClick={handleShare}>
+            <button className="flex items-center gap-2 rounded-xl border border-[var(--ek-border-soft)] bg-[var(--ek-bg-card)] px-4 py-2 transition-colors duration-200 hover:border-[var(--ek-border-strong)] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)] dark:hover:border-[var(--ek-dark-border-strong)]" onClick={handleShare}>
               <ShareIcon className="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
               <span className="text-secondary-700 dark:text-secondary-300">Share</span>
             </button>
@@ -199,25 +191,26 @@ export function PropertyDetailClient({ property }: PropertyDetailClientProps) {
         </div>
 
         {/* Price and CTA */}
-        <div className="bg-gradient-to-r from-gold/10 to-gold/5 dark:from-gold/5 dark:to-transparent rounded-2xl p-6 mb-8 border border-gold/20">
+        <div className="mb-8 rounded-2xl border border-[var(--ek-border-soft)] bg-[linear-gradient(135deg,rgba(214,169,54,0.11),rgba(255,253,248,0.82))] p-6 dark:border-[var(--ek-dark-border)] dark:bg-[linear-gradient(135deg,rgba(229,184,62,0.1),rgba(33,28,20,0.88))]">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <span className="text-sm text-secondary-500 dark:text-secondary-400 uppercase tracking-wide">
                 Price
               </span>
-              <p className="text-4xl font-bold text-gold">{formattedPrice}</p>
+              <p className="text-4xl font-bold text-[var(--ek-gold-text)] dark:text-[var(--ek-dark-gold)]">{formattedPrice}</p>
             </div>
             <div className="flex gap-3">
-              <button className="px-8 py-3 rounded-xl bg-gold-gradient hover:bg-gold-gradient-hover text-white font-semibold transition-all duration-200 shadow-lg hover:shadow-xl">
+              <button className="rounded-xl bg-gold-gradient px-8 py-3 font-semibold text-[#151006] shadow-sm shadow-gold-800/15 transition-transform duration-200 hover:-translate-y-0.5 hover:bg-gold-gradient-hover active:translate-y-0">
                 Contact Agent
               </button>
-              <button className="px-8 py-3 rounded-xl border-2 border-gold text-gold hover:bg-gold/10 font-semibold transition-all duration-200">
+              <button className="rounded-xl border border-[var(--ek-border-strong)] px-8 py-3 font-semibold text-[var(--ek-gold-text)] transition-colors duration-200 hover:bg-[rgba(214,169,54,0.1)] dark:border-[var(--ek-dark-border-strong)] dark:text-[var(--ek-dark-gold)] dark:hover:bg-[rgba(229,184,62,0.1)]">
                 Schedule Visit
               </button>
             </div>
           </div>
         </div>   
       </div>
-    </div>
+    </main> 
+    
   );
 }

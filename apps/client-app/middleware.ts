@@ -23,7 +23,12 @@ export async function middleware(req: NextRequest) {
   // 🔴 PROTECTED ROUTES (/admin)
   if (pathname.startsWith("/user")) {
     if (!isValidToken) {
-      return NextResponse.redirect(new URL("/auth/signin", req.url));
+      const signinUrl = new URL("/auth/signin", req.url);
+      signinUrl.searchParams.set(
+        "next",
+        `${pathname}${req.nextUrl.search}`,
+      );
+      return NextResponse.redirect(signinUrl);
     }
     return NextResponse.next();
   }

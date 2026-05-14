@@ -36,7 +36,7 @@ const serviceHighlights = [
 
 export default function ServicesPage() {
   return (
-    <div className="bg-[#f8f5ef]">
+    <div className="bg-[#f8f5ef] text-secondary-900 dark:bg-[var(--ek-dark-page)] dark:text-[var(--ek-dark-text)]">
       <PageHero
         eyebrow="Services"
         title="Complete real estate support for every property move."
@@ -44,7 +44,7 @@ export default function ServicesPage() {
         primaryCta={{ href: "/contact", label: "Talk To Us" }}
         secondaryCta={{ href: "/properties", label: "Explore Properties" }}
         stats={[
-          { value: "Buy", label: "Property", href: "/properties?type=buy" },
+          { value: "Buy", label: "Property", href: "/properties?type=sale" },
           { value: "Sell", label: "With Support", href: "/user/add-property" },
           { value: "Rent", label: "Or Lease", href: "/properties?type=rent" },
           { value: "List", label: "As Owner", href: "/user/add-property" },
@@ -67,23 +67,23 @@ export default function ServicesPage() {
         />
 
         <div className="grid gap-4 lg:grid-cols-[1.45fr_1fr] lg:grid-rows-2">
-          <div className="group relative row-span-2 overflow-hidden rounded-[20px] bg-secondary-900 p-9 lg:p-12">
+          <div className="group relative row-span-2 overflow-hidden rounded-[20px] bg-secondary-900 p-9 dark:bg-[var(--ek-dark-surface)] lg:p-12">
             <div className="absolute inset-x-0 top-0 h-1 bg-gold-gradient" />
             <Search className="mb-8 h-6 w-6 text-gold-500" strokeWidth={1.5} />
             <h3 className="text-[1.85rem] font-bold leading-snug text-white">
               Property Search
             </h3>
-            <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-secondary-400">
+            <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-secondary-400 dark:text-[var(--ek-dark-muted)]">
               For buyers and tenants who want a clearer way to find the right
               property, without wasting time on confusing or incomplete listings.
             </p>
-            <div className="mt-10 space-y-3 border-t border-white/10 pt-8">
+            <div className="mt-10 space-y-3 border-t border-white/10 pt-8 dark:border-[var(--ek-dark-border)]">
               {[
                 "Homes, flats, land, and commercial spaces",
                 "Buying, renting, lease, and sublet options",
                 "Shortlisting support for serious inquiries",
               ].map((item) => (
-                <p key={item} className="text-[13px] leading-relaxed text-secondary-300">
+                <p key={item} className="text-[13px] leading-relaxed text-secondary-300 dark:text-[var(--ek-dark-muted)]">
                   - {item}
                 </p>
               ))}
@@ -93,32 +93,32 @@ export default function ServicesPage() {
             </div>
           </div>
 
-          <div className="group relative overflow-hidden rounded-[20px] border border-[#e2d9c8] bg-[#fdfaf5] p-8 transition duration-300 hover:bg-white">
+          <div className="group relative overflow-hidden rounded-[20px] border border-[#e2d9c8] bg-[#fdfaf5] p-8 transition duration-300 hover:bg-white dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)] dark:hover:bg-[var(--ek-dark-card-soft)]">
             <Building2 className="mb-5 h-5 w-5 text-gold-700" strokeWidth={1.5} />
-            <h3 className="text-[1.35rem] font-bold leading-snug text-secondary-900">
+            <h3 className="text-[1.35rem] font-bold leading-snug text-secondary-900 dark:text-[var(--ek-dark-text)]">
               Property Listing
             </h3>
-            <p className="mt-3 text-[13px] leading-relaxed text-secondary-500">
+            <p className="mt-3 text-[13px] leading-relaxed text-secondary-500 dark:text-[var(--ek-dark-muted)]">
               For owners and landlords who want their property presented properly,
               with a more organized process from day one.
             </p>
-            <div className="mt-6 space-y-2 text-[12px] text-secondary-400">
+            <div className="mt-6 space-y-2 text-[12px] text-secondary-400 dark:text-[var(--ek-dark-soft)]">
               <p>- Sale and rental listing support</p>
               <p>- Property details prepared clearly</p>
               <p>- Better presentation for genuine prospects</p>
             </div>
           </div>
 
-          <div className="group relative overflow-hidden rounded-[20px] border border-[#e2d9c8] bg-white p-8 transition duration-300 hover:bg-[#fdfaf5]">
+          <div className="group relative overflow-hidden rounded-[20px] border border-[#e2d9c8] bg-white p-8 transition duration-300 hover:bg-[#fdfaf5] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)] dark:hover:bg-[var(--ek-dark-card-soft)]">
             <Handshake className="mb-5 h-5 w-5 text-gold-700" strokeWidth={1.5} />
-            <h3 className="text-[1.35rem] font-bold leading-snug text-secondary-900">
+            <h3 className="text-[1.35rem] font-bold leading-snug text-secondary-900 dark:text-[var(--ek-dark-text)]">
               Buying &amp; Selling Support
             </h3>
-            <p className="mt-3 text-[13px] leading-relaxed text-secondary-500">
+            <p className="mt-3 text-[13px] leading-relaxed text-secondary-500 dark:text-[var(--ek-dark-muted)]">
               For bigger property decisions where pricing, trust, negotiation, and
               timing all matter, and you need more than a listing.
             </p>
-            <div className="mt-6 space-y-2 text-[12px] text-secondary-400">
+            <div className="mt-6 space-y-2 text-[12px] text-secondary-400 dark:text-[var(--ek-dark-soft)]">
               <p>- Buyer and seller conversations</p>
               <p>- Practical next-step guidance</p>
               <p>- Support through inquiry and closing</p>
@@ -131,22 +131,21 @@ export default function ServicesPage() {
             <div
               className="aspect-[4/3] bg-cover bg-center transition duration-700 hover:scale-105"
               style={{
-                backgroundImage:
-                  "url('https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=1400&q=80')",
+                backgroundImage: "url('/marketing/services-feature-1400.jpg')",
               }}
             />
           </div>
 
-          <div className="flex flex-col justify-center rounded-[20px] border border-[#e2d9c8] bg-[#f8f5ef] px-10 py-10">
+          <div className="flex flex-col justify-center rounded-[20px] border border-[#e2d9c8] bg-[#f8f5ef] px-10 py-10 dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)]">
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-gold-700">
               Complete Property Solution
             </p>
-            <blockquote className="mt-4 text-[2rem] font-black leading-[1.1] text-secondary-900">
+            <blockquote className="mt-4 text-[2rem] font-black leading-[1.1] text-secondary-900 dark:text-[var(--ek-dark-text)]">
               One place for the work{" "}
               <em className="font-serif font-normal not-italic text-gold-700">around</em>{" "}
               the property, not just the listing.
             </blockquote>
-            <p className="mt-5 max-w-md text-[14px] leading-relaxed text-secondary-500">
+            <p className="mt-5 max-w-md text-[14px] leading-relaxed text-secondary-500 dark:text-[var(--ek-dark-muted)]">
               A property decision is rarely only about finding a space online. Owner
               conversations, site visits, documents, negotiation, verification,
               and follow-up all matter. EkPratishat makes that whole journey
@@ -160,7 +159,7 @@ export default function ServicesPage() {
               ].map((point, i) => (
                 <div
                   key={i}
-                  className="flex items-start gap-3 text-[13px] text-secondary-600"
+                  className="flex items-start gap-3 text-[13px] text-secondary-600 dark:text-[var(--ek-dark-muted)]"
                 >
                   <span className="mt-[7px] h-[4px] w-[4px] flex-none rounded-full bg-gold-600" />
                   {point}
@@ -204,17 +203,17 @@ export default function ServicesPage() {
           ].map(({ num, icon: Icon, title, desc, tags }) => (
             <div
               key={title}
-              className="group grid items-center gap-6 rounded-[16px] border border-[#ece6da] bg-[#fdfaf5] px-8 py-7 transition duration-200 hover:bg-white lg:grid-cols-[3rem_3rem_1.2fr_1.6fr_auto]"
+              className="group grid items-center gap-6 rounded-[16px] border border-[#ece6da] bg-[#fdfaf5] px-8 py-7 transition duration-200 hover:bg-white dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)] dark:hover:bg-[var(--ek-dark-card-soft)] lg:grid-cols-[3rem_3rem_1.2fr_1.6fr_auto]"
             >
               <span className="font-mono text-[12px] text-[#c8bca8]">{num}</span>
               <Icon className="h-5 w-5 text-gold-700" strokeWidth={1.5} />
-              <h3 className="text-[1.05rem] font-bold text-secondary-900">{title}</h3>
-              <p className="text-[13px] leading-relaxed text-secondary-500">{desc}</p>
+              <h3 className="text-[1.05rem] font-bold text-secondary-900 dark:text-[var(--ek-dark-text)]">{title}</h3>
+              <p className="text-[13px] leading-relaxed text-secondary-500 dark:text-[var(--ek-dark-muted)]">{desc}</p>
               <div className="flex flex-wrap gap-2 lg:justify-end">
                 {tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full border border-[#e0d8ca] bg-white px-3 py-1 text-[11px] text-secondary-500"
+                    className="rounded-full border border-[#e0d8ca] bg-white px-3 py-1 text-[11px] text-secondary-500 dark:border-[var(--ek-dark-border)] dark:bg-[rgba(229,184,62,0.08)] dark:text-[var(--ek-dark-muted)]"
                   >
                     {tag}
                   </span>
@@ -224,7 +223,7 @@ export default function ServicesPage() {
           ))}
         </div>
 
-        <div className="rounded-[20px] bg-secondary-900 p-8 lg:p-10">
+        <div className="rounded-[20px] bg-secondary-900 p-8 dark:bg-[var(--ek-dark-surface)] lg:p-10">
           <p className="mb-8 font-mono text-[10px] uppercase tracking-[0.3em] text-gold-500">
             How It Works
           </p>
@@ -250,10 +249,10 @@ export default function ServicesPage() {
                 <span className="font-mono text-[11px] text-[#5a5242]">
                   {step.num}
                 </span>
-                <h4 className="mt-3 text-[1.1rem] font-bold leading-snug text-white">
+                <h4 className="mt-3 text-[1.1rem] font-bold leading-snug text-white dark:text-[var(--ek-dark-text)]">
                   {step.title}
                 </h4>
-                <p className="mt-3 text-[13px] leading-relaxed text-secondary-400">
+                <p className="mt-3 text-[13px] leading-relaxed text-secondary-400 dark:text-[var(--ek-dark-muted)]">
                   {step.body}
                 </p>
               </div>
@@ -263,8 +262,8 @@ export default function ServicesPage() {
       </MarketingPageSection>
 
       <MarketingPageSection>
-        <div className="overflow-hidden rounded-[20px] border border-[#e2d9c8] bg-white">
-          <div className="grid divide-y divide-[#f0ebe0] lg:grid-cols-3 lg:divide-x lg:divide-y-0">
+        <div className="overflow-hidden rounded-[20px] border border-[#e2d9c8] bg-white dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)]">
+          <div className="grid divide-y divide-[#f0ebe0] dark:divide-[var(--ek-dark-border)] lg:grid-cols-3 lg:divide-x lg:divide-y-0">
             {[
               {
                 label: "Property Seekers",
@@ -287,15 +286,15 @@ export default function ServicesPage() {
             ].map(({ label, headline, body, cta }) => (
               <div
                 key={label}
-                className="group px-9 py-10 transition duration-200 hover:bg-[#fdfaf5]"
+                className="group px-9 py-10 transition duration-200 hover:bg-[#fdfaf5] dark:hover:bg-[var(--ek-dark-card-soft)]"
               >
                 <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.28em] text-gold-700">
                   {label}
                 </p>
-                <h3 className="text-[1.4rem] font-bold leading-snug text-secondary-900">
+                <h3 className="text-[1.4rem] font-bold leading-snug text-secondary-900 dark:text-[var(--ek-dark-text)]">
                   {headline}
                 </h3>
-                <p className="mt-3 text-[13px] leading-relaxed text-secondary-500">
+                <p className="mt-3 text-[13px] leading-relaxed text-secondary-500 dark:text-[var(--ek-dark-muted)]">
                   {body}
                 </p>
                 <div className="mt-8 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-widest text-secondary-400 transition duration-200 group-hover:text-gold-700">

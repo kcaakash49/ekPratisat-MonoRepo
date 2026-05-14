@@ -68,24 +68,24 @@ export default function PropertySearchBar({ categories }: { categories: Category
 
   return (
     <div className="w-full max-w-5xl mx-auto mb-12 -mt-10 relative z-20 px-4">
-      <div className="bg-white dark:bg-secondary-800 backdrop-blur-md border border-secondary-200 dark:border-secondary-700 rounded-2xl md:rounded-full shadow-2xl p-2 md:p-3">
+      <div className="rounded-2xl border border-[var(--ek-border-soft)] bg-[var(--ek-bg-card)] p-2 shadow-[var(--ek-shadow-card)] backdrop-blur-md md:rounded-full md:p-3 dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)] dark:shadow-[var(--ek-dark-shadow-card)]">
         <div className="flex flex-col md:flex-row items-center gap-2">
 
           {/* Keyword Search */}
-          <div className="flex-1 flex items-center px-4 w-full border-b md:border-b-0 md:border-r border-secondary-100 dark:border-secondary-700 py-2">
-            <Search className="text-gold mr-3" size={20} />
+          <div className="flex-1 flex items-center px-4 w-full border-b md:border-b-0 md:border-r border-[var(--ek-border-soft)] dark:border-[var(--ek-dark-border)] py-2">
+            <Search className="mr-3 text-[var(--ek-gold-text)] dark:text-[var(--ek-dark-gold)]" size={20} />
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && applyFilters({ q })}
               placeholder="Search location or title..."
-              className="bg-transparent border-none outline-none text-sm w-full placeholder:text-secondary-400 dark:text-white"
+              className="w-full border-none bg-transparent text-sm text-[var(--ek-text-primary)] outline-none placeholder:text-[var(--ek-text-muted)] dark:text-[var(--ek-dark-text)] dark:placeholder:text-[var(--ek-dark-soft)]"
             />
           </div>
 
           {/* Category Dropdown */}
-          <div className="flex-1 flex items-center px-4 w-full border-b md:border-b-0 md:border-r border-secondary-100 dark:border-secondary-700 py-2">
-            <Filter className="text-gold mr-3 shrink-0" size={18} />
+          <div className="flex-1 flex items-center px-4 w-full border-b md:border-b-0 md:border-r border-[var(--ek-border-soft)] dark:border-[var(--ek-dark-border)] py-2">
+            <Filter className="mr-3 shrink-0 text-[var(--ek-gold-text)] dark:text-[var(--ek-dark-gold)]" size={18} />
 
             <div className="relative w-full group">
               {/* The Select Box */}
@@ -95,11 +95,11 @@ export default function PropertySearchBar({ categories }: { categories: Category
                   setCategory(e.target.value);
                   applyFilters({ c_id: e.target.value });
                 }}
-                className="bg-secondary-50 dark:bg-secondary-900/50 border border-secondary-200 dark:border-secondary-700 rounded-lg px-3 py-2 text-sm w-full cursor-pointer dark:text-white appearance-none focus:border-gold focus:ring-1 focus:ring-gold outline-none transition-all pr-10"
+                className="w-full cursor-pointer appearance-none rounded-lg border border-[var(--ek-border-soft)] bg-[var(--ek-bg-card-soft)] px-3 py-2 pr-10 text-sm text-[var(--ek-text-primary)] outline-none transition-colors focus:border-[var(--ek-border-strong)] focus:ring-1 focus:ring-gold-500 dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-elevated)] dark:text-[var(--ek-dark-text)]"
               >
-                <option value="" className="dark:bg-secondary-800">All Categories</option>
+                <option value="" className="dark:bg-[var(--ek-dark-surface)]">All Categories</option>
                 {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id} className="dark:bg-secondary-800">
+                  <option key={cat.id} value={cat.id} className="dark:bg-[var(--ek-dark-surface)]">
                     {cat.name}
                   </option>
                 ))}
@@ -118,18 +118,18 @@ export default function PropertySearchBar({ categories }: { categories: Category
               onClick={toggleFeatured}
               className={`flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-full text-xs font-bold transition-all duration-300 border ${
                 isFeatured 
-                ? "bg-gold/10 border-gold text-gold shadow-[0_0_15px_rgba(212,175,55,0.2)]" 
-                : "bg-secondary-50 dark:bg-secondary-900 border-secondary-200 dark:border-secondary-700 text-secondary-500 hover:border-gold/50"
+                ? "border-[var(--ek-border-strong)] bg-[rgba(214,169,54,0.12)] text-[var(--ek-gold-text)] dark:border-[var(--ek-dark-border-strong)] dark:bg-[rgba(229,184,62,0.12)] dark:text-[var(--ek-dark-gold)]" 
+                : "border-[var(--ek-border-soft)] bg-[var(--ek-bg-card-soft)] text-[var(--ek-text-secondary)] hover:border-[var(--ek-border-strong)] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-elevated)] dark:text-[var(--ek-dark-muted)] dark:hover:border-[var(--ek-dark-border-strong)]"
               }`}
             >
-              <Sparkles size={14} className={isFeatured ? "fill-gold" : ""} />
+              <Sparkles size={14} className={isFeatured ? "fill-[var(--ek-gold)] dark:fill-[var(--ek-dark-gold)]" : ""} />
               <span>FEATURED</span>
             </button>
           </div>
 
           {/* Type Dropdown (Rent/Sale) */}
           <div className="flex-1 flex items-center px-4 w-full py-2">
-            <div className="flex bg-secondary-100 dark:bg-secondary-900 rounded-full p-1 w-full">
+            <div className="flex w-full rounded-full bg-[rgba(154,106,0,0.08)] p-1 dark:bg-[rgba(229,184,62,0.08)]">
               {['', 'rent', 'sale'].map((t) => (
                 <button
                   key={t}
@@ -138,8 +138,8 @@ export default function PropertySearchBar({ categories }: { categories: Category
                     applyFilters({ type: t });
                   }}
                   className={`flex-1 text-[10px] md:text-xs font-bold py-1.5 rounded-full transition-all ${type === t
-                    ? 'bg-gold-gradient text-white shadow-md'
-                    : 'text-secondary-500 hover:text-secondary-900 dark:hover:text-white'
+                    ? 'bg-gold-gradient text-[#151006] shadow-sm'
+                    : 'text-[var(--ek-text-secondary)] hover:text-[var(--ek-text-primary)] dark:text-[var(--ek-dark-muted)] dark:hover:text-[var(--ek-dark-text)]'
                     }`}
                 >
                   {t === '' ? 'ALL' : t.toUpperCase()}
@@ -153,7 +153,7 @@ export default function PropertySearchBar({ categories }: { categories: Category
             <button
               onClick={() => applyFilters({ q })}
               disabled={isPending}
-              className="flex-1 md:flex-none bg-secondary-700 dark:bg-secondary-900 text-white px-8 py-3 rounded-xl md:rounded-full text-sm font-bold hover:bg-gold-gradient transition-all active:scale-95 disabled:opacity-50"
+              className="flex-1 rounded-xl bg-gold-gradient px-8 py-3 text-sm font-bold text-[#151006] shadow-sm shadow-gold-800/15 transition-transform hover:-translate-y-0.5 hover:bg-gold-gradient-hover active:translate-y-0 disabled:opacity-50 md:flex-none md:rounded-full"
             >
               {isPending ? "..." : "Search"}
             </button>
