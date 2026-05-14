@@ -2,21 +2,21 @@
 
 export const AddPropertySkeleton = () => {
   return (
-    <div className="max-w-7xl p-4 rounded shadow-lg overflow-auto animate-pulse">
+    <div className="ek-form-shell animate-pulse">
       {/* Header Skeleton */}
-      <div className="h-8 w-48 bg-gray-200 dark:bg-gray-800 rounded mb-6" />
+      <div className="mb-6 h-8 w-48 rounded bg-[rgba(154,106,0,0.12)] dark:bg-[rgba(229,184,62,0.1)]" />
 
       <div className="space-y-6">
         {/* Title Field Skeleton */}
         <div className="space-y-2">
-          <div className="h-4 w-12 bg-gray-200 dark:bg-gray-800 rounded" />
-          <div className="h-10 w-full bg-gray-100 dark:bg-gray-800/50 rounded-md" />
+          <div className="h-4 w-12 rounded bg-[rgba(154,106,0,0.12)] dark:bg-[rgba(229,184,62,0.1)]" />
+          <div className="h-10 w-full rounded-xl bg-[rgba(154,106,0,0.07)] dark:bg-[rgba(229,184,62,0.07)]" />
         </div>
 
         {/* Description Field Skeleton */}
         <div className="space-y-2">
-          <div className="h-4 w-20 bg-gray-200 dark:bg-gray-800 rounded" />
-          <div className="h-24 w-full bg-gray-100 dark:bg-gray-800/50 rounded-md" />
+          <div className="h-4 w-20 rounded bg-[rgba(154,106,0,0.12)] dark:bg-[rgba(229,184,62,0.1)]" />
+          <div className="h-24 w-full rounded-xl bg-[rgba(154,106,0,0.07)] dark:bg-[rgba(229,184,62,0.07)]" />
         </div>
 
         {/* Type & Category Row */}
@@ -76,4 +76,3 @@ export const AddPropertySkeleton = () => {
     </div>
   );
 };
-

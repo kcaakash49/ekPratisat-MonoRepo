@@ -60,7 +60,7 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
       <>
         {/* background overlay */}
         <motion.div
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+          className="fixed inset-0 z-40 bg-black/45 backdrop-blur-[2px]"
           onClick={() => onOpenChange(false)}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -93,14 +93,14 @@ export function DialogContent({
 }: DialogContentProps) {
   return (
     <div
-      className={`relative w-full max-w-lg rounded-2xl bg-white dark:bg-neutral-900 shadow-xl p-6 ${className}`}
+      className={`relative w-full max-w-lg rounded-2xl border border-[var(--ek-border-soft)] bg-[var(--ek-bg-card)] p-6 text-[var(--ek-text-primary)] shadow-[var(--ek-shadow-card)] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)] dark:text-[var(--ek-dark-text)] dark:shadow-[var(--ek-dark-shadow-card)] ${className}`}
       onClick={(e) => e.stopPropagation() }
       onMouseDown={(e) => e.stopPropagation()}
     >
       {onClose && (
         <button
           onClick={onClose}
-          className="absolute right-3 top-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+          className="absolute right-3 top-3 rounded-lg p-1 text-[var(--ek-text-muted)] transition-colors hover:bg-[rgba(154,106,0,0.08)] hover:text-[var(--ek-text-primary)] dark:text-[var(--ek-dark-soft)] dark:hover:bg-[rgba(229,184,62,0.08)] dark:hover:text-[var(--ek-dark-text)]"
         >
           <X className="w-5 h-5" />
         </button>
@@ -118,7 +118,7 @@ export function DialogHeader({ children }: { children: React.ReactNode }) {
 
 export function DialogTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+    <h2 className="text-lg font-semibold text-[var(--ek-text-primary)] dark:text-[var(--ek-dark-text)]">
       {children}
     </h2>
   );

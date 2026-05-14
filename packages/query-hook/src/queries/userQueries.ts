@@ -1,16 +1,17 @@
 import { getAgentDetailAction, getAgentListAction } from "@repo/actions";
 import { authenticatedFetch } from "@repo/shared-provider";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 
 
-interface UserProps{
+export interface UserProps{
   id:string;
   name:string;
   role:string;
   profileImageUrl: string | null;
 }
 
-type User = UserProps | null;
+export type User = UserProps | null;
+type UserQueryResult = UseQueryResult<User, Error> & { data: User };
 
 interface UserQueryType {
   page?:number,
@@ -47,10 +48,12 @@ export const useGetAgentDetail = (id: string) => {
   });
 };
 
-export const useUser = () => {
-  return useQuery({
+export const useUser = (initialData?: User): UserQueryResult => {
+  const hasInitialData = initialData !== undefined;
+
+  const query = useQuery<User, Error>({
     queryKey: ["user-info"],
-    queryFn: async () => {
+    queryFn: async (): Promise<User> => {
       console.log("Fetching user info...");
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/my-info`,
@@ -68,7 +71,15 @@ export const useUser = () => {
     retry: 1,
     staleTime: 10 * 60 * 1000,
     refetchOnWindowFocus: true,
+    ...(hasInitialData
+      ? {
+          initialData,
+          initialDataUpdatedAt: 0,
+        }
+      : {}),
   });
+
+  return query as UserQueryResult;
 };
 
 

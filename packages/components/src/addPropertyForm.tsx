@@ -240,8 +240,8 @@ function MapPicker({
 
   if (!MAPBOX_TOKEN) {
     return (
-      <div className="p-3 rounded border border-red-300 bg-red-50 text-red-700">
-        Map is not configured. Set <code>NEXT_PUBLIC_MAPBOX_TOKEN</code>.
+      <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-900 dark:border-amber-300/25 dark:bg-amber-300/10 dark:text-amber-100">
+        Map is not configured. Set <code className="font-semibold">NEXT_PUBLIC_MAPBOX_TOKEN</code>.
       </div>
     );
   }
@@ -254,12 +254,12 @@ function MapPicker({
 
       <div
         ref={mapContainerRef}
-        className="w-full h-[320px] rounded-md border border-secondary-300 dark:border-transparent overflow-hidden"
+        className="h-[320px] w-full overflow-hidden rounded-2xl border border-[var(--ek-border-soft)] shadow-sm dark:border-[var(--ek-dark-border)]"
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         <div>
-          <label className="block text-sm text-secondary-600 dark:text-secondary-300">Latitude</label>
+          <label className="block text-sm text-[var(--ek-text-secondary)] dark:text-[var(--ek-dark-muted)]">Latitude</label>
           <input
             value={value.lat ?? ""}
             readOnly
@@ -268,7 +268,7 @@ function MapPicker({
           />
         </div>
         <div>
-          <label className="block text-sm text-secondary-600 dark:text-secondary-300">Longitude</label>
+          <label className="block text-sm text-[var(--ek-text-secondary)] dark:text-[var(--ek-dark-muted)]">Longitude</label>
           <input
             value={value.lng ?? ""}
             readOnly
@@ -278,7 +278,7 @@ function MapPicker({
         </div>
       </div>
 
-      <p className="text-xs text-secondary-500">
+      <p className="text-xs text-[var(--ek-text-muted)] dark:text-[var(--ek-dark-soft)]">
         Use search (Nepal-biased), click the map, drag the marker, or use the current-location button.
       </p>
     </div>
@@ -542,8 +542,15 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
   };
 
   return (
-    <div className="max-w-7xl p-4 rounded shadow-lg overflow-auto">
-      <h2 className="text-2xl font-bold mb-4">Add Property</h2>
+    <div className="ek-form-shell">
+      <div className="mb-6 border-b border-[var(--ek-border-soft)] pb-5 dark:border-[var(--ek-dark-border)]">
+        <p className="text-xs font-bold uppercase tracking-[0.28em] text-[var(--ek-gold-text)] dark:text-[var(--ek-dark-gold)]">
+          Property listing
+        </p>
+        <h2 className="mt-2 text-2xl font-black text-[var(--ek-text-primary)] dark:text-[var(--ek-dark-text)]">
+          {isEditing ? "Update Property" : "Add Property"}
+        </h2>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Title */}
@@ -633,7 +640,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
             {user === "admin" && (
               <button
                 type="button"
-                className="px-2 py-1 bg-primary-500 text-white rounded"
+                className="ek-primary-button shrink-0 px-4 py-2"
                 onClick={() => setShowCategoryModal(true)}
               >
                 Add
@@ -692,7 +699,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
               {(user === "admin" || user === "staff") && (
                 <button
                   type="button"
-                  className="px-2 py-1 bg-primary-500 text-white rounded"
+                  className="ek-primary-button shrink-0 px-4 py-2"
                   onClick={() => setShowLocationModal({ type: "district" })}
                 >
                   Add
@@ -732,7 +739,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
               {(user === "admin" || user === "staff") && formData.districtId && (
                 <button
                   type="button"
-                  className="px-2 py-1 bg-primary-500 text-white rounded"
+                  className="ek-primary-button shrink-0 px-4 py-2"
                   onClick={() => setShowLocationModal({ type: "municipality", parentId: formData.districtId })}
                 >
                   Add
@@ -770,7 +777,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
               {(user === "admin" || user === "staff") && formData.municipalityId && (
                 <button
                   type="button"
-                  className="px-2 py-1 bg-primary-500 text-white rounded"
+                  className="ek-primary-button shrink-0 px-4 py-2"
                   onClick={() => setShowLocationModal({ type: "ward", parentId: formData.municipalityId })}
                 >
                   Add
@@ -1019,7 +1026,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
         <div>
           <label className="block font-medium mb-1">Images</label>
           <div className="flex items-center gap-4">
-            <label className="px-4 py-2 bg-primary-500 text-white rounded cursor-pointer hover:bg-primary-600">
+            <label className="ek-secondary-button cursor-pointer px-4 py-2">
               Add Images
               <input
                 type="file"
@@ -1052,7 +1059,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
               ))}
             </div>
           </div>
-          <p className="text-sm text-gray-500 mt-1">Max 5 images, each not more than 10MB.</p>
+          <p className="mt-1 text-sm text-[var(--ek-text-muted)] dark:text-[var(--ek-dark-soft)]">Max 5 images, each not more than 10MB.</p>
         </div>
 
         {user === "admin" && (
@@ -1076,7 +1083,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
           <button
             type="submit"
             disabled={isLoading || compressing}
-            className={`px-4 py-2 bg-primary-500 text-white rounded transition ${(isLoading || compressing) ? "opacity-70 cursor-not-allowed" : "hover:bg-primary-600"
+            className={`ek-primary-button px-6 py-3 ${(isLoading || compressing) ? "cursor-not-allowed opacity-70" : ""
               }`}
           >
             {(isLoading || compressing) ? <Loader2 className="animate-spin" /> : isEditing ? "Update Property" : "Add Property"}
