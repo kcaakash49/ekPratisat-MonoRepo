@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     // Fallback: Clear the whole homepage cache
     revalidatePath('/'); 
     return NextResponse.json({ revalidated: true, path: '/', now: Date.now() });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ message: 'Error revalidating' }, { status: 500 });
   }
 }

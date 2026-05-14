@@ -6,21 +6,286 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  body {
-    /* Use secondary-50 for light mode and secondary-900 for dark mode */
-    @apply bg-secondary-50 text-secondary-900 antialiased transition-colors duration-200;
-  }
+html {
+  max-width: 100%;
+  overflow-x: clip;
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: none;
+  scroll-behavior: smooth;
+}
 
-  .dark body {
-    /* Deep dark color from your palette */
-    @apply bg-secondary-900 text-secondary-50;
+body {
+  max-width: 100%;
+  overflow-x: clip;
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: none;
+}
+
+@supports not (overflow: clip) {
+  html,
+  body {
+    overflow-x: hidden;
   }
 }
 
+@layer base {
+  :root {
+    color-scheme: light;
+    --site-nav-height: 6rem;
+    --site-nav-clearance: 2rem;
 
-/* Sugal */
+    --ek-bg-main: #f7f3ea;
+    --ek-bg-section: #fbf7ef;
+    --ek-bg-card: #fffdf8;
+    --ek-bg-card-soft: #f8f1e3;
+    --ek-text-primary: #10151f;
+    --ek-text-secondary: #475569;
+    --ek-text-muted: #64748b;
+    --ek-gold: #d6a936;
+    --ek-gold-bright: #f2c94c;
+    --ek-gold-text: #8a5a00;
+    --ek-border-soft: rgba(154, 106, 0, 0.14);
+    --ek-border-strong: rgba(154, 106, 0, 0.28);
+    --ek-shadow-card: 0 16px 40px rgba(15, 23, 42, 0.1);
+
+    --ek-dark-page: #171512;
+    --ek-dark-section: #1d1a16;
+    --ek-dark-elevated: #24211c;
+    --ek-dark-surface: #28231a;
+    --ek-dark-card-soft: #332c21;
+    --ek-dark-muted-bg: #373127;
+    --ek-dark-nav: rgba(23, 21, 18, 0.84);
+    --ek-dark-border: rgba(229, 184, 62, 0.13);
+    --ek-dark-border-strong: rgba(229, 184, 62, 0.25);
+    --ek-dark-text: #f7f1e3;
+    --ek-dark-muted: #cbbfa9;
+    --ek-dark-soft: #a79b86;
+    --ek-dark-gold: #efc75a;
+    --ek-dark-shadow-card: 0 18px 46px rgba(0, 0, 0, 0.3);
+  }
+
+  .dark {
+    color-scheme: dark;
+  }
+
+  @media (min-width: 640px) {
+    :root {
+      --site-nav-height: 7rem;
+    }
+  }
+
+  body {
+    @apply text-secondary-900 antialiased transition-colors duration-200;
+    font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+    background-color: var(--ek-bg-main);
+    background-image:
+      radial-gradient(circle at top left, rgba(214, 169, 54, 0.08), transparent 18%),
+      radial-gradient(circle at bottom right, rgba(154, 106, 0, 0.06), transparent 20%);
+    color: var(--ek-text-primary);
+  }
+
+  .dark body {
+    background-color: var(--ek-dark-page);
+    background-image:
+      radial-gradient(circle at top left, rgba(229, 184, 62, 0.08), transparent 23%),
+      radial-gradient(circle at bottom right, rgba(203, 191, 169, 0.06), transparent 24%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 34rem);
+    color: var(--ek-dark-text);
+  }
+
+  * {
+    @apply border-secondary-200;
+  }
+
+  ::selection {
+    background: rgba(214, 169, 54, 0.28);
+    color: var(--ek-text-primary);
+  }
+}
+
+@layer components {
+  .ek-nav-safe-page {
+    padding-top: calc(var(--site-nav-height) + 3.5rem);
+  }
+
+  @media (min-width: 640px) {
+    .ek-nav-safe-page {
+      padding-top: calc(var(--site-nav-height) + 4rem);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .ek-nav-safe-page {
+      padding-top: calc(var(--site-nav-height) + 5rem);
+    }
+  }
+
+  .ek-surface {
+    background-color: var(--ek-bg-card);
+    border-color: var(--ek-border-soft);
+    box-shadow: var(--ek-shadow-card);
+  }
+
+  .dark .ek-surface {
+    background-color: var(--ek-dark-surface);
+    border-color: var(--ek-dark-border);
+    box-shadow: var(--ek-dark-shadow-card);
+  }
+
+  .ek-field {
+    @apply min-h-11 rounded-xl border px-3 py-2 text-sm outline-none transition-colors;
+    background-color: var(--ek-bg-card);
+    border-color: var(--ek-border-soft);
+    color: var(--ek-text-primary);
+  }
+
+  .ek-field::placeholder {
+    color: var(--ek-text-muted);
+  }
+
+  .ek-field:focus {
+    border-color: var(--ek-border-strong);
+    box-shadow: 0 0 0 3px rgba(214, 169, 54, 0.18);
+  }
+
+  .dark .ek-field {
+    background-color: var(--ek-dark-card-soft);
+    border-color: var(--ek-dark-border);
+    color: var(--ek-dark-text);
+  }
+
+  .dark .ek-field::placeholder {
+    color: var(--ek-dark-soft);
+  }
+
+  .dark .ek-field:focus {
+    border-color: var(--ek-dark-border-strong);
+    box-shadow: 0 0 0 3px rgba(229, 184, 62, 0.18);
+  }
+
+  .ek-primary-button {
+    @apply inline-flex items-center justify-center rounded-xl bg-gold-gradient px-5 py-2.5 text-sm font-bold text-[#151006] transition-transform duration-200 hover:-translate-y-0.5 hover:bg-gold-gradient-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 active:translate-y-0 disabled:pointer-events-none disabled:opacity-60;
+    box-shadow: 0 12px 30px rgba(154, 106, 0, 0.16);
+  }
+
+  .dark .ek-primary-button {
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.36);
+    --tw-ring-offset-color: var(--ek-dark-page);
+  }
+
+  .ek-secondary-button {
+    @apply inline-flex items-center justify-center rounded-xl border px-5 py-2.5 text-sm font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500;
+    background-color: rgba(255, 253, 248, 0.7);
+    border-color: var(--ek-border-soft);
+    color: var(--ek-text-primary);
+  }
+
+  .ek-secondary-button:hover {
+    background-color: var(--ek-bg-card);
+    border-color: var(--ek-border-strong);
+  }
+
+  .dark .ek-secondary-button {
+    background-color: rgba(51, 44, 33, 0.72);
+    border-color: var(--ek-dark-border);
+    color: var(--ek-dark-text);
+  }
+
+  .dark .ek-secondary-button:hover {
+    background-color: var(--ek-dark-card-soft);
+    border-color: var(--ek-dark-border-strong);
+  }
+
+  .ek-form-shell {
+    @apply mx-auto max-w-6xl overflow-hidden rounded-3xl border p-5 sm:p-7 lg:p-9;
+    background:
+      linear-gradient(180deg, rgba(255, 253, 248, 0.96), rgba(251, 247, 239, 0.96));
+    border-color: var(--ek-border-soft);
+    box-shadow: var(--ek-shadow-card);
+  }
+
+  .dark .ek-form-shell {
+    background:
+      linear-gradient(180deg, rgba(40, 35, 26, 0.98), rgba(29, 26, 22, 0.98));
+    border-color: var(--ek-dark-border);
+    box-shadow: var(--ek-dark-shadow-card);
+  }
+
+  .ek-form-shell form {
+    @apply space-y-5;
+  }
+
+  .ek-form-shell label {
+    color: var(--ek-text-primary);
+  }
+
+  .dark .ek-form-shell label {
+    color: var(--ek-dark-muted);
+  }
+
+  .ek-form-shell input:not([type="file"]):not([type="checkbox"]),
+  .ek-form-shell select,
+  .ek-form-shell textarea {
+    @apply min-h-11 w-full rounded-xl border px-3 py-2 text-sm outline-none transition-colors;
+    background-color: var(--ek-bg-card) !important;
+    border-color: var(--ek-border-soft) !important;
+    color: var(--ek-text-primary) !important;
+  }
+
+  .ek-form-shell textarea {
+    @apply min-h-28;
+  }
+
+  .ek-form-shell input::placeholder,
+  .ek-form-shell textarea::placeholder {
+    color: var(--ek-text-muted) !important;
+  }
+
+  .ek-form-shell input:not([type="file"]):not([type="checkbox"]):focus,
+  .ek-form-shell select:focus,
+  .ek-form-shell textarea:focus {
+    border-color: var(--ek-border-strong);
+    box-shadow: 0 0 0 3px rgba(214, 169, 54, 0.18);
+  }
+
+  .dark .ek-form-shell input:not([type="file"]):not([type="checkbox"]),
+  .dark .ek-form-shell select,
+  .dark .ek-form-shell textarea {
+    background-color: var(--ek-dark-card-soft) !important;
+    border-color: var(--ek-dark-border) !important;
+    color: var(--ek-dark-text) !important;
+  }
+
+  .dark .ek-form-shell input::placeholder,
+  .dark .ek-form-shell textarea::placeholder {
+    color: var(--ek-dark-soft) !important;
+  }
+
+  .dark .ek-form-shell input:not([type="file"]):not([type="checkbox"]):focus,
+  .dark .ek-form-shell select:focus,
+  .dark .ek-form-shell textarea:focus {
+    border-color: var(--ek-dark-border-strong) !important;
+    box-shadow: 0 0 0 3px rgba(229, 184, 62, 0.18);
+  }
+
+  .ek-form-shell input:disabled,
+  .ek-form-shell select:disabled,
+  .ek-form-shell textarea:disabled {
+    cursor: not-allowed;
+    opacity: 0.68;
+  }
+
+  .ek-form-shell button:not([type="button"]),
+  .ek-form-shell label:has(input[type="file"]) {
+    @apply rounded-xl;
+  }
+}
+
 @layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
   .motion-reveal-up {
     animation: revealUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
@@ -29,17 +294,334 @@
     animation: revealLeft 0.95s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
+  .motion-float {
+    animation: floatSlow 8s ease-in-out infinite;
+  }
+
+  .motion-float-delay {
+    animation: floatSlow 8s ease-in-out 1.8s infinite;
+  }
+
   .motion-drift {
     animation: driftX 28s linear infinite;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .motion-reveal-up,
-    .motion-reveal-left,
-    .motion-drift {
-      animation: none;
-    }
+  .hero-metallic-fallback {
+    background-color: #f1f5f9;
+    background-image: url("/fallback-images/bg-fallback-light.png");
+    background-image: image-set(
+      url("/fallback-images/bg-fallback-light.avif") type("image/avif"),
+      url("/fallback-images/bg-fallback-light.webp") type("image/webp"),
+      url("/fallback-images/bg-fallback-light.png") type("image/png")
+    );
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
+
+  .dark .hero-metallic-fallback {
+    background-color: var(--ek-dark-page);
+    background-image: url("/fallback-images/bg-fallback-dark.png");
+    background-image: image-set(
+      url("/fallback-images/bg-fallback-dark.avif") type("image/avif"),
+      url("/fallback-images/bg-fallback-dark.webp") type("image/webp"),
+      url("/fallback-images/bg-fallback-dark.png") type("image/png")
+    );
+  }
+
+  .hero-logo-fallback {
+    opacity: 1;
+    transition: opacity 180ms ease-out;
+  }
+
+  html[data-home-logo-owner="transitioning"] .hero-logo-fallback,
+  html[data-home-logo-owner="navbar"] .hero-logo-fallback {
+    opacity: 0;
+    transition-duration: 120ms;
+  }
+
+  html[data-scroll-logo-ready="true"] .hero-logo-fallback {
+    opacity: 0;
+  }
+
+  .about-outline-word {
+    -webkit-text-stroke: 1px rgba(15, 23, 42, 0.58);
+    -webkit-text-fill-color: rgba(15, 23, 42, 0.08);
+  }
+
+  .dark .about-outline-word {
+    -webkit-text-stroke: 1px rgba(248, 241, 223, 0.58);
+    -webkit-text-fill-color: rgba(248, 241, 223, 0.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-logo-fallback {
+    transition-duration: 1ms;
+  }
+}
+
+/*
+  Legacy dark-theme bridge:
+  main still has many dark:secondary/primary utilities from the older slate/blue
+  palette. Map those dark-only utilities onto the champagne dark tokens so older
+  screens inherit the new brand mood without changing light mode or component
+  behavior.
+*/
+.dark .dark\:bg-secondary-950,
+.dark .dark\:bg-secondary-900,
+.dark .dark\:hover\:bg-secondary-900:hover {
+  background-color: var(--ek-dark-page) !important;
+}
+
+.bg-secondary-50,
+.bg-secondary-100 {
+  background-color: var(--ek-bg-section) !important;
+}
+
+.bg-white {
+  background-color: var(--ek-bg-card) !important;
+}
+
+.bg-gold-gradient.text-white {
+  color: #151006 !important;
+}
+
+.text-gold,
+.text-gold-300,
+.text-gold-400,
+.text-gold-500,
+.text-gold-600,
+.text-gold-700,
+.text-gold-800 {
+  color: var(--ek-gold-text) !important;
+}
+
+.hover\:text-gold:hover,
+.hover\:text-gold-300:hover,
+.hover\:text-gold-400:hover,
+.hover\:text-gold-700:hover,
+.group:hover .group-hover\:text-gold,
+.group:hover .group-hover\:text-gold-700,
+.group:hover .group-hover\:text-gold-800 {
+  color: var(--ek-gold-text) !important;
+}
+
+.dark .text-gold,
+.dark .text-gold-300,
+.dark .text-gold-400,
+.dark .text-gold-500,
+.dark .text-gold-600,
+.dark .text-gold-700,
+.dark .text-gold-800,
+.dark .hover\:text-gold:hover,
+.dark .hover\:text-gold-300:hover,
+.dark .hover\:text-gold-400:hover,
+.dark .hover\:text-gold-700:hover,
+.dark .group:hover .group-hover\:text-gold,
+.dark .group:hover .group-hover\:text-gold-700,
+.dark .group:hover .group-hover\:text-gold-800 {
+  color: var(--ek-dark-gold) !important;
+}
+
+.bg-primary-50,
+.hover\:bg-primary-50:hover {
+  background-color: rgba(214, 169, 54, 0.1) !important;
+}
+
+.bg-primary-100 {
+  background-color: rgba(214, 169, 54, 0.14) !important;
+}
+
+.bg-primary-500,
+.bg-primary-600,
+.hover\:bg-primary-600:hover,
+.hover\:bg-primary-700:hover {
+  background-color: #b98a00 !important;
+}
+
+.text-primary-500,
+.text-primary-600,
+.text-primary-700,
+.group:hover .group-hover\:text-primary-500,
+.group:hover .group-hover\:text-primary-600 {
+  color: var(--ek-gold-text) !important;
+}
+
+.focus\:ring-primary-500:focus {
+  --tw-ring-color: rgba(214, 169, 54, 0.38) !important;
+}
+
+.dark .dark\:bg-secondary-900\/50 {
+  background-color: rgba(23, 21, 18, 0.66) !important;
+}
+
+.dark .dark\:bg-secondary-800,
+.dark .dark\:hover\:bg-secondary-800:hover,
+.dark .dark\:bg-secondary-800\/90 {
+  background-color: var(--ek-dark-surface) !important;
+}
+
+.dark .dark\:bg-secondary-800\/80 {
+  background-color: rgba(40, 35, 26, 0.84) !important;
+}
+
+.dark .dark\:bg-secondary-800\/50,
+.dark .dark\:bg-secondary-800\/40 {
+  background-color: rgba(40, 35, 26, 0.62) !important;
+}
+
+.dark .dark\:bg-secondary-700,
+.dark .dark\:hover\:bg-secondary-700:hover,
+.dark .dark\:bg-secondary-600 {
+  background-color: var(--ek-dark-card-soft) !important;
+}
+
+.dark .dark\:border-secondary-900,
+.dark .dark\:border-secondary-800,
+.dark .dark\:border-secondary-700,
+.dark .dark\:border-secondary-600,
+.dark .dark\:hover\:border-secondary-700:hover {
+  border-color: var(--ek-dark-border) !important;
+}
+
+.dark .dark\:text-secondary-50,
+.dark .dark\:text-secondary-100,
+.dark .dark\:text-white {
+  color: var(--ek-dark-text) !important;
+}
+
+.dark .dark\:text-secondary-200,
+.dark .dark\:text-secondary-300 {
+  color: var(--ek-dark-muted) !important;
+}
+
+.dark .dark\:text-secondary-400,
+.dark .dark\:text-secondary-500 {
+  color: var(--ek-dark-soft) !important;
+}
+
+.dark .dark\:hover\:text-white:hover,
+.dark .dark\:hover\:text-secondary-100:hover {
+  color: var(--ek-dark-text) !important;
+}
+
+.dark .dark\:ring-offset-secondary-900 {
+  --tw-ring-offset-color: var(--ek-dark-page) !important;
+}
+
+.dark .dark\:from-secondary-800 {
+  --tw-gradient-from: var(--ek-dark-surface) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgba(40, 35, 26, 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.dark .dark\:via-secondary-800 {
+  --tw-gradient-to: rgba(40, 35, 26, 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--ek-dark-surface) var(--tw-gradient-via-position),
+    var(--tw-gradient-to) !important;
+}
+
+.dark .dark\:bg-primary-900\/30 {
+  background-color: rgba(229, 184, 62, 0.14) !important;
+}
+
+.dark .dark\:bg-primary-600,
+.dark .dark\:hover\:bg-primary-700:hover {
+  background-color: #b98a00 !important;
+}
+
+.dark .dark\:text-primary-300,
+.dark .dark\:text-primary-400 {
+  color: var(--ek-dark-gold) !important;
+}
+
+.dark .dark\:focus\:ring-primary-600:focus {
+  --tw-ring-color: rgba(229, 184, 62, 0.42) !important;
+}
+
+.dark .bg-primary-100 {
+  background-color: rgba(229, 184, 62, 0.14) !important;
+}
+
+.dark .bg-primary-500,
+.dark .bg-primary-600,
+.dark .hover\:bg-primary-600:hover,
+.dark .hover\:bg-primary-700:hover {
+  background-color: #b98a00 !important;
+}
+
+.dark .text-primary-600,
+.dark .text-primary-700 {
+  color: var(--ek-dark-gold) !important;
+}
+
+.dark .focus\:ring-primary-500:focus {
+  --tw-ring-color: rgba(229, 184, 62, 0.42) !important;
+}
+
+.dark .dark\:bg-gray-900 {
+  background-color: var(--ek-dark-page) !important;
+}
+
+.dark .dark\:bg-gray-800 {
+  background-color: var(--ek-dark-surface) !important;
+}
+
+.dark .dark\:bg-gray-800\/50,
+.dark .dark\:bg-gray-800\/40,
+.dark .dark\:bg-gray-800\/30 {
+  background-color: rgba(40, 35, 26, 0.62) !important;
+}
+
+.dark .dark\:bg-gray-700 {
+  background-color: var(--ek-dark-card-soft) !important;
+}
+
+.dark .dark\:border-gray-700,
+.dark .dark\:border-gray-600 {
+  border-color: var(--ek-dark-border) !important;
+}
+
+.dark .dark\:text-gray-100 {
+  color: var(--ek-dark-text) !important;
+}
+
+.dark .dark\:text-gray-300,
+.dark .dark\:text-gray-400 {
+  color: var(--ek-dark-muted) !important;
+}
+
+.ek-footer a {
+  color: var(--ek-text-secondary) !important;
+}
+
+.ek-footer a:hover {
+  color: var(--ek-gold-text) !important;
+}
+
+.dark .ek-footer a {
+  color: var(--ek-dark-muted) !important;
+}
+
+.dark .ek-footer a:hover {
+  color: var(--ek-dark-gold) !important;
+}
+
+.ek-footer svg {
+  color: var(--ek-text-muted) !important;
+}
+
+.dark .ek-footer svg {
+  color: var(--ek-dark-soft) !important;
+}
+
+.ek-footer h3 {
+  color: var(--ek-text-primary);
+}
+
+.dark .ek-footer h3 {
+  color: var(--ek-dark-text);
 }
 
 @keyframes revealUp {
@@ -66,6 +648,17 @@
   }
 }
 
+@keyframes floatSlow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -18px, 0);
+  }
+}
+
 @keyframes driftX {
   from {
     transform: translateX(0);
@@ -75,13 +668,15 @@
     transform: translateX(-50%);
   }
 }
-/* sugal */
-
-/*used in property detail page*/
 
 @keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 .animate-marquee {

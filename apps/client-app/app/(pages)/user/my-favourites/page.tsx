@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { jwtVerify } from "jose";
 import Link from "next/link";
 import { Clock, RefreshCw } from "lucide-react";
-import ListingCard from "../../../../components/properties/ListingCard";
 import { PropertyListing } from "@repo/validators";
 import PremiumListingCard from "../../../../components/properties/FeaturedListingCard";
 
@@ -19,7 +18,7 @@ export default async function MyFavouritesPage() {
     try {
         const { payload } = await jwtVerify(token, SECRET);
         userId = payload.userId;
-    } catch(err){
+    } catch {
         redirect("/auth/signin");
     }
 
@@ -33,8 +32,8 @@ export default async function MyFavouritesPage() {
 
         if (!res.ok) {
             return (
-                <div className="max-w-7xl mx-auto px-4 py-20">
-                    <div className="flex flex-col items-center justify-center bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-800 rounded-3xl p-12 shadow-xl shadow-secondary-200/50 dark:shadow-none text-center">
+                <div className="mx-auto max-w-7xl px-4 pb-20 pt-[calc(var(--site-nav-height)+2rem)]">
+                    <div className="flex flex-col items-center justify-center rounded-3xl border border-[var(--ek-border-soft)] bg-[var(--ek-bg-card)] p-12 text-center shadow-[var(--ek-shadow-card)] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)] dark:shadow-[var(--ek-dark-shadow-card)]">
                         {/* Animated or Pulsing Error Icon */}
                         <div className="relative mb-6">
                             <div className="absolute inset-0 bg-red-100 dark:bg-red-900/20 rounded-full animate-ping opacity-25"></div>
@@ -54,7 +53,7 @@ export default async function MyFavouritesPage() {
                             Unable to load your favourites
                         </h2>
                         <p className="text-secondary-500 max-w-sm mx-auto mb-8 font-medium">
-                            Our servers are having a moment. Don't worry, your favourite data is safe—we just can't reach it right now.
+                            Our servers are having a moment. Don&apos;t worry, your favourite data is safe—we just can&apos;t reach it right now.
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4">
@@ -82,7 +81,7 @@ export default async function MyFavouritesPage() {
         const listings = data.result;
 
         return (
-            <div className="max-w-7xl mx-auto px-4 py-12 min-h-screen">
+            <div className="mx-auto min-h-screen max-w-7xl bg-[var(--ek-bg-main)] px-4 pb-16 pt-[calc(var(--site-nav-height)+2rem)] dark:bg-[var(--ek-dark-page)]">
                 <header className="gap-4 mb-12 text-center">
                     <div>
                         <h1 className="text-4xl font-black text-secondary-900 dark:text-white tracking-tight">
@@ -92,7 +91,7 @@ export default async function MyFavouritesPage() {
                 </header>
 
                 {listings.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-24 bg-secondary-50 dark:bg-secondary-900/50 rounded-3xl border-2 border-dashed border-secondary-200 dark:border-secondary-800">
+                    <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-[var(--ek-border-soft)] bg-[var(--ek-bg-card-soft)] py-24 dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)]/70">
                         <div className="w-20 h-20 bg-secondary-100 dark:bg-secondary-800 rounded-full flex items-center justify-center mb-4">
                             <Clock size={32} className="text-secondary-400" />
                         </div>

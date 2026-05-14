@@ -31,8 +31,14 @@ export default function EditPropertyPage() {
         setIsMounted(true);
     }, []);
 
+    useEffect(() => {
+        if (isMounted && !userLoading && !user) {
+            router.replace("/auth/signin");
+        }
+    }, [isMounted, userLoading, user, router]);
 
-    if (isLoading || userLoading || !isMounted) {
+
+    if (isLoading || userLoading || !isMounted || !user) {
         return (
             <div className="min-h-screen flex items-center justify-center"><PageLoading/></div>
         )

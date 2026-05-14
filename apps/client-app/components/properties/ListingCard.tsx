@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Bed, Bath, Maximize, MapPin } from "lucide-react"; // install lucide-react if not there
+import { Bed, Bath, Maximize, MapPin } from "lucide-react";
 import { PropertyListing } from "@repo/validators";
 
 export default function ListingCard({ listing }: {listing:PropertyListing}) {
@@ -7,8 +7,7 @@ export default function ListingCard({ listing }: {listing:PropertyListing}) {
   const formattedPrice = new Intl.NumberFormat('en-IN').format(Number(listing.price));
 
   return (
-    // Add 'mask-image' and 'backface-visibility'
-    <div className="group relative bg-white dark:bg-secondary-800 rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border border-secondary-100 dark:border-secondary-700 w-full antialiased">
+    <div className="group relative w-full overflow-hidden rounded-2xl border bg-[var(--ek-bg-card)] shadow-[var(--ek-shadow-card)] antialiased transition duration-300 hover:-translate-y-0.5 hover:border-[var(--ek-border-strong)] hover:shadow-[0_22px_54px_rgba(15,23,42,0.13)] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)] dark:shadow-[var(--ek-dark-shadow-card)] dark:hover:border-[var(--ek-dark-border-strong)]">
       {/* Image Section */}
       <div className="relative h-64 w-full overflow-hidden">
         {listing.images?.[0]?.url ? (
@@ -16,58 +15,58 @@ export default function ListingCard({ listing }: {listing:PropertyListing}) {
             src={`${process.env.NEXT_PUBLIC_BASE_URL}${listing.images[0].url}`}
             alt={listing.title}
             fill
-            className="object-cover group-hover:scale-110 transition-transform duration-500 transform-gpu"
+            className="object-cover transition-transform duration-500 transform-gpu group-hover:scale-105"
           />
         ) : (
-          <div className="w-full h-full bg-secondary-200 flex items-center justify-center">No Image</div>
+          <div className="flex h-full w-full items-center justify-center bg-[var(--ek-bg-card-soft)] text-sm text-[var(--ek-text-muted)] dark:bg-[var(--ek-dark-elevated)] dark:text-[var(--ek-dark-soft)]">No Image</div>
         )}
 
-        {/* Price Badge - Using your Gold Gradient */}
-        <div className="absolute top-4 left-4 bg-gold-gradient text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg">
+        {/* Price Badge */}
+        <div className="absolute left-4 top-4 rounded-full bg-[rgba(255,253,248,0.94)] px-4 py-1.5 text-sm font-bold text-[var(--ek-gold-text)] shadow-md ring-1 ring-[var(--ek-border-soft)] backdrop-blur-sm dark:bg-[rgba(33,28,20,0.88)] dark:text-[var(--ek-dark-gold)] dark:ring-[var(--ek-dark-border)]">
           Rs. {formattedPrice} {listing.type === "rent" ? "/mo" : ""}
         </div>
 
         {/* Category Tag */}
-        <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-md text-white px-3 py-1 rounded-lg text-xs font-medium uppercase tracking-wider">
+        <div className="absolute right-4 top-4 rounded-lg bg-black/48 px-3 py-1 text-xs font-medium uppercase tracking-wider text-white backdrop-blur-sm">
           {listing.category?.name}
         </div>
       </div>
 
       {/* Info Section */}
       <div className="p-5">
-        <div className="flex items-center gap-1 text-gold mb-1">
-          <MapPin size={14} />
+        <div className="mb-1 flex items-center gap-1 text-[var(--ek-text-muted)] dark:text-[var(--ek-dark-muted)]">
+          <MapPin size={14} className="text-[var(--ek-gold-text)] dark:text-[var(--ek-dark-gold)]" />
           <span className="text-xs font-semibold uppercase tracking-wider">{listing.tole}</span>
         </div>
 
-        <h3 className="text-secondary-900 dark:text-white text-xl font-bold mb-4 line-clamp-1">
+        <h3 className="mb-4 line-clamp-1 text-xl font-bold text-[var(--ek-text-primary)] dark:text-[var(--ek-dark-text)]">
           {listing.title}
         </h3>
 
         {/* Features Row */}
-        <div className="flex items-center justify-between border-t border-secondary-100 dark:border-secondary-700 pt-4">
-          <div className="flex items-center gap-4 text-secondary-500 dark:text-secondary-400">
+        <div className="flex items-center justify-between border-t border-[var(--ek-border-soft)] pt-4 dark:border-[var(--ek-dark-border)]">
+          <div className="flex items-center gap-4 text-[var(--ek-text-secondary)] dark:text-[var(--ek-dark-muted)]">
             {listing.noOfBedRooms && (
               <div className="flex items-center gap-1.5">
-                <Bed size={18} className="text-gold" />
+                <Bed size={16} className="text-[var(--ek-gold-text)] dark:text-[var(--ek-dark-gold)]" />
                 <span className="text-sm font-medium">{listing.noOfBedRooms}</span>
               </div>
             )}
             {listing.noOfRestRooms && (
               <div className="flex items-center gap-1.5">
-                <Bath size={18} className="text-gold" />
+                <Bath size={16} className="text-[var(--ek-gold-text)] dark:text-[var(--ek-dark-gold)]" />
                 <span className="text-sm font-medium">{listing.noOfRestRooms}</span>
               </div>
             )}
             {listing.landArea && (
               <div className="flex items-center gap-1.5">
-                <Maximize size={18} className="text-gold" />
+                <Maximize size={16} className="text-[var(--ek-gold-text)] dark:text-[var(--ek-dark-gold)]" />
                 <span className="text-sm font-medium">{listing.landArea}</span>
               </div>
             )}
           </div>
 
-          <div className="text-xs font-bold text-secondary-400 uppercase">
+          <div className="text-xs font-bold uppercase text-[var(--ek-text-muted)] dark:text-[var(--ek-dark-soft)]">
             {listing.type}
           </div>
         </div>

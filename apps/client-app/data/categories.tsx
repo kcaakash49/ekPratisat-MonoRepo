@@ -1,6 +1,12 @@
 import { prisma } from "@repo/database";
 import { unstable_cache } from "next/cache";
 
+export type PropertyCategory = {
+  id: string;
+  name: string;
+  imageUrl: string;
+};
+
 export const getCategories = unstable_cache(
   async () => {
     return await prisma.category.findMany({

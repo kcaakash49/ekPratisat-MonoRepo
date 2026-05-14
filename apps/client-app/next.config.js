@@ -5,7 +5,6 @@ const nextConfig = {
   ...baseConfig,
   reactStrictMode: true,
    images: {
-    domains: ['192.168.2.249', 'www.ekpratishat.com', "images.unsplash.com",'192.168.0.103'], 
     remotePatterns: [
       {
         protocol: 'http',
