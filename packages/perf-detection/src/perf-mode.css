@@ -1,0 +1,50 @@
+/* ============================================================================
+   @repo/perf-detection — perf-mode.css
+   ----------------------------------------------------------------------------
+   Tier-keyed CSS for the cross-fade logo handoff used by the balanced
+   and lite tiers. The full (cinematic) tier owns the logo via the
+   existing JS scroll-tied component (ScrollLogoTransition) and is
+   deliberately untouched here.
+
+   This file used to ship a fixed-position snap-dock overlay for the
+   balanced tier. That overlay had a structural flaw: because it was
+   `position: fixed`, its anchor point became visually wrong as soon
+   as the user scrolled before the dock threshold fired, causing the
+   overlay to collide with the hero headline mid-scroll. We removed
+   it in favor of the cross-fade handoff (see Navbar's
+   `homeLogoOwner` machine), which avoids any overlay entirely on
+   non-cinematic tiers.
+
+   Attribute contract (set by the inline detection script):
+     html[data-perf-tier="full"|"balanced"|"lite"]
+     html[data-scroll-timeline="true"|"false"]
+     html[data-reduce-motion="true"|"false"]
+     html[data-apple-webkit="true"|"false"]
+     html[data-perf-reason="..."]      (debug)
+     html[data-browser-engine="..."]   (debug)
+
+   Attribute contract (set by Navbar's IntersectionObserver):
+     html[data-docked="true"]   user has scrolled past the dock threshold
+   ============================================================================ */
+
+/* ----------------------------------------------------------------------------
+   Cross-fade easing helpers (used by the navbar's static logo)
+   ----------------------------------------------------------------------------
+   The Navbar component opacity-transitions its static logo via Tailwind
+   utilities. These rules add a unified premium ease to the fade so the
+   cross-fade lands with the same rhythm as the card stack. Scoped
+   tightly to the navbar's logo slot so they can't bleed into other
+   uses of the same image. */
+[data-logo-slot="navbar"] img {
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ----------------------------------------------------------------------------
+   Reduced-motion respect
+   ----------------------------------------------------------------------------
+   Users who set the OS-level reduced-motion preference get an instant
+   handoff with no opacity transition. The visual outcome (logo lands
+   in the navbar) is preserved — only the cross-fade is removed. */
+html[data-reduce-motion="true"] [data-logo-slot="navbar"] img {
+  transition-duration: 0ms !important;
+}

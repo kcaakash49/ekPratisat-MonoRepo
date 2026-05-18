@@ -55,6 +55,16 @@ const propertyLinks = [
 const NAV_HEIGHT_MOBILE = 96;
 const NAV_HEIGHT_DESKTOP = 112;
 const SM_BREAKPOINT = 640;
+// Hysteresis sentinel selectors. The actual <div>s are rendered by
+// HeroSection (home page) or layout fallbacks for non-home pages.
+// Two sentinels create the same enter/exit asymmetry the old scroll
+// listener used (40px to enter solid, 12px to exit) without a
+// per-frame JS scroll handler.
+const NAV_ENTER_SENTINEL_SELECTOR = '[data-nav-sentinel="enter"]';
+const NAV_EXIT_SENTINEL_SELECTOR = '[data-nav-sentinel="exit"]';
+// Fallback hysteresis values used when sentinels are not present
+// (e.g. routes that don't render HeroSection). The thin scroll
+// fallback below honors the same numbers as the legacy listener.
 const NAV_SOLID_ENTER_Y = 40;
 const NAV_SOLID_EXIT_Y = 12;
 const LOGO_HANDOFF_MS = 160;
@@ -77,7 +87,7 @@ const Navbar = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { data: user, isLoading } = useUser();
-  const { isMounted: isHeroPerformanceMounted } = useHeroPerformanceMode();
+  const { mode, isMounted: isHeroPerformanceMounted } = useHeroPerformanceMode();
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
@@ -139,17 +149,98 @@ const Navbar = () => {
     return () => window.removeEventListener("resize", syncNavHeight);
   }, []);
 
+  /**
+   * Drives `hasScrolled` (navbar background fade) AND `<html data-docked>`
+   * (snap-dock CSS trigger). Two strategies, picked at runtime:
+   *
+   *   1. PRIMARY — IntersectionObserver on two sentinel <div>s
+   *      rendered by HeroSection at document Y = 40px (enter) and 12px
+   *      (exit). The asymmetry preserves the original hysteresis
+   *      without any per-frame JS during scroll. This path runs on
+   *      every page that mounts HeroSection (today: home only).
+   *
+   *   2. FALLBACK — a thin scroll listener with the same 40/12 numbers.
+   *      Used on routes that don't render the sentinels (every page
+   *      except home). Cheap; only adjusts a single boolean.
+   *
+   * Both paths also keep <html data-docked="true|absent"> in sync, so
+   * the snap-dock overlay stays in lockstep with the navbar's solid
+   * background — single source of truth, no drift.
+   */
   useEffect(() => {
+    const enterEl = document.querySelector(NAV_ENTER_SENTINEL_SELECTOR);
+    const exitEl = document.querySelector(NAV_EXIT_SENTINEL_SELECTOR);
+    const supportsIntersectionObserver = typeof IntersectionObserver !== "undefined";
+
+    const applyDockedAttr = (next: boolean) => {
+      if (next) {
+        document.documentElement.dataset.docked = "true";
+      } else {
+        delete document.documentElement.dataset.docked;
+      }
+    };
+
+    if (enterEl && exitEl && supportsIntersectionObserver) {
+      // Sentinel observers run on the compositor thread — they don't
+      // compete with iOS Safari's native scroll, which is the whole
+      // reason for moving away from the per-frame scroll listener.
+      let isPastEnter = false;
+      let isPastExit = false;
+
+      const computeAndApply = () => {
+        // Solid when scrolled past the enter line; un-solid only after
+        // scrolling back above the exit line. Both must be checked
+        // because the observers fire independently.
+        const next = isPastEnter && isPastExit;
+        setHasScrolled(next);
+        applyDockedAttr(next);
+      };
+
+      const enterObserver = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          if (!entry) return;
+          // Sentinel sits above the viewport top (scrolled past) when
+          // it's NOT intersecting. boundingClientRect.top < 0 confirms
+          // the direction (above, not below) for safety.
+          isPastEnter = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+          computeAndApply();
+        },
+        { threshold: 0 },
+      );
+
+      const exitObserver = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          if (!entry) return;
+          isPastExit = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+          computeAndApply();
+        },
+        { threshold: 0 },
+      );
+
+      enterObserver.observe(enterEl);
+      exitObserver.observe(exitEl);
+
+      return () => {
+        enterObserver.disconnect();
+        exitObserver.disconnect();
+        applyDockedAttr(false);
+      };
+    }
+
+    // ---- Fallback path: thin scroll listener for non-home routes -------
     let frameId: number | null = null;
 
     const updateScrolledState = () => {
       frameId = null;
-
       setHasScrolled((current) => {
         const scrollY = Math.max(0, window.scrollY || window.pageYOffset || 0);
-
-        if (current) return scrollY > NAV_SOLID_EXIT_Y;
-        return scrollY > NAV_SOLID_ENTER_Y;
+        const next = current
+          ? scrollY > NAV_SOLID_EXIT_Y
+          : scrollY > NAV_SOLID_ENTER_Y;
+        applyDockedAttr(next);
+        return next;
       });
     };
 
@@ -164,8 +255,11 @@ const Navbar = () => {
     return () => {
       if (frameId !== null) window.cancelAnimationFrame(frameId);
       window.removeEventListener("scroll", scheduleUpdate);
+      applyDockedAttr(false);
     };
-  }, []);
+    // pathname is in the dep array so the effect re-runs after
+    // route change (sentinels may appear/disappear with the page).
+  }, [pathname]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -218,18 +312,52 @@ const Navbar = () => {
     setIsAccountOpen(false);
   };
   const isSolid = hasScrolled || isOpen;
-  const shouldUseScrollLogo = isHomePage && isHeroPerformanceMounted;
+
+  // Two logo paths, one per device class:
+  //
+  //   shouldUseScrollLogo         → cinematic JS overlay (full tier).
+  //                                 Strong devices that handle scroll-tied JS
+  //                                 animation smoothly (desktop, S21+, modern
+  //                                 Pixels, modern iPhones, etc).
+  //
+  //   shouldUseStaticLogoHandoff  → cross-fade between the in-flow hero logo
+  //                                 and the static navbar logo (balanced + lite).
+  //                                 Used for iPad / iPadOS WebKit (where JS
+  //                                 scroll-tied jitters), older iPhones, and
+  //                                 weak/preference-constrained devices.
+  //                                 No fixed-position overlay → no risk of
+  //                                 visually colliding with the headline.
+  const shouldUseScrollLogo =
+    isHomePage && isHeroPerformanceMounted && mode === "full";
   const shouldUseStaticLogoHandoff =
-    isHomePage && isHeroPerformanceMounted && !shouldUseScrollLogo;
+    isHomePage &&
+    isHeroPerformanceMounted &&
+    (mode === "balanced" || mode === "lite");
+
+  // The cross-fade handoff is driven by the existing `homeLogoOwner`
+  // state machine: when scrolled past the dock threshold (`isSolid`
+  // is true via the navbar's IntersectionObserver), target the
+  // "navbar" owner; the 160ms hold in the transitioning state gives
+  // the double-fade a graceful beat between the hero and navbar
+  // static logos.
   const targetHomeLogoOwner: HomeLogoOwner =
     shouldUseStaticLogoHandoff && isSolid ? "navbar" : "hero";
+
+  // Static navbar logo visibility:
+  //   - With the cinematic overlay rendered, the JS overlay covers
+  //     the visible logo — only show the static one when the mobile
+  //     menu is open (the overlay is hidden then).
+  //   - With the static handoff (balanced/lite), follow `homeLogoOwner`
+  //     exactly: visible once the handoff state machine has settled
+  //     into "navbar".
+  //   - On non-home routes, follow `isSolid` (legacy behavior).
   const showStaticNavLogo = isHomePage
     ? shouldUseScrollLogo
       ? isOpen
       : homeLogoOwner === "navbar"
     : isSolid;
   const showHandoffNavLogo =
-    isHomePage && !shouldUseScrollLogo && homeLogoOwner === "transitioning";
+    isHomePage && shouldUseStaticLogoHandoff && homeLogoOwner === "transitioning";
   const shouldShowAuthControl = mounted && !isLoading;
   const userInitials = getUserInitials(user?.name);
 
@@ -243,6 +371,31 @@ const Navbar = () => {
 
     setHomeLogoOwner((current) => {
       if (current === targetHomeLogoOwner) return current;
+
+      // Asymmetric handoff.
+      //
+      // Forward (hero → navbar): the in-flow hero logo has scrolled
+      // out of viewport by the time we cross the dock threshold, so
+      // we go through "transitioning" to let the handoff nav logo
+      // fade in BEFORE the static nav logo settles. That bridge
+      // prevents a one-frame gap in the navbar slot.
+      //
+      // Reverse (* → hero): the in-flow hero logo is already back in
+      // view from natural scroll, so the nav slot doesn't need a
+      // bridge — anything we cross-fade through there just lingers
+      // visibly while the hero logo is also visible below the navbar.
+      // Skip "transitioning" entirely and let the static nav logo
+      // fade out cleanly in 100ms (its closed-state CSS duration).
+      //
+      // This is the iOS Safari pull-back fix: on momentum scroll the
+      // IntersectionObserver fires late; adding our own 160ms timer
+      // + 100ms delay + 100ms fade on top produced a visible ~360ms
+      // window where both logos overlapped. The straight-to-"hero"
+      // path collapses that to a single 100ms fade aligned with the
+      // moment the observer fires.
+      if (targetHomeLogoOwner === "hero") {
+        return "hero";
+      }
 
       timeoutId = window.setTimeout(() => {
         setHomeLogoOwner(targetHomeLogoOwner);
@@ -311,6 +464,15 @@ const Navbar = () => {
           isSolid ? "opacity-100" : "opacity-0"
         }`}
       />
+      {/*
+        Tier-routed logo. The full tier (capable devices: desktop,
+        S21+, modern Pixels, modern iPhones, etc) renders the
+        scroll-tied JS overlay. Balanced + lite tiers render no
+        overlay — the cross-fade between the in-flow hero logo and
+        the static navbar logo (driven by `homeLogoOwner` above)
+        handles the visual handoff cleanly with zero risk of
+        colliding with the headline mid-scroll.
+      */}
       {shouldUseScrollLogo ? <ScrollLogoTransition isMenuOpen={isOpen} /> : null}
 
       <div className="relative z-50 mx-auto flex h-24 w-full max-w-7xl items-center justify-between px-5 sm:h-28 sm:px-6 lg:px-8">

@@ -15,6 +15,7 @@
     "@repo/components": "*",
     "@repo/database": "*",
     "@repo/functions": "*",
+    "@repo/perf-detection": "*",
     "@repo/query-hook": "*",
     "@repo/shared-provider": "*",
     "@heroicons/react": "^2.2.0",
