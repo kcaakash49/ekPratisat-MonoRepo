@@ -1,0 +1,23 @@
+{
+  "name": "@repo/perf-detection",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "type": "module",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./perf-mode.css": "./src/perf-mode.css"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "@types/react": "19.1.0",
+    "eslint": "^9.34.0",
+    "typescript": "5.9.2"
+  },
+  "peerDependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  }
+}

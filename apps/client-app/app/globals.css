@@ -2,6 +2,13 @@
 @import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 @import "mapbox-gl/dist/mapbox-gl.css";
 @import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
+/*
+  Performance-tier CSS rules. Adds the snap-dock animation for the
+  balanced tier and coordinates the hero-logo-fallback fade with the
+  pre-paint perf-detection attributes on <html>. See
+  packages/perf-detection/perf-mode.css for what this contributes.
+*/
+@import "@repo/perf-detection/perf-mode.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

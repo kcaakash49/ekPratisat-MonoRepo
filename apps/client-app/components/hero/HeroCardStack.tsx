@@ -53,10 +53,20 @@ const getStackLayout = (mode: HeroPerformanceMode): StackLayout => {
     cardWidthPx = Math.min(vw * 0.7, 250);
   }
 
+  // Per-tier intensity multiplier. Scales the translate offsets and 3D
+  // rotation values together so weaker GPUs do less compositor work
+  // per animated frame, while preserving the same visual *direction*
+  // (the cards still tilt the same way, just less dramatically).
+  //   full     → 1.00   cinematic depth; desktop / strong GPUs
+  //   balanced → 0.72   editorial depth; iPads, mid-range phones
+  //   lite     → 0.50   clean depth; reduced-motion or low-end devices
+  // The `lite` tier also disables auto-rotation entirely (see
+  // `shouldAutoRotate` below), so static intensity is the baseline.
   const intensity = mode === "full" ? 1 : mode === "balanced" ? 0.72 : 0.5;
   const x = Math.round(cardWidthPx * 0.028 * intensity);
   const y = -Math.round(cardWidthPx * 0.035 * intensity);
 
+  // Mobile uses gentler 3D — narrow viewports already feel busy.
   if (vw < 640) {
     return { x, y, rotateY: -3 * intensity, rotateZ: -0.25 * intensity };
   }
