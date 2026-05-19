@@ -67,7 +67,7 @@ const NAV_EXIT_SENTINEL_SELECTOR = '[data-nav-sentinel="exit"]';
 // fallback below honors the same numbers as the legacy listener.
 const NAV_SOLID_ENTER_Y = 40;
 const NAV_SOLID_EXIT_Y = 12;
-const LOGO_HANDOFF_MS = 160;
+const LOGO_HANDOFF_MS = 200;
 type HomeLogoOwner = "hero" | "transitioning" | "navbar";
 
 const getUserInitials = (name?: string | null) => {
@@ -89,6 +89,19 @@ const Navbar = () => {
   const { data: user, isLoading } = useUser();
   const { mode, isMounted: isHeroPerformanceMounted } = useHeroPerformanceMode();
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
+  /**
+   * True for one frame after a route change (and on initial mount).
+   * Suppresses the forward hero→navbar handoff when its target was
+   * computed from stale `hasScrolled` carried in from the previous
+   * route. Without this gate, navigating from a scrolled non-home
+   * page (e.g. /about) to / triggers the cross-fade unconditionally
+   * — the logo ends up stuck in the navbar slot with no navbar bg,
+   * because hasScrolled gets reset to false before the handoff
+   * completes, leaving the contradictory state (homeLogoOwner =
+   * "navbar" while isSolid = false). After one RAF the IO observer
+   * has settled and any real scroll-driven handoff proceeds normally.
+   */
+  const isFreshNavigationRef = useRef(true);
   const [isOpen, setIsOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -102,6 +115,43 @@ const Navbar = () => {
   useEffect(() => {
     if (!user) setIsAccountOpen(false);
   }, [user]);
+
+  /**
+   * Route-change reset. Two jobs:
+   *
+   *   1. Force visual state back to "at top of page": hasScrolled =
+   *      false, homeLogoOwner = "hero", no docked attribute. Scroll
+   *      position is restored to top by the router on forward nav,
+   *      so the navbar must match — otherwise stale state from the
+   *      previous page leaks into the new one.
+   *
+   *   2. Raise the `isFreshNavigationRef` gate for one frame so the
+   *      homeLogoOwner effect skips the forward (hero→navbar)
+   *      handoff. Reason: that effect runs in the same React batch
+   *      as this reset, and its closure captures the OLD render's
+   *      targetHomeLogoOwner (still "navbar" because hasScrolled
+   *      hasn't propagated yet). Without the gate, the forward
+   *      handoff fires, sets a 200ms timeout to write "navbar" into
+   *      homeLogoOwner, and the second Effect 7 run that should
+   *      undo it doesn't reliably win the race on iPad Brave.
+   *      Result: the contradictory "navbar logo visible but no
+   *      navbar bg" state observed in real-device testing.
+   *
+   * The RAF clears the gate after one paint, by which point the IO
+   * observer (or scroll fallback) has settled the real hasScrolled
+   * value. After that, any forward handoff is intentional.
+   */
+  useEffect(() => {
+    isFreshNavigationRef.current = true;
+    setHasScrolled(false);
+    setHomeLogoOwner("hero");
+    delete document.documentElement.dataset.docked;
+
+    const rafId = window.requestAnimationFrame(() => {
+      isFreshNavigationRef.current = false;
+    });
+    return () => window.cancelAnimationFrame(rafId);
+  }, [pathname]);
 
   useEffect(() => {
     if (!isAccountOpen) return;
@@ -372,6 +422,18 @@ const Navbar = () => {
     setHomeLogoOwner((current) => {
       if (current === targetHomeLogoOwner) return current;
 
+      // Fresh-navigation gate. If pathname JUST changed (within the
+      // current frame), `targetHomeLogoOwner` may be "navbar" only
+      // because hasScrolled hasn't yet been reset by the route-change
+      // effect — there was no real scroll event on this page. Force
+      // back to "hero" instead of firing the forward handoff timer
+      // that would otherwise leave the logo stuck in the navbar slot
+      // with no navbar bg. RAF in the reset effect lowers this gate
+      // after the IO observer / scroll fallback settles.
+      if (isFreshNavigationRef.current && targetHomeLogoOwner === "navbar") {
+        return "hero";
+      }
+
       // Asymmetric handoff.
       //
       // Forward (hero → navbar): the in-flow hero logo has scrolled
@@ -492,8 +554,8 @@ const Navbar = () => {
               alt=""
               fill
               sizes={NAV_LOGO_SIZES}
-              className={`object-contain transition-opacity ease-out ${
-                showStaticNavLogo ? "opacity-100 duration-150" : "opacity-0 duration-100"
+              className={`object-contain transition-opacity ${
+                showStaticNavLogo ? "opacity-100 duration-300" : "opacity-0 duration-200"
               }`}
               priority
               unoptimized
@@ -503,10 +565,10 @@ const Navbar = () => {
               alt=""
               fill
               sizes={NAV_LOGO_SIZES}
-              className={`object-contain transition-opacity ease-out ${
+              className={`object-contain transition-opacity ${
                 showHandoffNavLogo
-                  ? "opacity-100 duration-100"
-                  : "opacity-0 delay-100 duration-100"
+                  ? "opacity-100 duration-200"
+                  : "opacity-0 delay-75 duration-200"
               }`}
               priority
               unoptimized

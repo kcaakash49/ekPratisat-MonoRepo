@@ -204,7 +204,7 @@ export function PageHero({
             {secondaryCta ? (
               <Link
                 href={secondaryCta.href}
-                className="inline-flex items-center justify-center rounded-full border border-secondary-300 bg-white/55 px-7 py-3.5 text-sm font-semibold text-secondary-900 backdrop-blur-sm transition duration-300 hover:border-gold-500 hover:bg-white/75 dark:border-[var(--ek-dark-border-strong)] dark:bg-[var(--ek-dark-surface)]/75 dark:text-[var(--ek-dark-text)] dark:hover:border-gold-500/70 dark:hover:bg-[var(--ek-dark-card-soft)]"
+                className="inline-flex items-center justify-center rounded-full border border-secondary-300 bg-white/55 px-7 py-3.5 text-sm font-semibold text-secondary-900 backdrop-blur-sm transition duration-300 hover:border-gold-500 hover:bg-white/75 dark:border-[rgba(229,184,62,0.55)] dark:bg-[var(--ek-dark-surface)]/85 dark:text-[var(--ek-dark-text)] dark:hover:border-[rgba(229,184,62,0.85)] dark:hover:bg-[var(--ek-dark-card-soft)]"
               >
                 {secondaryCta.label}
               </Link>
@@ -256,8 +256,8 @@ export function PageHero({
             </div>
           </div>
 
-          <div className="motion-reveal-up absolute -bottom-6 left-0 max-w-xs rounded-[1.75rem] border border-white bg-white/95 p-6 shadow-[0_30px_90px_-38px_rgba(15,23,42,0.24)] backdrop-blur-[2px] dark:border-[var(--ek-dark-border-strong)] dark:bg-[var(--ek-dark-card-soft)]/95 dark:shadow-[0_30px_90px_-40px_rgba(0,0,0,0.9)] sm:-left-10">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-gold-700">
+          <div className="motion-reveal-up absolute -bottom-6 left-0 max-w-xs rounded-[1.75rem] border border-white bg-white/95 p-6 shadow-[0_30px_90px_-38px_rgba(15,23,42,0.24)] backdrop-blur-[2px] dark:border-[rgba(229,184,62,0.35)] dark:bg-[var(--ek-dark-card-soft)] dark:shadow-[0_30px_90px_-40px_rgba(0,0,0,0.9)] sm:-left-10">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-gold-700 dark:text-[var(--ek-dark-gold)]">
               {floatingCard.eyebrow}
             </p>
             <h2 className="mt-3 text-xl font-bold text-secondary-900 dark:text-[var(--ek-dark-text)] sm:text-2xl">
@@ -498,12 +498,12 @@ export function HighlightBand({
         {[...items, ...items].map((item, index) => (
           <div
             key={`${item.title}-${index}`}
-            className="flex items-center gap-4 rounded-full border border-[#e8ddcd] bg-white/90 px-5 py-3 shadow-sm dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)]/90"
+            className="flex items-center gap-4 rounded-full border border-[#e8ddcd] bg-white/90 px-5 py-3 shadow-sm dark:border-[rgba(229,184,62,0.22)] dark:bg-[var(--ek-dark-surface)]"
           >
-            <span className="text-xs font-semibold uppercase tracking-[0.28em] text-gold-700">
+            <span className="text-xs font-semibold uppercase tracking-[0.28em] text-gold-700 dark:text-[var(--ek-dark-gold)]">
               {item.title}
             </span>
-            <span className="text-sm text-secondary-600 dark:text-[var(--ek-dark-muted)]">{item.description}</span>
+            <span className="text-sm text-secondary-600 dark:text-[var(--ek-dark-text)]">{item.description}</span>
           </div>
         ))}
       </div>

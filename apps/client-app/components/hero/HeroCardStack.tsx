@@ -4,20 +4,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { useHeroPerformanceMode, type HeroPerformanceMode } from "./useHeroPerformanceMode";
+import { useHeroPerformanceMode } from "./useHeroPerformanceMode";
+import { getStackLayout, type StackLayout } from "./getStackLayout";
 
 export type HeroDisplayCard = {
   heading: string;
   href: string;
   image: string;
   alt: string;
-};
-
-type StackLayout = {
-  x: number;
-  y: number;
-  rotateY: number;
-  rotateZ: number;
 };
 
 type HeroCardStackProps = { cards: HeroDisplayCard[] };
@@ -30,49 +24,6 @@ const TAB_POSITION_CLASSES = [
 ] as const;
 const CARD_WIDTH_CLASSES =
   "w-[min(70vw,250px)] min-[360px]:w-[min(72vw,330px)] min-[375px]:w-[min(74vw,340px)] sm:w-[min(66vw,520px)] md:w-[min(50vw,480px)] lg:w-[min(50vw,650px)] xl:w-[min(48vw,720px)] 2xl:w-[min(46vw,790px)]";
-
-const getStackLayout = (mode: HeroPerformanceMode): StackLayout => {
-  const vw = window.innerWidth;
-  let cardWidthPx: number;
-
-  if (vw >= 1536) {
-    cardWidthPx = Math.min(vw * 0.46, 790);
-  } else if (vw >= 1280) {
-    cardWidthPx = Math.min(vw * 0.48, 720);
-  } else if (vw >= 1024) {
-    cardWidthPx = Math.min(vw * 0.5, 650);
-  } else if (vw >= 768) {
-    cardWidthPx = Math.min(vw * 0.5, 480);
-  } else if (vw >= 640) {
-    cardWidthPx = Math.min(vw * 0.66, 520);
-  } else if (vw >= 375) {
-    cardWidthPx = Math.min(vw * 0.74, 340);
-  } else if (vw >= 360) {
-    cardWidthPx = Math.min(vw * 0.72, 330);
-  } else {
-    cardWidthPx = Math.min(vw * 0.7, 250);
-  }
-
-  // Per-tier intensity multiplier. Scales the translate offsets and 3D
-  // rotation values together so weaker GPUs do less compositor work
-  // per animated frame, while preserving the same visual *direction*
-  // (the cards still tilt the same way, just less dramatically).
-  //   full     → 1.00   cinematic depth; desktop / strong GPUs
-  //   balanced → 0.72   editorial depth; iPads, mid-range phones
-  //   lite     → 0.50   clean depth; reduced-motion or low-end devices
-  // The `lite` tier also disables auto-rotation entirely (see
-  // `shouldAutoRotate` below), so static intensity is the baseline.
-  const intensity = mode === "full" ? 1 : mode === "balanced" ? 0.72 : 0.5;
-  const x = Math.round(cardWidthPx * 0.028 * intensity);
-  const y = -Math.round(cardWidthPx * 0.035 * intensity);
-
-  // Mobile uses gentler 3D — narrow viewports already feel busy.
-  if (vw < 640) {
-    return { x, y, rotateY: -3 * intensity, rotateZ: -0.25 * intensity };
-  }
-
-  return { x, y, rotateY: -7 * intensity, rotateZ: -0.6 * intensity };
-};
 
 export default function HeroCardStack({ cards }: HeroCardStackProps) {
   const [activeCard, setActiveCard] = useState(0);
