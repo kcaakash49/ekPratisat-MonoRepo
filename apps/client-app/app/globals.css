@@ -338,13 +338,13 @@ body {
 
   .hero-logo-fallback {
     opacity: 1;
-    transition: opacity 180ms ease-out;
+    transition: opacity 280ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   html[data-home-logo-owner="transitioning"] .hero-logo-fallback,
   html[data-home-logo-owner="navbar"] .hero-logo-fallback {
     opacity: 0;
-    transition-duration: 120ms;
+    transition-duration: 220ms;
   }
 
   html[data-scroll-logo-ready="true"] .hero-logo-fallback {
@@ -381,13 +381,33 @@ body {
   background-color: var(--ek-dark-page) !important;
 }
 
-.bg-secondary-50,
-.bg-secondary-100 {
+/*
+  Light-mode brand bridges. These remap legacy `bg-white` /
+  `bg-secondary-100` utilities onto the champagne brand tokens for
+  light mode. CRITICAL: scope to `html:not(.dark)` so they DON'T
+  leak into dark mode — otherwise the `!important` here would
+  override any explicit `dark:bg-...` on the same element, leaving
+  cards stuck at light-cream with light text (invisible content).
+  The dark-mode fallback below provides a sensible default
+  (`--ek-dark-surface`) WITHOUT `!important` so components that
+  ship an explicit `dark:bg-X` override still win normally.
+*/
+html:not(.dark) .bg-secondary-50,
+html:not(.dark) .bg-secondary-100 {
   background-color: var(--ek-bg-section) !important;
 }
 
-.bg-white {
+html:not(.dark) .bg-white {
   background-color: var(--ek-bg-card) !important;
+}
+
+.dark .bg-secondary-50,
+.dark .bg-secondary-100 {
+  background-color: var(--ek-dark-section);
+}
+
+.dark .bg-white {
+  background-color: var(--ek-dark-surface);
 }
 
 .bg-gold-gradient.text-white {

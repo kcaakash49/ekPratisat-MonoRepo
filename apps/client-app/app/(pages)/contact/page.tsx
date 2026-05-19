@@ -159,8 +159,8 @@ export default function ContactPage() {
             </p>
 
             <div className="mt-8 space-y-4 text-sm text-secondary-700 dark:text-[var(--ek-dark-muted)]">
-              <div className="rounded-2xl border border-secondary-200 bg-white/70 px-5 py-4 dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-card-soft)]/90">
-                <span className="block text-xs font-semibold uppercase tracking-[0.24em] text-gold-700">
+              <div className="rounded-2xl border border-secondary-200 bg-white/70 px-5 py-4 dark:border-[rgba(229,184,62,0.22)] dark:bg-[var(--ek-dark-card-soft)]">
+                <span className="block text-xs font-semibold uppercase tracking-[0.24em] text-gold-700 dark:text-[var(--ek-dark-gold)]">
                   Address
                 </span>
                 <span className="mt-1 block font-semibold text-secondary-900 dark:text-[var(--ek-dark-text)]">
@@ -168,8 +168,8 @@ export default function ContactPage() {
                 </span>
               </div>
 
-              <div className="rounded-2xl border border-secondary-200 bg-white/70 px-5 py-4 dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-card-soft)]/90">
-                <span className="block text-xs font-semibold uppercase tracking-[0.24em] text-gold-700">
+              <div className="rounded-2xl border border-secondary-200 bg-white/70 px-5 py-4 dark:border-[rgba(229,184,62,0.22)] dark:bg-[var(--ek-dark-card-soft)]">
+                <span className="block text-xs font-semibold uppercase tracking-[0.24em] text-gold-700 dark:text-[var(--ek-dark-gold)]">
                   Office Visit
                 </span>
                 <span className="mt-1 block font-semibold text-secondary-900 dark:text-[var(--ek-dark-text)]">
@@ -181,7 +181,7 @@ export default function ContactPage() {
 
           <div className="motion-reveal-left overflow-hidden rounded-[20px] border border-secondary-200 bg-white p-3 shadow-[0_30px_100px_-48px_rgba(15,23,42,0.24)] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)] dark:shadow-[0_30px_100px_-48px_rgba(0,0,0,0.9)]">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.9384770301854!2d85.31367661206454!3d27.688296326230194!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1940d71cbda5%3A0xf372327eb9fad618!2sDrip%20And%20Trip%20%7C%20Ultimate%20Vape%20Store!5e0!3m2!1sen!2snp!4v1776344532460!5m2!1sen!2snp"
+              src="https://www.google.com/maps/embed?pb=!1m23!1m12!1m3!1d1407.5698694932394!2d85.31742394803855!3d27.689341250686127!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m8!3e6!4m0!4m5!1s0x3b312a587e9aca1%3A0x708aa464c2fa1ce9!2sEk%20Pratishat%20Real%20Estate%3A%20Buy%2C%20Sell%20%26%20Rent%20Property%20in%20Nepal%2C%20Lalitpur%2044600!3m2!1d27.6883397!2d85.3162775!5e0!3m2!1sen!2snp!4v1779110251522!5m2!1sen!2snp"
               title="EkPratishat office location map"
               className="h-[420px] w-full rounded-[1.55rem] md:h-[520px]"
               style={{ border: 0 }}
