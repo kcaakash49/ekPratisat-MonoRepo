@@ -243,6 +243,11 @@ body {
     @apply min-h-28;
   }
 
+  .ek-form-shell input.ek-price-input:not([type="file"]):not([type="checkbox"]) {
+    padding-left: 2.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
   .ek-form-shell input::placeholder,
   .ek-form-shell textarea::placeholder {
     color: var(--ek-text-muted) !important;

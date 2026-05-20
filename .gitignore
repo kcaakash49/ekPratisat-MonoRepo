@@ -36,3 +36,10 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# Local dev / mock seed scripts — never commit to production
+packages/database/src/mock-*.ts
+packages/database/dist/mock-*.js
+packages/database/dist/mock-*.js.map
+packages/database/dist/mock-*.d.ts
+packages/database/dist/mock-*.d.ts.map

@@ -1,7 +1,7 @@
 
 
 import Image from "next/image";
-import { Bed, Bath, Maximize, MapPin, Crown, Sparkles, TrendingUp, Award } from "lucide-react";
+import { Bed, Bath, Maximize, MapPin, Crown, Sparkles, TrendingUp } from "lucide-react";
 import { PropertyListing } from "@repo/validators";
 
 
@@ -36,17 +36,6 @@ export default function PremiumListingCard({ listing }: { listing: PropertyListi
                   <Sparkles className="w-3 h-3" />
                 </div>
               </div>
-            </div>
-          </div>
-
-        )}
-
-        {/* Verified Badge */}
-        {listing.isFeatured && (
-          <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
-            <div className="flex items-center gap-1.5 rounded-full bg-black/52 px-3 py-1.5 text-xs font-semibold text-white shadow-sm backdrop-blur-sm">
-              <Award className="w-3.5 h-3.5 text-[var(--ek-dark-gold)]" />
-              <span>Premium Pick</span>
             </div>
           </div>
 
@@ -92,6 +81,12 @@ export default function PremiumListingCard({ listing }: { listing: PropertyListi
 
         {/* Info Section - Flexible content with consistent spacing */}
         <div className="p-5 flex-1 flex flex-col">
+          {typeof listing.propertyCode === "number" && (
+            <div className="mb-3 inline-flex w-fit items-center rounded-full border border-[var(--ek-border-soft)] bg-[var(--ek-bg-card-soft)] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--ek-text-muted)] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-elevated)] dark:text-[var(--ek-dark-soft)]">
+              Code EP-{listing.propertyCode}
+            </div>
+          )}
+
           {/* Location */}
           <div className="flex items-center justify-between mb-2">
             <div className="flex min-w-0 items-center gap-1.5 text-[var(--ek-text-muted)] transition-colors dark:text-[var(--ek-dark-muted)]">

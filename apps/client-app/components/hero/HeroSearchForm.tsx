@@ -15,7 +15,7 @@ const optionClassName =
 export default function HeroSearchForm({ categories }: HeroSearchFormProps) {
   const router = useRouter();
   const [q, setQ] = useState("");
-  const [type, setType] = useState("sale");
+  const [type, setType] = useState("");
   const [categoryId, setCategoryId] = useState("");
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -54,8 +54,9 @@ export default function HeroSearchForm({ categories }: HeroSearchFormProps) {
             value={type}
             onChange={(event) => setType(event.target.value)}
             className="w-full cursor-pointer appearance-none bg-transparent py-2.5 pl-4 pr-9 font-medium text-secondary-700 transition-colors hover:text-gold-600 focus:outline-none dark:text-[var(--ek-dark-text)] dark:hover:text-[var(--ek-dark-gold)] min-[390px]:py-3 sm:py-3 lg:py-3.5"
-            aria-label="Listing type"
+            aria-label="Listing purpose"
           >
+            <option className={optionClassName} value="">Buy or Rent</option>
             <option className={optionClassName} value="sale">Buy</option>
             <option className={optionClassName} value="rent">Rent</option>
           </select>

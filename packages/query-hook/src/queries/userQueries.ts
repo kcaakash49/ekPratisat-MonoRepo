@@ -74,7 +74,7 @@ export const useUser = () => {
 
 export const useCheckFavourite = ({propertyId,user}: {propertyId:string, user:User}) => {
   return useQuery({
-    queryKey: ["favourite", user?.id],
+    queryKey: ["favourite", user?.id, propertyId],
     queryFn: async () => {
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/check-favourite`,{
         method: "POST",

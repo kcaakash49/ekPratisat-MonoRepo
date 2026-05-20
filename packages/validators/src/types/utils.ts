@@ -40,6 +40,7 @@ export interface AgentDetailType extends AgentType{
 
 export interface PropertyListing {
   id: string;
+  propertyCode?: number;
   title: string;
   price: string;
   type: string;

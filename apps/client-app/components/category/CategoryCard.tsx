@@ -16,8 +16,8 @@ export default function CategoryCard({ img, type }: { img: string; type: string 
         <div className="absolute inset-0 bg-gradient-to-t from-black/72 via-black/20 to-transparent opacity-70 transition-opacity group-hover:opacity-80" />
         
         {/* Content */}
-        <div className="absolute inset-0 flex flex-col items-center justify-end pb-6">
-          <span className="text-xl font-bold tracking-wide text-white transition-colors duration-300 group-hover:text-gold-200">
+        <div className="absolute inset-0 flex flex-col items-center justify-end pb-2 sm:pb-3">
+          <span className="rounded-full border border-white/25 bg-black/56 px-4 py-1.5 text-lg font-extrabold tracking-wide text-white shadow-[0_8px_22px_rgba(0,0,0,0.36)] backdrop-blur-sm [text-shadow:0_2px_8px_rgba(0,0,0,0.82),0_1px_1px_rgba(0,0,0,0.7)] transition-colors duration-300 group-hover:border-[rgba(239,199,90,0.42)] group-hover:bg-black/64 group-hover:text-gold-100 sm:text-xl">
             {type}
           </span>
           {/* Subtle gold underline that expands on hover */}

@@ -21,7 +21,7 @@ export default async function Properties({
    const isFeatured = sp.isFeatured === "true";
 
     const categories = await getCachedCategories();
-    const data = await getPropertiesQuery({ page, pageSize: 21, q, c_id, type,isFeatured });
+    const data = await getPropertiesQuery({ page, pageSize: 12, q, c_id, type,isFeatured });
 
 
     if (!data.items.length) {

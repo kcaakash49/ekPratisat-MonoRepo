@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
-import { Search, ChevronDown, X, Filter, Sparkles } from "lucide-react";
+import { Search, ChevronDown, X, Filter, Sparkles, Check } from "lucide-react";
 
 interface Category {
   id: string;
@@ -115,15 +115,34 @@ export default function PropertySearchBar({ categories }: { categories: Category
           {/* Feature toggle button */}
           <div className="px-2 w-full md:w-auto">
             <button
+              type="button"
+              aria-pressed={isFeatured}
               onClick={toggleFeatured}
-              className={`flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-full text-xs font-bold transition-all duration-300 border ${
+              className={`flex w-full items-center justify-center gap-2 rounded-full border px-4 py-2.5 text-xs font-bold transition-colors transition-shadow duration-150 md:min-w-[9.75rem] ${
                 isFeatured 
-                ? "border-[var(--ek-border-strong)] bg-[rgba(214,169,54,0.12)] text-[var(--ek-gold-text)] dark:border-[var(--ek-dark-border-strong)] dark:bg-[rgba(229,184,62,0.12)] dark:text-[var(--ek-dark-gold)]" 
-                : "border-[var(--ek-border-soft)] bg-[var(--ek-bg-card-soft)] text-[var(--ek-text-secondary)] hover:border-[var(--ek-border-strong)] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-elevated)] dark:text-[var(--ek-dark-muted)] dark:hover:border-[var(--ek-dark-border-strong)]"
+                ? "border-[rgba(214,169,54,0.72)] bg-[linear-gradient(135deg,rgba(255,216,87,0.98),rgba(214,169,54,0.88))] text-[#151006] shadow-[0_0_0_3px_rgba(214,169,54,0.18),0_12px_30px_rgba(154,106,0,0.22)] hover:shadow-[0_0_0_4px_rgba(214,169,54,0.22),0_14px_34px_rgba(154,106,0,0.26)] dark:border-[rgba(239,199,90,0.72)] dark:bg-[linear-gradient(135deg,rgba(239,199,90,0.95),rgba(185,132,22,0.9))] dark:text-[#151006] dark:shadow-[0_0_0_3px_rgba(239,199,90,0.18),0_14px_34px_rgba(0,0,0,0.38)]" 
+                : "border-[var(--ek-border-soft)] bg-[var(--ek-bg-card-soft)] text-[var(--ek-text-secondary)] hover:border-[var(--ek-border-strong)] hover:text-[var(--ek-text-primary)] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-elevated)] dark:text-[var(--ek-dark-muted)] dark:hover:border-[var(--ek-dark-border-strong)] dark:hover:text-[var(--ek-dark-text)]"
               }`}
             >
-              <Sparkles size={14} className={isFeatured ? "fill-[var(--ek-gold)] dark:fill-[var(--ek-dark-gold)]" : ""} />
-              <span>FEATURED</span>
+              <span
+                className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors transition-shadow duration-150 ${
+                  isFeatured
+                    ? "border-[#151006] bg-[#151006] text-[#f9d45f] shadow-[0_0_14px_rgba(21,16,6,0.35)]"
+                    : "border-[var(--ek-border-strong)] bg-transparent text-transparent dark:border-[var(--ek-dark-border-strong)]"
+                }`}
+                aria-hidden="true"
+              >
+                <Check size={13} strokeWidth={3} />
+              </span>
+              <span>{isFeatured ? "FEATURED ONLY" : "FEATURED"}</span>
+              {isFeatured && (
+                <span className="rounded-full bg-[#151006]/12 px-1.5 py-0.5 text-[9px] font-black tracking-wider text-[#151006]">
+                  ON
+                </span>
+              )}
+              {!isFeatured && (
+                <Sparkles size={13} className="text-[var(--ek-gold-text)] opacity-60 dark:text-[var(--ek-dark-gold)]" />
+              )}
             </button>
           </div>
 
