@@ -6,8 +6,9 @@ export default async function RecentListings() {
       eyebrow="Handpicked for you"
       title="Recent"
       accent="Listings"
-      filters={{}}
+      filters={{ pageSize: 6 }}
       ctaHref="/properties"
+      enableContentVisibility
     />
   );
 }

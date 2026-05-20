@@ -34,6 +34,12 @@ export default function ListingCard({ listing }: {listing:PropertyListing}) {
 
       {/* Info Section */}
       <div className="p-5">
+        {typeof listing.propertyCode === "number" && (
+          <div className="mb-3 inline-flex w-fit items-center rounded-full border border-[var(--ek-border-soft)] bg-[var(--ek-bg-card-soft)] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--ek-text-muted)] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-elevated)] dark:text-[var(--ek-dark-soft)]">
+            Code EP-{listing.propertyCode}
+          </div>
+        )}
+
         <div className="mb-1 flex items-center gap-1 text-[var(--ek-text-muted)] dark:text-[var(--ek-dark-muted)]">
           <MapPin size={14} className="text-[var(--ek-gold-text)] dark:text-[var(--ek-dark-gold)]" />
           <span className="text-xs font-semibold uppercase tracking-wider">{listing.tole}</span>

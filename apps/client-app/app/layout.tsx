@@ -100,56 +100,6 @@ export default function RootLayout({
             } catch(e){}
           })();`}
         </Script>
-        {/*
-          DEBUG: eruda mobile console. Inert unless the URL contains
-          ?debug=1, so safe to leave in for now — costs zero bytes
-          to real users (only the tiny gate script runs and exits).
-          Remove this <Script> block before final production launch.
-        */}
-        <Script id="eruda-debug" strategy="afterInteractive">
-          {`(function(){
-            try {
-              if (!/[?&]debug=1(?:&|$)/.test(window.location.search)) return;
-              var s = document.createElement('script');
-              s.src = 'https://cdn.jsdelivr.net/npm/eruda';
-              s.onload = function(){ window.eruda && window.eruda.init(); };
-              document.body.appendChild(s);
-            } catch(_){}
-          })();`}
-        </Script>
-        {/*
-          DEBUG: on-screen perf pill. Same ?debug=1 gate. Shows the
-          three values we care about, live, no console typing needed.
-          Remove this block with the eruda block before production.
-        */}
-        <Script id="perf-pill-debug" strategy="afterInteractive">
-          {`(function(){
-            try {
-              if (!/[?&]debug=1(?:&|$)/.test(window.location.search)) return;
-              var html = document.documentElement;
-              var pill = document.createElement('div');
-              pill.id = '__perf_pill__';
-              pill.style.cssText = [
-                'position:fixed','left:8px','bottom:8px','z-index:2147483647',
-                'background:rgba(0,0,0,0.85)','color:#fff','font:600 11px/1.3 ui-monospace,monospace',
-                'padding:8px 10px','border-radius:8px','pointer-events:none',
-                'box-shadow:0 2px 8px rgba(0,0,0,0.3)','max-width:60vw','white-space:pre'
-              ].join(';');
-              var render = function(){
-                pill.textContent =
-                  'tier:    ' + (html.dataset.perfTier || '?') + '\\n' +
-                  'reason:  ' + (html.dataset.perfReason || '?') + '\\n' +
-                  'docked:  ' + (html.dataset.docked || 'false') + '\\n' +
-                  'engine:  ' + (html.dataset.browserEngine || '?') + '\\n' +
-                  'scrollT: ' + (html.dataset.scrollTimeline || '?');
-              };
-              render();
-              document.body.appendChild(pill);
-              var mo = new MutationObserver(render);
-              mo.observe(html, { attributes: true });
-            } catch(_){}
-          })();`}
-        </Script>
         <ClientProvider>
           {children}
           <Toaster richColors position="top-center" duration={1500} />

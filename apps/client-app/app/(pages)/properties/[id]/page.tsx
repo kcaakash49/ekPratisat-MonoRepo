@@ -99,6 +99,7 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
         },
         select: {
             id: true,
+            propertyCode: true,
             title: true,
             description: true,
             price: true,

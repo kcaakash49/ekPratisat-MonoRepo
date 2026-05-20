@@ -352,7 +352,11 @@ const Navbar = () => {
       document.body.style.top = originalBodyTop;
       document.body.style.width = originalBodyWidth;
       document.body.style.paddingRight = originalBodyPaddingRight;
-      window.scrollTo(0, scrollY);
+      const originalScrollBehavior =
+        document.documentElement.style.scrollBehavior;
+      document.documentElement.style.scrollBehavior = "auto";
+      window.scrollTo({ top: scrollY, left: 0, behavior: "auto" });
+      document.documentElement.style.scrollBehavior = originalScrollBehavior;
     };
   }, [isOpen]);
 
@@ -601,17 +605,17 @@ const Navbar = () => {
                     aria-expanded={isAccountOpen}
                     aria-controls="account-menu"
                     aria-label="Open account menu"
-                    className="inline-flex h-10 items-center gap-2 rounded-lg border border-[rgba(154,106,0,0.18)] bg-[rgba(255,253,248,0.9)] px-1.5 pr-2 text-secondary-950 shadow-lg shadow-black/10 transition-colors hover:border-[var(--ek-border-strong)] hover:bg-[rgba(255,253,248,0.98)] focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 dark:border-white/[0.12] dark:bg-white/[0.045] dark:text-[var(--ek-dark-text)] dark:hover:border-[rgba(229,184,62,0.22)] dark:hover:bg-white/[0.075] sm:pr-3"
+                    className="inline-flex h-10 items-center gap-2 rounded-xl border border-[rgba(154,106,0,0.16)] bg-[rgba(255,253,248,0.86)] px-2 text-secondary-950 shadow-[0_10px_24px_rgba(15,23,42,0.08)] backdrop-blur-md transition-colors hover:border-[var(--ek-border-strong)] hover:bg-[rgba(255,253,248,0.96)] focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 dark:border-white/[0.12] dark:bg-white/[0.055] dark:text-[var(--ek-dark-text)] dark:shadow-[0_12px_28px_rgba(0,0,0,0.24)] dark:hover:border-[rgba(229,184,62,0.24)] dark:hover:bg-white/[0.085] sm:px-2.5"
                     onClick={() => {
                       setIsOpen(false);
                       setIsAccountOpen((current) => !current);
                     }}
                   >
-                    <span className="grid h-8 w-8 place-items-center rounded-full bg-gold-gradient text-xs font-black uppercase tracking-[0.03em] text-[#100d08] shadow-sm shadow-gold-800/15">
+                    <span className="grid h-7 w-7 place-items-center rounded-full border border-[rgba(154,106,0,0.18)] bg-[rgba(214,169,54,0.16)] text-[11px] font-black uppercase tracking-[0.02em] text-[var(--ek-gold-text)] shadow-inner shadow-white/50 dark:border-[rgba(239,199,90,0.24)] dark:bg-[rgba(239,199,90,0.14)] dark:text-[var(--ek-dark-gold)] dark:shadow-none">
                       {userInitials}
                     </span>
                     <ChevronDown
-                      className={`hidden h-4 w-4 text-secondary-600 transition-transform dark:text-[var(--ek-dark-muted)] sm:block ${
+                      className={`h-4 w-4 text-secondary-500 transition-transform dark:text-[var(--ek-dark-muted)] ${
                         isAccountOpen ? "rotate-180" : ""
                       }`}
                       aria-hidden="true"
@@ -620,13 +624,13 @@ const Navbar = () => {
 
                   <div
                     id="account-menu"
-                    className={`absolute right-0 top-full z-[70] mt-3 w-64 overflow-hidden rounded-xl border border-[#e5d8c7] bg-[rgba(255,253,248,0.98)] text-secondary-950 shadow-[0_24px_70px_-34px_rgba(15,23,42,0.42)] transition-[opacity,transform,visibility] duration-150 ease-out dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-card)] dark:text-[var(--ek-dark-text)] dark:shadow-[0_24px_70px_-34px_rgba(0,0,0,0.72)] ${
+                    className={`absolute right-0 top-full z-[70] mt-3 w-64 overflow-hidden rounded-xl border border-[#e5d8c7] bg-[rgba(255,253,248,0.98)] text-secondary-950 shadow-[0_24px_70px_-34px_rgba(15,23,42,0.42)] transition-[opacity,transform,visibility] duration-150 ease-out dark:border-[rgba(239,199,90,0.18)] dark:bg-[#28231a] dark:text-[var(--ek-dark-text)] dark:shadow-[0_24px_70px_-28px_rgba(0,0,0,0.9)] ${
                       isAccountOpen
                         ? "visible translate-y-0 opacity-100"
                         : "invisible -translate-y-2 opacity-0"
                     }`}
                   >
-                    <div className="border-b border-[#e5d8c7] px-4 py-3 dark:border-[var(--ek-dark-border)]">
+                    <div className="border-b border-[#e5d8c7] px-4 py-3 dark:border-[rgba(239,199,90,0.14)] dark:bg-[#2f291f]">
                       <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-secondary-500 dark:text-[var(--ek-dark-muted)]">
                         Account
                       </p>
@@ -638,7 +642,7 @@ const Navbar = () => {
                     <div className="py-2">
                       <Link
                         href="/user/my-listings"
-                        className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-secondary-700 transition hover:bg-[#f8f1e3] hover:text-secondary-950 focus:outline-none focus-visible:bg-[#f8f1e3] dark:text-[var(--ek-dark-secondary)] dark:hover:bg-[rgba(229,184,62,0.10)] dark:hover:text-[var(--ek-dark-text)]"
+                        className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-secondary-700 transition hover:bg-[#f8f1e3] hover:text-secondary-950 focus:outline-none focus-visible:bg-[#f8f1e3] dark:text-[var(--ek-dark-muted)] dark:hover:bg-[rgba(239,199,90,0.10)] dark:hover:text-[var(--ek-dark-text)]"
                         onClick={() => setIsAccountOpen(false)}
                       >
                         <Home className="h-4 w-4" aria-hidden="true" />
@@ -646,7 +650,7 @@ const Navbar = () => {
                       </Link>
                       <Link
                         href="/user/my-favourites"
-                        className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-secondary-700 transition hover:bg-[#f8f1e3] hover:text-secondary-950 focus:outline-none focus-visible:bg-[#f8f1e3] dark:text-[var(--ek-dark-secondary)] dark:hover:bg-[rgba(229,184,62,0.10)] dark:hover:text-[var(--ek-dark-text)]"
+                        className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-secondary-700 transition hover:bg-[#f8f1e3] hover:text-secondary-950 focus:outline-none focus-visible:bg-[#f8f1e3] dark:text-[var(--ek-dark-muted)] dark:hover:bg-[rgba(239,199,90,0.10)] dark:hover:text-[var(--ek-dark-text)]"
                         onClick={() => setIsAccountOpen(false)}
                       >
                         <Heart className="h-4 w-4" aria-hidden="true" />
@@ -654,7 +658,7 @@ const Navbar = () => {
                       </Link>
                     </div>
 
-                    <div className="border-t border-[#e5d8c7] p-2 dark:border-[var(--ek-dark-border)]">
+                    <div className="border-t border-[#e5d8c7] p-2 dark:border-[rgba(239,199,90,0.14)] dark:bg-[#2f291f]">
                       <button
                         type="button"
                         className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-semibold text-red-600 transition hover:bg-red-50 focus:outline-none focus-visible:bg-red-50 dark:text-red-200 dark:hover:bg-red-500/10"

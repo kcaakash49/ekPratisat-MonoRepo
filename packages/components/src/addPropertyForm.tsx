@@ -660,7 +660,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
               value={formData.price}
               inputMode="numeric"
               onChange={handleChange}
-              className="w-full pl-10 px-3 py-2 border rounded bg-secondary-50 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 dark:border-transparent"
+              className="ek-price-input w-full border rounded bg-secondary-50 py-2 pl-11 pr-3 text-secondary-900 dark:bg-secondary-800 dark:text-secondary-50 dark:border-transparent"
               required
             />
           </div>

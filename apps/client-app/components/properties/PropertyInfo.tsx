@@ -139,7 +139,7 @@ export default function PropertyInfo({property}:PropertyDetailClientProps){
               </h3>
               <p className="text-secondary-600 dark:text-secondary-300">{formattedDate}</p>
               <p className="text-xs text-secondary-400 dark:text-secondary-500 mt-2">
-                Property ID: {property.id.slice(0, 8)}...
+                Listing Code: EP-{property.propertyCode}
               </p>
             </div>
           </div>
