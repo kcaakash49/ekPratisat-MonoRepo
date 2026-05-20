@@ -8,18 +8,24 @@ import { PERF_DETECT_SCRIPT } from "@repo/perf-detection";
 
 export const metadata: Metadata = {
   title: {
-    default: "Ek Pratishat | Premium Real Estate in Nepal",
-    template: "%s | Ek Pratishat"
+    default: "EkPratishat Real Estate",
+    template: "%s | EkPratishat"
   },
-  description: "Buy, sell, and rent premium properties with 1% commission. The most trusted real estate marketplace for luxury homes, land, and commercial spaces.",
-  keywords: ["Real Estate Nepal", "Property Listing", "Buy House Nepal", "1 Percent Commission", "Luxury Homes", "Rent rooms", "Rent flat"],
-  authors: [{ name: "Ek Pratishat Team" }],
-  creator: "Ek Pratishat",
+  verification: {
+    other: {
+      "trustpilot-one-time-domain-verification-id":
+        "40841453-68cb-47da-b044-5fc7a9af9f80",
+    },
+  },
+  description: "EK PRATISHAT Real Estate Pvt. Ltd is a trusted real estate agency in Kathmandu, Nepal for buying, selling, renting, and leasing properties. We provide complete real estate services including property management, valuation, appraisal, legal documentation, deal closing, interior design, and property development. Find residential, commercial, and investment properties across Nepal with our secure and reliable digital platform.",
+  keywords: ["Real Estate Nepal", "Property Listing", "Buy House Nepal","Luxury Homes", "Rent rooms", "Rent flat"],
+  authors: [{ name: "EkPratishat Team" }],
+  creator: "EkPratishat",
   openGraph: {
-    title: "Ek Pratishat | Premium Real Estate",
-    description: "Discover your dream property with just 1% commission. Transparent, reliable, and premium real estate services.",
+    title: "EkPratishat Real Estate",
+    description: "EK PRATISHAT Real Estate Pvt. Ltd is a trusted real estate agency in Kathmandu, Nepal for buying, selling, renting, and leasing properties. We provide complete real estate services including property management, valuation, appraisal, legal documentation, deal closing, interior design, and property development. Find residential, commercial, and investment properties across Nepal with our secure and reliable digital platform.",
     url: "https://ekpratishat.com",
-    siteName: "Ek Pratishat",
+    siteName: "EkPratishat",
     images: [
       {
         url: "/ogMedia.png",
@@ -33,8 +39,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ek Pratishat | Real Estate",
-    description: "Find your perfect home with Nepal's premium property marketplace.",
+    title: "EkPratishat Real Estate",
+    description: "EK PRATISHAT Real Estate Pvt. Ltd is a trusted real estate agency in Kathmandu, Nepal for buying, selling, renting, and leasing properties. We provide complete real estate services including property management, valuation, appraisal, legal documentation, deal closing, interior design, and property development. Find residential, commercial, and investment properties across Nepal with our secure and reliable digital platform.",
     images: ["/ogMedia.png"],
   },
 };
