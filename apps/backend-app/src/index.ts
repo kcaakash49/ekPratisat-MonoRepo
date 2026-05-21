@@ -8,6 +8,7 @@ import listingRouter from './routes/listingRoute.js';
 import zoneRouter from './routes/zoneRoute.js';
 import staffRouter from './routes/staffRoute.js';
 import userRouter from './routes/userRoute.js';
+import testRouter from './routes/testRouter.js';
 
 // dotenv.config();
 
@@ -56,6 +57,7 @@ app.use("/listing", listingRouter);
 app.use("/zone", zoneRouter);
 app.use("/staff", staffRouter);
 app.use("/users", userRouter);
+app.use("/test", testRouter);
 
 
 app.listen(PORT, () => {
