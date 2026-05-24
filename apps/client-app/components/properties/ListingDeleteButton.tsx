@@ -39,7 +39,7 @@ export default function ListingDeleteButton({ id, isVerified }: { id: string, is
     }
     return (
         <>
-            <button className="p-2.5 text-secondary-600 dark:text-secondary-400 bg-secondary-50 dark:bg-secondary-800 hover:bg-red-500 hover:text-white rounded-xl transition-all border border-transparent shadow-sm" onClick={(e) => {
+            <button className="rounded-xl border border-[var(--ek-border-soft)] bg-[var(--ek-bg-card-soft)] p-2.5 text-[var(--ek-text-secondary)] shadow-sm transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600 dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-elevated)] dark:text-[var(--ek-dark-muted)] dark:hover:border-red-400/35 dark:hover:bg-red-500/12 dark:hover:text-red-200" onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 setOpen(true);
@@ -73,7 +73,7 @@ export default function ListingDeleteButton({ id, isVerified }: { id: string, is
                         <Button
                             onClick={handleDelete}
                             disabled={isPending}
-                            className="bg-primary-600 hover:bg-primary-700 text-white"
+                            className="bg-red-600 text-white hover:bg-red-700"
                         >
                             {isPending ? "Confirming......." : "Confirm"}
                             

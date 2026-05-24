@@ -27,7 +27,7 @@ export default function EditPropertyPage() {
     } = useFetchPropertyDetail(params.id as string);
     const { data: user, isLoading: userLoading } = useUser();
 
-     useEffect(() => {
+    useEffect(() => {
         setIsMounted(true);
     }, []);
 

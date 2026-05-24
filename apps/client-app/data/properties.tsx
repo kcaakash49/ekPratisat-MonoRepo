@@ -38,6 +38,7 @@ export const _getProperties = async (input: Input) => {
             where,
             select: {
                 id: true,
+                propertyCode: true,
                 title: true,
                 price: true,
                 type: true,
@@ -141,6 +142,7 @@ export const _getFeaturedProperties = async(input:Input) => {
             where,
             select: {
                 id: true,
+                propertyCode: true,
                 title: true,
                 price: true,
                 type: true,

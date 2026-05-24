@@ -30,6 +30,7 @@ export default async function RelatedProperties({
         },
         select: {
             id: true,
+            propertyCode: true,
             title: true,
             price: true,
             type: true,

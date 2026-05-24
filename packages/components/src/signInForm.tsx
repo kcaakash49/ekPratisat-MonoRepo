@@ -56,11 +56,11 @@ export default function SignInForm({ label }: SignInProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl px-8 pt-6 pb-6 w-full max-w-md"
+      className="rounded-2xl border border-[rgba(154,106,0,0.14)] bg-white/85 px-8 pt-6 pb-6 shadow-[0_18px_50px_rgba(15,23,42,0.10)] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)] w-full max-w-md"
     >
       <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 text-center pb-10">
         Welcome to{" "}
-        <span className="text-red-600 dark:text-red-400">
+        <span className="text-gold-700 dark:text-gold-400">
           {label ? label : <Link href="/">EkPratisat</Link>}
         </span>
       </h2>
@@ -79,7 +79,7 @@ export default function SignInForm({ label }: SignInProps) {
             setForm({ ...form, contact: value });
           }}
           inputMode="numeric"
-          className="mt-1 block w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
+          className="mt-1 block w-full rounded-xl border border-[rgba(154,106,0,0.16)] bg-white px-3 py-2 text-gray-900 outline-none transition focus:border-gold-700/40 focus:ring-2 focus:ring-gold-500/25 dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-elevated)] dark:text-gray-100"
           required
         />
       </label>
@@ -95,7 +95,7 @@ export default function SignInForm({ label }: SignInProps) {
             name="password"
             value={form.password}
             onChange={handleChange}
-            className="mt-1 block w-full border rounded px-3 py-2 pr-10 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
+            className="mt-1 block w-full rounded-xl border border-[rgba(154,106,0,0.16)] bg-white px-3 py-2 pr-10 text-gray-900 outline-none transition focus:border-gold-700/40 focus:ring-2 focus:ring-gold-500/25 dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-elevated)] dark:text-gray-100"
             required
           />
           <button
@@ -111,7 +111,7 @@ export default function SignInForm({ label }: SignInProps) {
       {/* Submit */}
       <Button
         className="w-full"
-        variant="destructive"
+        variant="default"
         type="submit"
         disabled={signinMutation.isPending}
       >

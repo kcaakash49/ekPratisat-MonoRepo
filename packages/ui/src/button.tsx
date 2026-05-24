@@ -15,21 +15,21 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>{
 }
 
 const baseStyles =
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
+  "inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-gold-500 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
 
   const variants: Record<ButtonVariant, string> = {
     default:
-      "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600",
+      "bg-gold-gradient text-[#151006] shadow-sm shadow-gold-800/15 hover:bg-gold-gradient-hover dark:text-[#151006] dark:shadow-black/25",
     destructive:
       "bg-red-600 text-white hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600",
     outline:
-      "border border-gray-300 text-gray-900 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700",
+      "border border-[rgba(154,106,0,0.18)] bg-white/60 text-secondary-900 hover:border-gold-700/35 hover:bg-white dark:border-[var(--ek-dark-border)] dark:bg-[rgba(247,241,227,0.07)] dark:text-[var(--ek-dark-text)] dark:hover:border-[var(--ek-dark-border-strong)] dark:hover:bg-[rgba(229,184,62,0.12)]",
     secondary:
-      "bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600",
+      "bg-[#f8f1e3] text-secondary-900 hover:bg-[#fffdf8] dark:bg-[var(--ek-dark-elevated)] dark:text-[var(--ek-dark-text)] dark:hover:bg-[rgba(229,184,62,0.12)]",
     ghost:
-      "hover:bg-gray-100 text-gray-900 dark:hover:bg-gray-800 dark:text-gray-100",
+      "text-secondary-900 hover:bg-[rgba(154,106,0,0.08)] dark:text-[var(--ek-dark-text)] dark:hover:bg-[rgba(229,184,62,0.10)]",
     link:
-      "text-blue-600 underline-offset-4 hover:underline dark:text-blue-400",
+      "text-gold-700 underline-offset-4 hover:underline dark:text-gold-400",
   };
   
 

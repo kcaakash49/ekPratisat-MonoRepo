@@ -20,7 +20,7 @@ export default function ButtonLoader({
 
   // Color mapping
   const colorMap = {
-    primary: "bg-blue-600",
+    primary: "bg-gold-700 dark:bg-gold-400",
     white: "bg-white",
     current: "bg-current"
   };

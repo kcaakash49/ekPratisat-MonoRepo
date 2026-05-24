@@ -30,20 +30,20 @@ export default {
       },
       colors: {
         primary: {
-          50: "#eff6ff",
-          100: "#dbeafe",
-          200: "#bfdbfe",
-          300: "#93c5fd",
-          400: "#60a5fa",
-          500: "#3b82f6",
-          600: "#2563eb",
-          700: "#1d4ed8",
-          800: "#1e40af",
-          900: "#1e3a8a",
+          50: "#fff8e1",
+          100: "#f8e8a5",
+          200: "#efd675",
+          300: "#e5b83e",
+          400: "#d6a936",
+          500: "#c99a2e",
+          600: "#b98a00",
+          700: "#8a5a00",
+          800: "#624109",
+          900: "#2a241b",
           dark: {
-            500: "#60a5fa", // Lighter in dark mode
-            600: "#3b82f6",
-            700: "#2563eb",
+            500: "#efc75a",
+            600: "#e5b83e",
+            700: "#c99a2e",
           },
         },
         secondary: {
@@ -57,6 +57,7 @@ export default {
           700: "#334155",
           800: "#1e293b",
           900: "#0f172a",
+          950: "#020617",
         },
         gold: {
           DEFAULT: "#F0C030", // Accessible via 'bg-gold' or 'text-gold'

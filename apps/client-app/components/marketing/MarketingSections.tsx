@@ -100,10 +100,10 @@ export function MarketingPageSection({
 }: MarketingPageSectionProps) {
   const toneClass =
     tone === "dark"
-      ? "bg-secondary-900 text-white"
+      ? "bg-[var(--ek-dark-section)] text-[var(--ek-dark-text)]"
       : tone === "white"
-        ? "bg-white text-secondary-900"
-        : "bg-[#f8f5ef] text-secondary-900";
+        ? "bg-white text-secondary-900 dark:bg-[var(--ek-dark-section)] dark:text-[var(--ek-dark-text)]"
+        : "bg-[#f8f5ef] text-secondary-900 dark:bg-[var(--ek-dark-page)] dark:text-[var(--ek-dark-text)]";
 
   return (
     <section id={id} className={`${toneClass} py-20 sm:py-24 ${className}`}>
@@ -140,7 +140,7 @@ export function EditorialHeader({
 
         <h2
           className={`max-w-2xl text-4xl font-black leading-[1.05] sm:text-5xl lg:text-6xl ${
-            isDark ? "text-white" : "text-secondary-900"
+            isDark ? "text-[var(--ek-dark-text)]" : "text-secondary-900 dark:text-[var(--ek-dark-text)]"
           }`}
         >
           {title}
@@ -149,7 +149,7 @@ export function EditorialHeader({
 
       <p
         className={`motion-reveal-up max-w-md self-end text-base leading-8 lg:justify-self-end ${
-          isDark ? "text-secondary-300" : "text-secondary-600"
+          isDark ? "text-[var(--ek-dark-muted)]" : "text-secondary-600 dark:text-[var(--ek-dark-muted)]"
         }`}
       >
         {description}
@@ -165,18 +165,19 @@ export function PageHero({
   title,
   description,
   backgroundImage = "/bg-image.JPG",
-  showcaseImage = "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=1200&q=80",
+  showcaseImage = "/marketing/marketing-showcase-1200.jpg",
   primaryCta,
   secondaryCta,
   stats,
   floatingCard,
 }: HeroSectionProps) {
   return (
-    <section className="relative isolate overflow-hidden bg-[#f8f5ef] text-secondary-900">
+    <section className="relative isolate overflow-hidden bg-[#f8f5ef] text-secondary-900 dark:bg-[var(--ek-dark-page)] dark:text-[var(--ek-dark-text)]">
       <div
-        className="absolute inset-0 scale-[1.02] bg-cover bg-center"
+        className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url('${backgroundImage}')` }}
       />
+      <div className="absolute inset-0 bg-white/0 transition-colors dark:bg-[rgba(23,21,18,0.68)]" />
 
       <div className="relative mx-auto grid min-h-[86vh] max-w-7xl gap-14 px-6 pt-[calc(var(--site-nav-height)+var(--site-nav-clearance))] pb-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:pt-[calc(var(--site-nav-height)+3rem)] lg:pb-24">
         <div className="motion-reveal-up max-w-3xl">
@@ -184,11 +185,11 @@ export function PageHero({
             {eyebrow}
           </p>
 
-          <h1 className="max-w-4xl text-4xl font-black leading-[1.02] text-secondary-900 sm:text-5xl lg:text-7xl">
+          <h1 className="max-w-4xl text-4xl font-black leading-[1.02] text-secondary-900 dark:text-[var(--ek-dark-text)] sm:text-5xl lg:text-7xl">
             {title}
           </h1>
 
-          <p className="mt-7 max-w-2xl text-base leading-8 text-secondary-600 sm:text-lg">
+          <p className="mt-7 max-w-2xl text-base leading-8 text-secondary-600 dark:text-[var(--ek-dark-muted)] sm:text-lg">
             {description}
           </p>
 
@@ -203,7 +204,7 @@ export function PageHero({
             {secondaryCta ? (
               <Link
                 href={secondaryCta.href}
-                className="inline-flex items-center justify-center rounded-full border border-secondary-300 bg-white/55 px-7 py-3.5 text-sm font-semibold text-secondary-900 backdrop-blur-sm transition duration-300 hover:border-gold-500 hover:bg-white/75"
+                className="inline-flex items-center justify-center rounded-full border border-secondary-300 bg-white/55 px-7 py-3.5 text-sm font-semibold text-secondary-900 backdrop-blur-sm transition duration-300 hover:border-gold-500 hover:bg-white/75 dark:border-[rgba(229,184,62,0.55)] dark:bg-[var(--ek-dark-surface)]/85 dark:text-[var(--ek-dark-text)] dark:hover:border-[rgba(229,184,62,0.85)] dark:hover:bg-[var(--ek-dark-card-soft)]"
               >
                 {secondaryCta.label}
               </Link>
@@ -214,24 +215,24 @@ export function PageHero({
             {stats.map((stat, index) => {
               const content = (
                 <>
-                <div className="text-2xl font-black text-secondary-900 sm:text-3xl">
+                <div className="text-2xl font-black text-secondary-900 dark:text-[var(--ek-dark-text)] sm:text-3xl">
                   {stat.value}
                 </div>
-                <div className="mt-2 text-[11px] uppercase tracking-[0.24em] text-secondary-500">
+                <div className="mt-2 text-[11px] uppercase tracking-[0.24em] text-secondary-500 dark:text-[var(--ek-dark-soft)]">
                   {stat.label}
                 </div>
                 </>
               );
 
               const className =
-                "motion-reveal-up rounded-[1.5rem] border border-white/60 bg-white/48 p-5 shadow-[0_20px_60px_-36px_rgba(15,23,42,0.18)] backdrop-blur-[2px] transition duration-300";
+                "motion-reveal-up rounded-[1.5rem] border border-white/60 bg-white/48 p-5 shadow-[0_20px_60px_-36px_rgba(15,23,42,0.18)] backdrop-blur-[2px] transition duration-300 dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)]/90 dark:shadow-[0_20px_70px_-42px_rgba(0,0,0,0.8)]";
               const style = { animationDelay: `${index * 120}ms` };
 
               return stat.href ? (
                 <Link
                   key={stat.label}
                   href={stat.href}
-                  className={`${className} block hover:-translate-y-0.5 hover:border-gold-500/60 hover:bg-white/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-600`}
+                  className={`${className} block hover:-translate-y-0.5 hover:border-gold-500/60 hover:bg-white/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-600 dark:hover:border-gold-500/50 dark:hover:bg-[var(--ek-dark-card-soft)]/86`}
                   style={style}
                 >
                   {content}
@@ -246,8 +247,8 @@ export function PageHero({
         </div>
 
         <div className="relative">
-          <div className="motion-reveal-left relative mx-auto max-w-xl overflow-hidden rounded-[2rem] border border-white/55 bg-white/35 p-5 shadow-[0_40px_100px_-40px_rgba(15,23,42,0.24)] backdrop-blur-[2px]">
-            <div className="overflow-hidden rounded-[1.6rem] border border-secondary-200">
+          <div className="motion-reveal-left relative mx-auto max-w-xl overflow-hidden rounded-[2rem] border border-white/55 bg-white/35 p-5 shadow-[0_40px_100px_-40px_rgba(15,23,42,0.24)] backdrop-blur-[2px] dark:border-[var(--ek-dark-border-strong)] dark:bg-[var(--ek-dark-surface)]/86 dark:shadow-[0_40px_110px_-44px_rgba(0,0,0,0.92)]">
+            <div className="overflow-hidden rounded-[1.6rem] border border-secondary-200 dark:border-[var(--ek-dark-border)]">
               <div
                 className="aspect-[4/5] bg-cover bg-center"
                 style={{ backgroundImage: `url('${showcaseImage}')` }}
@@ -255,14 +256,14 @@ export function PageHero({
             </div>
           </div>
 
-          <div className="motion-reveal-up absolute -bottom-6 left-0 max-w-xs rounded-[1.75rem] border border-white bg-white/95 p-6 shadow-[0_30px_90px_-38px_rgba(15,23,42,0.24)] backdrop-blur-[2px] sm:-left-10">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-gold-700">
+          <div className="motion-reveal-up absolute -bottom-6 left-0 max-w-xs rounded-[1.75rem] border border-white bg-white/95 p-6 shadow-[0_30px_90px_-38px_rgba(15,23,42,0.24)] backdrop-blur-[2px] dark:border-[rgba(229,184,62,0.35)] dark:bg-[var(--ek-dark-card-soft)] dark:shadow-[0_30px_90px_-40px_rgba(0,0,0,0.9)] sm:-left-10">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-gold-700 dark:text-[var(--ek-dark-gold)]">
               {floatingCard.eyebrow}
             </p>
-            <h2 className="mt-3 text-xl font-bold text-secondary-900 sm:text-2xl">
+            <h2 className="mt-3 text-xl font-bold text-secondary-900 dark:text-[var(--ek-dark-text)] sm:text-2xl">
               {floatingCard.title}
             </h2>
-            <p className="mt-3 text-sm leading-7 text-secondary-600">
+            <p className="mt-3 text-sm leading-7 text-secondary-600 dark:text-[var(--ek-dark-muted)]">
               {floatingCard.description}
             </p>
           </div>
@@ -288,13 +289,13 @@ export function SectionHeading({
     theme === "dark"
       ? {
           eyebrow: "text-gold-300",
-          title: "text-white",
-          description: "text-secondary-300",
+          title: "text-[var(--ek-dark-text)]",
+          description: "text-[var(--ek-dark-muted)]",
         }
       : {
           eyebrow: "text-gold-700",
-          title: "text-secondary-900",
-          description: "text-secondary-600",
+          title: "text-secondary-900 dark:text-[var(--ek-dark-text)]",
+          description: "text-secondary-600 dark:text-[var(--ek-dark-muted)]",
         };
 
   return (
@@ -326,27 +327,27 @@ export function FeatureCard({
   if (variant === "minimal") {
     return (
       <div
-        className="motion-reveal-up rounded-[1.75rem] border border-[#e2d9c8] bg-white p-9 transition duration-300 hover:-translate-y-[3px] hover:shadow-[0_20px_60px_-20px_rgba(26,22,17,0.12)]"
+        className="motion-reveal-up rounded-[1.75rem] border border-[#e2d9c8] bg-white p-9 transition duration-300 hover:-translate-y-[3px] hover:shadow-[0_20px_60px_-20px_rgba(26,22,17,0.12)] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)] dark:hover:border-[var(--ek-dark-border-strong)] dark:hover:bg-[var(--ek-dark-card-soft)]"
         style={delay ? { animationDelay: delay } : undefined}
       >
         {/* Icon in a warm neutral pill */}
-        <div className="mb-6 flex h-11 w-11 items-center justify-center rounded-[10px] bg-[#f8f5ef] text-gold-700">
+        <div className="mb-6 flex h-11 w-11 items-center justify-center rounded-[10px] bg-[#f8f5ef] text-gold-700 dark:bg-[rgba(229,184,62,0.12)] dark:text-gold-400">
           <Icon className="h-5 w-5" />
         </div>
 
-        <h3 className="text-[22px] font-bold leading-snug text-secondary-900">
+        <h3 className="text-[22px] font-bold leading-snug text-secondary-900 dark:text-[var(--ek-dark-text)]">
           {title}
         </h3>
-        <p className="mt-3 text-[13px] font-light leading-[1.8] text-secondary-500">
+        <p className="mt-3 text-[13px] font-light leading-[1.8] text-secondary-500 dark:text-[var(--ek-dark-muted)]">
           {description}
         </p>
 
         {bullets?.length ? (
-          <ul className="mt-6 space-y-[10px] border-t border-[#f0ebe0] pt-6">
+          <ul className="mt-6 space-y-[10px] border-t border-[#f0ebe0] pt-6 dark:border-[var(--ek-dark-border)]">
             {bullets.map((bullet) => (
               <li
                 key={bullet}
-                className="flex items-start gap-[10px] text-[12px] leading-[1.65] text-secondary-500"
+                className="flex items-start gap-[10px] text-[12px] leading-[1.65] text-secondary-500 dark:text-[var(--ek-dark-muted)]"
               >
                 <span className="mt-[6px] h-1 w-1 flex-none rounded-full bg-gold-400" />
                 {bullet}
@@ -361,22 +362,22 @@ export function FeatureCard({
   // Default variant — original design, unchanged
   return (
     <div
-      className="motion-reveal-up rounded-[1.75rem] border border-secondary-200 bg-white p-7 shadow-[0_24px_80px_-38px_rgba(15,23,42,0.18)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_30px_90px_-38px_rgba(15,23,42,0.22)]"
+      className="motion-reveal-up rounded-[1.75rem] border border-secondary-200 bg-white p-7 shadow-[0_24px_80px_-38px_rgba(15,23,42,0.18)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_30px_90px_-38px_rgba(15,23,42,0.22)] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)] dark:shadow-[0_24px_80px_-42px_rgba(0,0,0,0.88)] dark:hover:border-[var(--ek-dark-border-strong)] dark:hover:bg-[var(--ek-dark-card-soft)]"
       style={delay ? { animationDelay: delay } : undefined}
     >
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary-900 text-gold">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary-900 text-gold dark:bg-[rgba(229,184,62,0.12)] dark:text-gold-400">
         <Icon className="h-6 w-6" />
       </div>
 
-      <h3 className="mt-6 text-2xl font-bold text-secondary-900">{title}</h3>
-      <p className="mt-4 text-sm leading-7 text-secondary-600">{description}</p>
+      <h3 className="mt-6 text-2xl font-bold text-secondary-900 dark:text-[var(--ek-dark-text)]">{title}</h3>
+      <p className="mt-4 text-sm leading-7 text-secondary-600 dark:text-[var(--ek-dark-muted)]">{description}</p>
 
       {bullets?.length ? (
         <div className="mt-6 space-y-3">
           {bullets.map((bullet) => (
             <div
               key={bullet}
-              className="flex items-start gap-3 text-sm text-secondary-700"
+              className="flex items-start gap-3 text-sm text-secondary-700 dark:text-[var(--ek-dark-muted)]"
             >
               <CheckCircle2 className="mt-0.5 h-4 w-4 flex-none text-gold-700" />
               <span>{bullet}</span>
@@ -393,13 +394,13 @@ export function FeatureCard({
 
 export function ContactBand({ items }: { items: ContactBandItem[] }) {
   return (
-    <div className="motion-reveal-up overflow-hidden rounded-[20px] border border-[#e2d9c8] bg-white">
-      <div className="grid divide-y divide-[#e2d9c8] lg:grid-cols-3 lg:divide-x lg:divide-y-0">
+    <div className="motion-reveal-up overflow-hidden rounded-[20px] border border-[#e2d9c8] bg-white dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)]">
+      <div className="grid divide-y divide-[#e2d9c8] dark:divide-[var(--ek-dark-border)] lg:grid-cols-3 lg:divide-x lg:divide-y-0">
         {items.map(({ index, icon: Icon, label, value, caption, href }) => {
           const inner = (
-            <div className="group relative px-9 py-10 transition duration-200 hover:bg-[#fdfaf5]">
+            <div className="group relative px-9 py-10 transition duration-200 hover:bg-[#fdfaf5] dark:hover:bg-[var(--ek-dark-card-soft)]">
               {/* Sequential index */}
-              <span className="mb-6 block font-mono text-[11px] tracking-[0.1em] text-[#c8bca8]">
+              <span className="mb-6 block font-mono text-[11px] tracking-[0.1em] text-[#c8bca8] dark:text-[#c9b47a]">
                 {index}
               </span>
 
@@ -407,17 +408,17 @@ export function ContactBand({ items }: { items: ContactBandItem[] }) {
               <Icon className="mb-5 h-[22px] w-[22px] text-gold-600" strokeWidth={1.4} />
 
               {/* Label */}
-              <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-secondary-400">
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-secondary-400 dark:text-[var(--ek-dark-soft)]">
                 {label}
               </p>
 
               {/* Primary value */}
-              <p className="mb-4 text-[20px] font-bold leading-snug text-secondary-900">
+              <p className="mb-4 text-[20px] font-bold leading-snug text-secondary-900 dark:text-[var(--ek-dark-text)]">
                 {value}
               </p>
 
               {/* Caption */}
-              <p className="text-[13px] font-light leading-[1.75] text-secondary-400">
+              <p className="text-[13px] font-light leading-[1.75] text-secondary-400 dark:text-[var(--ek-dark-muted)]">
                 {caption}
               </p>
 
@@ -453,7 +454,7 @@ export function ServiceFeaturedCard({
   bullets,
 }: ServiceFeaturedCardProps) {
   return (
-    <div className="motion-reveal-up relative overflow-hidden rounded-[20px] bg-secondary-900 px-10 py-11">
+    <div className="motion-reveal-up relative overflow-hidden rounded-[20px] bg-secondary-900 px-10 py-11 dark:bg-[var(--ek-dark-surface)] dark:shadow-[0_28px_90px_-50px_rgba(0,0,0,0.9)]">
       <div className="absolute inset-x-0 top-0 h-1 bg-gold-gradient" />
 
       {/* Tag pill */}
@@ -461,11 +462,11 @@ export function ServiceFeaturedCard({
         {tag}
       </span>
 
-      <h3 className="text-[30px] font-bold leading-[1.15] text-white">
+      <h3 className="text-[30px] font-bold leading-[1.15] text-white dark:text-[var(--ek-dark-text)]">
         {title}
       </h3>
 
-      <p className="mt-4 mb-9 text-[14px] font-light leading-[1.85] text-secondary-400">
+      <p className="mt-4 mb-9 text-[14px] font-light leading-[1.85] text-secondary-400 dark:text-[var(--ek-dark-muted)]">
         {description}
       </p>
 
@@ -473,7 +474,7 @@ export function ServiceFeaturedCard({
         {bullets.map((bullet) => (
           <li
             key={bullet}
-            className="flex items-start gap-3 text-[13px] font-light leading-[1.65] text-secondary-300"
+            className="flex items-start gap-3 text-[13px] font-light leading-[1.65] text-secondary-300 dark:text-[var(--ek-dark-muted)]"
           >
             <span className="mt-[7px] h-[5px] w-[5px] flex-none rounded-full bg-gold-600" />
             {bullet}
@@ -492,17 +493,17 @@ export function HighlightBand({
   items: { title: string; description: string }[];
 }) {
   return (
-    <section className="overflow-hidden border-y border-[#eadfce] bg-[#f5efe7] py-5">
+    <section className="max-w-full touch-pan-y overflow-hidden border-y border-[#eadfce] bg-[#f5efe7] py-5 dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-section)]">
       <div className="motion-drift flex min-w-max gap-6 px-6">
         {[...items, ...items].map((item, index) => (
           <div
             key={`${item.title}-${index}`}
-            className="flex items-center gap-4 rounded-full border border-[#e8ddcd] bg-white/90 px-5 py-3 shadow-sm"
+            className="flex items-center gap-4 rounded-full border border-[#e8ddcd] bg-white/90 px-5 py-3 shadow-sm dark:border-[rgba(229,184,62,0.22)] dark:bg-[var(--ek-dark-surface)]"
           >
-            <span className="text-xs font-semibold uppercase tracking-[0.28em] text-gold-700">
+            <span className="text-xs font-semibold uppercase tracking-[0.28em] text-gold-700 dark:text-[var(--ek-dark-gold)]">
               {item.title}
             </span>
-            <span className="text-sm text-secondary-600">{item.description}</span>
+            <span className="text-sm text-secondary-600 dark:text-[var(--ek-dark-text)]">{item.description}</span>
           </div>
         ))}
       </div>
@@ -520,13 +521,13 @@ export function ContactCard({
   href,
 }: ContactCardProps) {
   const card = (
-    <div className="motion-reveal-up rounded-[1.75rem] border border-secondary-200 bg-white p-6 shadow-[0_24px_80px_-38px_rgba(15,23,42,0.16)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_90px_-40px_rgba(15,23,42,0.2)]">
+    <div className="motion-reveal-up rounded-[1.75rem] border border-secondary-200 bg-white p-6 shadow-[0_24px_80px_-38px_rgba(15,23,42,0.16)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_90px_-40px_rgba(15,23,42,0.2)] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)] dark:shadow-[0_24px_80px_-42px_rgba(0,0,0,0.88)]">
       <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gold-gradient text-secondary-950">
         <Icon className="h-5 w-5" />
       </div>
-      <h3 className="mt-5 text-xl font-bold text-secondary-900">{title}</h3>
+      <h3 className="mt-5 text-xl font-bold text-secondary-900 dark:text-[var(--ek-dark-text)]">{title}</h3>
       <p className="mt-3 text-lg text-gold-700">{detail}</p>
-      <p className="mt-2 text-sm leading-7 text-secondary-600">{caption}</p>
+      <p className="mt-2 text-sm leading-7 text-secondary-600 dark:text-[var(--ek-dark-muted)]">{caption}</p>
     </div>
   );
 
@@ -561,7 +562,7 @@ export function ShowcaseSplit({
   return (
     <section className="mx-auto grid max-w-7xl gap-10 px-6 py-20 lg:grid-cols-2 lg:items-center">
       <div className={reverse ? "order-2 lg:order-1" : ""}>
-        <div className="motion-reveal-up overflow-hidden rounded-[2rem] border border-secondary-200 bg-secondary-200">
+        <div className="motion-reveal-up overflow-hidden rounded-[2rem] border border-secondary-200 bg-secondary-200 dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)]">
           <div
             className="aspect-[5/4] bg-cover bg-center transition duration-700 hover:scale-105"
             style={{ backgroundImage: `url('${image}')` }}
@@ -582,7 +583,7 @@ export function ShowcaseSplit({
           {bullets.map((bullet, index) => (
             <div
               key={bullet}
-              className="motion-reveal-left flex items-start gap-3 rounded-2xl border border-secondary-200 bg-white px-5 py-4 text-sm text-secondary-700"
+              className="motion-reveal-left flex items-start gap-3 rounded-2xl border border-secondary-200 bg-white px-5 py-4 text-sm text-secondary-700 dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)] dark:text-[var(--ek-dark-muted)]"
               style={{ animationDelay: `${index * 120}ms` }}
             >
               <CheckCircle2 className="mt-0.5 h-4 w-4 flex-none text-gold-700" />
@@ -600,11 +601,11 @@ export function ShowcaseSplit({
 export function ProcessTimeline({ items, theme = "light" }: TimelineProps) {
   const cardClasses =
     theme === "dark"
-      ? "border-white/10 bg-white/[0.06] text-white shadow-[0_20px_80px_-44px_rgba(0,0,0,0.55)] backdrop-blur-sm"
-      : "border-secondary-200 bg-white text-secondary-900 shadow-[0_20px_80px_-44px_rgba(15,23,42,0.14)]";
+      ? "border-[var(--ek-dark-border)] bg-[var(--ek-dark-surface)] text-[var(--ek-dark-text)] shadow-[0_20px_80px_-44px_rgba(0,0,0,0.75)] backdrop-blur-sm"
+      : "border-secondary-200 bg-white text-secondary-900 shadow-[0_20px_80px_-44px_rgba(15,23,42,0.14)] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)] dark:text-[var(--ek-dark-text)] dark:shadow-[0_20px_80px_-44px_rgba(0,0,0,0.75)]";
 
   const descriptionClasses =
-    theme === "dark" ? "text-secondary-300" : "text-secondary-600";
+    theme === "dark" ? "text-[var(--ek-dark-muted)]" : "text-secondary-600 dark:text-[var(--ek-dark-muted)]";
 
   return (
     <div className="grid gap-5 lg:grid-cols-3">
@@ -622,8 +623,8 @@ export function ProcessTimeline({ items, theme = "light" }: TimelineProps) {
             <h3
               className={
                 theme === "dark"
-                  ? "text-xl font-bold text-white"
-                  : "text-xl font-bold text-secondary-900"
+                  ? "text-xl font-bold text-[var(--ek-dark-text)]"
+                  : "text-xl font-bold text-secondary-900 dark:text-[var(--ek-dark-text)]"
               }
             >
               {item.title}
@@ -658,7 +659,7 @@ export function PageCta({
 }) {
   return (
     <section className="mx-auto max-w-7xl px-6 py-20">
-      <div className="motion-reveal-up relative overflow-hidden rounded-[20px] bg-secondary-900 px-8 py-12 text-white shadow-[0_30px_120px_-40px_rgba(15,23,42,0.35)] sm:px-12">
+      <div className="motion-reveal-up relative overflow-hidden rounded-[20px] bg-secondary-900 px-8 py-12 text-white shadow-[0_30px_120px_-40px_rgba(15,23,42,0.35)] dark:bg-[var(--ek-dark-surface)] dark:text-[var(--ek-dark-text)] dark:shadow-[0_30px_120px_-48px_rgba(0,0,0,0.92)] sm:px-12">
         <p className="text-xs font-semibold uppercase tracking-[0.34em] text-gold-300">
           Ready To Talk
         </p>
@@ -667,7 +668,7 @@ export function PageCta({
           {title}
         </h2>
 
-        <p className="mt-5 max-w-2xl text-base leading-8 text-secondary-300">
+        <p className="mt-5 max-w-2xl text-base leading-8 text-secondary-300 dark:text-[var(--ek-dark-muted)]">
           {description}
         </p>
 
