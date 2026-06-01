@@ -2,10 +2,15 @@
 @import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 @import "mapbox-gl/dist/mapbox-gl.css";
 @import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Geocoder input padding fix — icon/placeholder overlap. */
+.mapboxgl-ctrl-geocoder--input {
+  padding-left: 2.5rem !important;
+}
 
 /* Custom base styles */
 @layer base {
@@ -35,6 +40,233 @@
     @apply bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700;
   }
 }
+
+/*
+  ── EkPratishat brand utilities ─────────────────────────────────────────────
+  Duplicated from apps/client-app/app/globals.css.
+  Required because the shared form/modal components in packages/components/
+  reference these classes (ek-form-shell, ek-primary-button, etc.).
+  Keep in sync with client-app until extracted to a shared CSS file.
+  TODO: move to packages/components/styles/ek-utilities.css
+*/
+
+@layer base {
+  :root {
+    --ek-bg-main: #f7f3ea;
+    --ek-bg-section: #fbf7ef;
+    --ek-bg-card: #fffdf8;
+    --ek-bg-card-soft: #f8f1e3;
+    --ek-text-primary: #10151f;
+    --ek-text-secondary: #475569;
+    --ek-text-muted: #64748b;
+    --ek-gold: #d6a936;
+    --ek-gold-bright: #f2c94c;
+    --ek-gold-text: #8a5a00;
+    --ek-border-soft: rgba(154, 106, 0, 0.14);
+    --ek-border-strong: rgba(154, 106, 0, 0.28);
+    --ek-shadow-card: 0 16px 40px rgba(15, 23, 42, 0.1);
+
+    --ek-dark-page: #171512;
+    --ek-dark-section: #1d1a16;
+    --ek-dark-elevated: #24211c;
+    --ek-dark-surface: #28231a;
+    --ek-dark-card-soft: #332c21;
+    --ek-dark-muted-bg: #373127;
+    --ek-dark-nav: rgba(23, 21, 18, 0.84);
+    --ek-dark-border: rgba(229, 184, 62, 0.13);
+    --ek-dark-border-strong: rgba(229, 184, 62, 0.25);
+    --ek-dark-text: #f7f1e3;
+    --ek-dark-muted: #cbbfa9;
+    --ek-dark-soft: #a79b86;
+    --ek-dark-gold: #efc75a;
+    --ek-dark-shadow-card: 0 18px 46px rgba(0, 0, 0, 0.3);
+  }
+}
+
+@layer components {
+  .ek-nav-safe-page {
+    padding-top: calc(var(--site-nav-height) + 3.5rem);
+  }
+
+  @media (min-width: 640px) {
+    .ek-nav-safe-page {
+      padding-top: calc(var(--site-nav-height) + 4rem);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .ek-nav-safe-page {
+      padding-top: calc(var(--site-nav-height) + 5rem);
+    }
+  }
+
+  .ek-surface {
+    background-color: var(--ek-bg-card);
+    border-color: var(--ek-border-soft);
+    box-shadow: var(--ek-shadow-card);
+  }
+
+  .dark .ek-surface {
+    background-color: var(--ek-dark-surface);
+    border-color: var(--ek-dark-border);
+    box-shadow: var(--ek-dark-shadow-card);
+  }
+
+  .ek-field {
+    @apply min-h-11 rounded-xl border px-3 py-2 text-sm outline-none transition-colors;
+    background-color: var(--ek-bg-card);
+    border-color: var(--ek-border-soft);
+    color: var(--ek-text-primary);
+  }
+
+  .ek-field::placeholder {
+    color: var(--ek-text-muted);
+  }
+
+  .ek-field:focus {
+    border-color: var(--ek-border-strong);
+    box-shadow: 0 0 0 3px rgba(214, 169, 54, 0.18);
+  }
+
+  .dark .ek-field {
+    background-color: var(--ek-dark-card-soft);
+    border-color: var(--ek-dark-border);
+    color: var(--ek-dark-text);
+  }
+
+  .dark .ek-field::placeholder {
+    color: var(--ek-dark-soft);
+  }
+
+  .dark .ek-field:focus {
+    border-color: var(--ek-dark-border-strong);
+    box-shadow: 0 0 0 3px rgba(229, 184, 62, 0.18);
+  }
+
+  .ek-primary-button {
+    @apply inline-flex items-center justify-center rounded-xl bg-gold-gradient px-5 py-2.5 text-sm font-bold text-[#151006] transition-transform duration-200 hover:-translate-y-0.5 hover:bg-gold-gradient-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 active:translate-y-0 disabled:pointer-events-none disabled:opacity-60;
+    box-shadow: 0 12px 30px rgba(154, 106, 0, 0.16);
+  }
+
+  .dark .ek-primary-button {
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.36);
+    --tw-ring-offset-color: var(--ek-dark-page);
+  }
+
+  .ek-secondary-button {
+    @apply inline-flex items-center justify-center rounded-xl border px-5 py-2.5 text-sm font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500;
+    background-color: rgba(255, 253, 248, 0.7);
+    border-color: var(--ek-border-soft);
+    color: var(--ek-text-primary);
+  }
+
+  .ek-secondary-button:hover {
+    background-color: var(--ek-bg-card);
+    border-color: var(--ek-border-strong);
+  }
+
+  .dark .ek-secondary-button {
+    background-color: rgba(51, 44, 33, 0.72);
+    border-color: var(--ek-dark-border);
+    color: var(--ek-dark-text);
+  }
+
+  .dark .ek-secondary-button:hover {
+    background-color: var(--ek-dark-card-soft);
+    border-color: var(--ek-dark-border-strong);
+  }
+
+  .ek-form-shell {
+    @apply mx-auto max-w-6xl overflow-hidden rounded-3xl border p-5 sm:p-7 lg:p-9;
+    background:
+      linear-gradient(180deg, rgba(255, 253, 248, 0.96), rgba(251, 247, 239, 0.96));
+    border-color: var(--ek-border-soft);
+    box-shadow: var(--ek-shadow-card);
+  }
+
+  .dark .ek-form-shell {
+    background:
+      linear-gradient(180deg, rgba(40, 35, 26, 0.98), rgba(29, 26, 22, 0.98));
+    border-color: var(--ek-dark-border);
+    box-shadow: var(--ek-dark-shadow-card);
+  }
+
+  .ek-form-shell form {
+    @apply space-y-5;
+  }
+
+  .ek-form-shell label {
+    color: var(--ek-text-primary);
+  }
+
+  .dark .ek-form-shell label {
+    color: var(--ek-dark-muted);
+  }
+
+  .ek-form-shell input:not([type="file"]):not([type="checkbox"]),
+  .ek-form-shell select,
+  .ek-form-shell textarea {
+    @apply min-h-11 w-full rounded-xl border px-3 py-2 text-sm outline-none transition-colors;
+    background-color: var(--ek-bg-card) !important;
+    border-color: var(--ek-border-soft) !important;
+    color: var(--ek-text-primary) !important;
+  }
+
+  .ek-form-shell textarea {
+    @apply min-h-28;
+  }
+
+  .ek-form-shell input.ek-price-input:not([type="file"]):not([type="checkbox"]) {
+    padding-left: 2.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  .ek-form-shell input::placeholder,
+  .ek-form-shell textarea::placeholder {
+    color: var(--ek-text-muted) !important;
+  }
+
+  .ek-form-shell input:not([type="file"]):not([type="checkbox"]):focus,
+  .ek-form-shell select:focus,
+  .ek-form-shell textarea:focus {
+    border-color: var(--ek-border-strong);
+    box-shadow: 0 0 0 3px rgba(214, 169, 54, 0.18);
+  }
+
+  .dark .ek-form-shell input:not([type="file"]):not([type="checkbox"]),
+  .dark .ek-form-shell select,
+  .dark .ek-form-shell textarea {
+    background-color: var(--ek-dark-card-soft) !important;
+    border-color: var(--ek-dark-border) !important;
+    color: var(--ek-dark-text) !important;
+  }
+
+  .dark .ek-form-shell input::placeholder,
+  .dark .ek-form-shell textarea::placeholder {
+    color: var(--ek-dark-soft) !important;
+  }
+
+  .dark .ek-form-shell input:not([type="file"]):not([type="checkbox"]):focus,
+  .dark .ek-form-shell select:focus,
+  .dark .ek-form-shell textarea:focus {
+    border-color: var(--ek-dark-border-strong) !important;
+    box-shadow: 0 0 0 3px rgba(229, 184, 62, 0.18);
+  }
+
+  .ek-form-shell input:disabled,
+  .ek-form-shell select:disabled,
+  .ek-form-shell textarea:disabled {
+    cursor: not-allowed;
+    opacity: 0.68;
+  }
+
+  .ek-form-shell button:not([type="button"]),
+  .ek-form-shell label:has(input[type="file"]) {
+    @apply rounded-xl;
+  }
+}
+
+/* ── end EkPratishat brand utilities ────────────────────────────────────── */
 
 /* Custom utilities */
 @layer utilities {

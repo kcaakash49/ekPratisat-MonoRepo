@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { toast } from "sonner";
 
 import ButtonLoader from "@repo/ui/buttonLoader";
@@ -17,6 +17,12 @@ type Props = {
 };
 
 export const LocationModal: React.FC<Props> = ({ type, parentId, user, onClose }) => {
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, []);
+
   const [name, setName] = useState("");
 
   const queryClient = useQueryClient();
