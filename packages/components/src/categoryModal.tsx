@@ -4,7 +4,7 @@ import { useCreateCategory } from "@repo/query-hook";
 import ButtonLoader from "@repo/ui/buttonLoader";
 import { CategorySchema } from "@repo/validators";
 import { useQueryClient } from "@tanstack/react-query";
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { toast } from "sonner";
 
 
@@ -26,6 +26,12 @@ const booleanFields: { key: keyof CategorySchema; label: string }[] = [
 ];
 
 export const CategoryModal: React.FC<Props> = ({ onClose, user }) => {
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, []);
+
   const [formData, setFormData] = useState<CategorySchema>({
     name: "",
     image: undefined as unknown as File,
