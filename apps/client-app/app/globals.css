@@ -13,6 +13,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Geocoder input padding fix — default stylesheet leaves insufficient
+   room for the search icon, causing icon/placeholder overlap. */
+.mapboxgl-ctrl-geocoder--input {
+  padding-left: 2.5rem !important;
+}
+
 html {
   max-width: 100%;
   overflow-x: clip;
@@ -110,6 +116,12 @@ body {
   }
 }
 
+/*
+  ── EkPratishat brand utilities ─────────────────────────────────────────────
+  Duplicated in apps/admin-app/app/globals.css.
+  Keep in sync until extracted to packages/components/styles/ek-utilities.css.
+  TODO: global extraction follow-up.
+*/
 @layer components {
   .ek-nav-safe-page {
     padding-top: calc(var(--site-nav-height) + 3.5rem);
