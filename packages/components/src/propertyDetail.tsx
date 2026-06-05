@@ -120,7 +120,7 @@ export default function AdminPropertyDetailComponent() {
                 <Star size={14} fill="currentColor" /> Featured
               </div>
             )}
-            <AddPropertyNoteButton propertyId={property.id} />
+            <AddPropertyNoteButton propertyId={property.id} leadNotes={property.leadNotes}/>
           </div>
 
           <div className="flex items-center gap-2">

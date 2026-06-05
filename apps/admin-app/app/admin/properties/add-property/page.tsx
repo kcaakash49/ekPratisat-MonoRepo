@@ -6,12 +6,14 @@ import { useCreateProperty, useUser } from "@repo/query-hook";
 import Loading from "../../loading";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export default function AddProperty() {
     const { data: user, isLoading } = useUser();
     const [isMounted, setIsMounted] = useState(false);
     const { mutate, isPending } = useCreateProperty();
     const queryClient = useQueryClient();
+    const router = useRouter();
 
     // Ensure we only switch away from the loading state after the client has hydrated
     useEffect(() => {
@@ -72,6 +74,7 @@ export default function AddProperty() {
                     toast.success(data.message || "Property added successfully!!!");
                     queryClient.invalidateQueries({ queryKey: ["all-properties"] });
                     queryClient.invalidateQueries({ queryKey: ["zone"] });
+                    router.replace("/admin/properties")
                 }
             })}  />
         </div>

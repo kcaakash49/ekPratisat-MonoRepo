@@ -15,7 +15,6 @@ interface Props {
    leadNotes: Record<string, any> | null | any;
 }
 
-// Representing each row of dynamic user input
 interface KeyValueRow {
     id: string;
     key: string;
@@ -33,7 +32,7 @@ export default function AddPropertyNoteButton({ propertyId, leadNotes }: Props) 
     const [confirmationText, setConfirmationText] = useState("");
     const [userInput, setUserInput] = useState("");
     
-    // Manage fields as an array of rows for easy adding/removing in UI
+    // Default fallback state
     const [rows, setRows] = useState<KeyValueRow[]>([
         { id: "1", key: "", value: "" }
     ]);
@@ -41,14 +40,27 @@ export default function AddPropertyNoteButton({ propertyId, leadNotes }: Props) 
     const { mutate: addPropertyOwnerInfo, isPending } = useAddPropertyOwnerInfo();
     const queryClient = useQueryClient();
 
+    // Check if we are in "Edit Mode" based on existing leadNotes data
+    const isEditMode = leadNotes && typeof leadNotes === "object" && Object.keys(leadNotes).length > 0;
+
     const handleOpenDialog = () => {
         setOpen(true);
         setConfirmationText(generateConfirmationText());
         setUserInput("");
-        setRows([{ id: Math.random().toString(), key: "", value: "" }]);
+        
+        // Populate existing values if available, otherwise open with a blank row
+        if (isEditMode) {
+            const populatedRows = Object.entries(leadNotes).map(([key, value]) => ({
+                id: Math.random().toString(),
+                key: key,
+                value: typeof value === "string" ? value : JSON.stringify(value)
+            }));
+            setRows(populatedRows);
+        } else {
+            setRows([{ id: Math.random().toString(), key: "", value: "" }]);
+        }
     };
 
-    // UI Row Operations
     const handleAddRow = () => {
         setRows([...rows, { id: Math.random().toString(), key: "", value: "" }]);
     };
@@ -66,7 +78,6 @@ export default function AddPropertyNoteButton({ propertyId, leadNotes }: Props) 
     };
 
     const handleVerify = () => {
-        // 1. Filter out empty fields and construct raw JSON object
         const finalNoteObject: Record<string, string> = {};
         let emptyKeyFound = false;
 
@@ -91,20 +102,18 @@ export default function AddPropertyNoteButton({ propertyId, leadNotes }: Props) 
             return;
         }
 
-        // 2. Validate Security Captcha Text
         const expectedText = confirmationText.replace('Type "', '').replace('" to verify', '');
         if (userInput.trim().toLowerCase() !== expectedText.toLowerCase()) {
             toast.error("Confirmation text doesn't match. Please try again.");
             return;
         }
 
-        // 3. Trigger Mutation with constructed object payload
+        // Submits the constructed payload (works identically for updates/inserts on the backend)
         addPropertyOwnerInfo({ propertyId, note: finalNoteObject }, {
             onSuccess: () => {
-                toast.success("Lead notes added successfully!");
+                toast.success(isEditMode ? "Lead notes updated successfully!" : "Lead notes added successfully!");
                 setOpen(false);
                 setUserInput("");
-                setRows([{ id: "1", key: "", value: "" }]);
                 queryClient.invalidateQueries({
                     queryKey: ["property-detail", propertyId]
                 });
@@ -118,7 +127,11 @@ export default function AddPropertyNoteButton({ propertyId, leadNotes }: Props) 
         <>
             <button
                 onClick={handleOpenDialog}
-                className="w-full flex items-center gap-3 p-3 text-left hover:bg-emerald-50 dark:hover:bg-emerald-900/10 rounded-lg transition-colors group text-emerald-600 dark:text-emerald-400"
+                className={`w-full flex items-center gap-3 p-3 text-left rounded-lg transition-colors group ${
+                    isEditMode 
+                        ? "hover:bg-blue-50 dark:hover:bg-blue-900/10 text-blue-600 dark:text-blue-400" 
+                        : "hover:bg-emerald-50 dark:hover:bg-emerald-900/10 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400"
+                }`}
             >
                 <svg
                     className="w-5 h-5"
@@ -130,19 +143,25 @@ export default function AddPropertyNoteButton({ propertyId, leadNotes }: Props) 
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.586-9.414a2 2 0 112.828 2.828L12 14l-4 1 1-4 8.414-8.414z"
                     />
                 </svg>
                 <div>
-                    <div className="font-medium">Add Property Lead Info</div>
-                    <div className="text-sm text-secondary-500">Record off-market owner parameters</div>
+                    <div className="font-medium text-xs">
+                        {isEditMode ? "Edit Lead Info" : "Add Lead Info"}
+                    </div>
+                    <div className="text-xs text-secondary-500 hidden sm:inline">
+                        {isEditMode ? "Modify existing acquisition parameters" : "Record off-market owner parameters"}
+                    </div>
                 </div>
             </button>
 
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent onClose={() => setOpen(false)} className="max-w-xl">
                     <DialogHeader>
-                        <DialogTitle>Add Property Owner Lead Info</DialogTitle>
+                        <DialogTitle>
+                            {isEditMode ? "Edit Property Owner Lead Info" : "Add Property Owner Lead Info"}
+                        </DialogTitle>
                     </DialogHeader>
 
                     <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-1">
@@ -150,7 +169,6 @@ export default function AddPropertyNoteButton({ propertyId, leadNotes }: Props) 
                             Capture unstructured physical acquisition data collected by agents on the field.
                         </p>
 
-                        {/* Dynamic Field Row Array Maker */}
                         <div className="space-y-3">
                             <div className="flex justify-between items-center">
                                 <label className="text-sm font-semibold text-secondary-700 dark:text-secondary-300">
@@ -199,7 +217,6 @@ export default function AddPropertyNoteButton({ propertyId, leadNotes }: Props) 
 
                         <hr className="border-secondary-100 dark:border-secondary-800" />
 
-                        {/* Confirmation Challenge Container */}
                         <div className="flex flex-col space-y-2">
                             <label htmlFor="confirmation-input" className="text-sm font-medium text-secondary-700 dark:text-secondary-300 block">
                                 {confirmationText}
@@ -232,7 +249,7 @@ export default function AddPropertyNoteButton({ propertyId, leadNotes }: Props) 
                             disabled={isConfirmButtonDisabled}
                             className="bg-primary-600 hover:bg-primary-700 text-white"
                         >
-                            {isPending ? "Confirming..." : "Confirm Info"}
+                            {isPending ? "Confirming..." : isEditMode ? "Save Changes" : "Confirm Info"}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
