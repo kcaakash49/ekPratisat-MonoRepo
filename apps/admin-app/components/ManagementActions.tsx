@@ -7,6 +7,7 @@ import { EditAgentBasicProfileModal } from "./EditBasicAgentProfile";
 import VerifyBadge from "./VerifyBadge";
 import RemoveUser from "./RemoveAgent";
 import AssignZoneToAgent from "./AssingZoneToAgent";
+import UserRoleModal from "./UserRoleModal";
 
 export default function ManagementActions({ agent }: { agent: AgentDetailType }) {
     const [isEditOpen, setIsEditOpen] = useState(false);
@@ -135,6 +136,7 @@ export default function ManagementActions({ agent }: { agent: AgentDetailType })
                                 </div>
                             </button> */}
                             <RemoveUser agentId={agent.id} activeStatus={agent.isActive}/>
+                            <UserRoleModal agentId={agent.id} role={agent.role} />
                         </div>
                     </div>
                 </div>

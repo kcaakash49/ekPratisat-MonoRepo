@@ -29,6 +29,7 @@ export interface AgentType {
 export interface AgentDetailType extends AgentType{
   profileImageUrl: string | null;
   email: string;
+  role: string;
   documents: {
     id: string;
     isVerified: boolean;

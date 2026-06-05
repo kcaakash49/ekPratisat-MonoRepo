@@ -1,6 +1,6 @@
 
 import { Router } from "express";
-import { createAgentAdminStaff, createClientUser, myInfo,signIn, signOut, toggleActive, verifyAgent } from "../controller/authController.js";
+import { changeUserRole, createAgentAdminStaff, createClientUser, myInfo,signIn, signOut, toggleActive, verifyAgent } from "../controller/authController.js";
 import { checkAuthentication, requireAdmin, requireAdminOrStaff } from "../middleware/checkAuthentication.js";
 import { uploadUserFiles } from "../middleware/userUpload.js";
 
@@ -13,6 +13,7 @@ authRouter.post("/create-agent",checkAuthentication,requireAdmin,uploadUserFiles
 authRouter.post("/create-user",uploadUserFiles.any(),createClientUser);
 authRouter.post("/verify-agent",checkAuthentication,requireAdmin,verifyAgent);
 authRouter.post("/toggle-active",checkAuthentication,requireAdmin,toggleActive);
+authRouter.put("/change-role/:id",checkAuthentication,requireAdmin,changeUserRole);
 
 authRouter.post("/signout",signOut);
 authRouter.get("/my-info",myInfo);

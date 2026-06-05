@@ -83,7 +83,7 @@ export const createClientUser = async (req: Request, res: Response) => {
       buffer: file.buffer,
       mimetype: file.mimetype,
       originalname: file.originalname,
-      size:file.size
+      size: file.size,
     }));
     // 🔥 CALL SERVICE (IMPORTANT)
     const result = await createUser({
@@ -159,7 +159,7 @@ export const createAgentAdminStaff = async (req: Request, res: Response) => {
       buffer: file.buffer,
       mimetype: file.mimetype,
       originalname: file.originalname,
-      size: file.size
+      size: file.size,
     }));
     // 🔥 CALL SERVICE (IMPORTANT)
     const result = await createUser({
@@ -379,3 +379,57 @@ export const toggleActive = async (req: Request, res: Response) => {
     });
   }
 };
+
+export async function changeUserRole(req: Request, res: Response) {
+  try {
+    const { role } = req.body;
+    const adminUser = req.user;
+    const { id: userId } = req.params;
+
+    if (!userId || typeof userId !== "string") {
+      throw new AppError(400, "Invalid User ID");
+    }
+
+    if (adminUser.role !== "admin") {
+      return res.status(403).json({ message: "Forbidden!!!" });
+    }
+
+    const user = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        role: role,
+      },
+      select: {
+        id: true,
+        name: true,
+        contact: true,
+        isVerified: true,
+        role: true,
+        createdAt: true,
+        secondContact: true,
+        createdBy: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return res.status(200).json({
+      message: "User role updated successfully!!!",
+      ok: true,
+      user,
+    });
+  } catch (error) {
+    if (error instanceof AppError) {
+      return res.status(error.status).json({ message: error.message });
+    }
+    console.error("Error changing user role:", error);
+    return res.status(500).json({
+      message: "Internal Server Error!!!",
+    });
+  }
+}

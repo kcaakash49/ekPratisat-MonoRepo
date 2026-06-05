@@ -1,4 +1,5 @@
 import { Prisma, prisma } from "@repo/database";
+import { AppError } from "@repo/functions";
 import { Request, Response } from "express";
 
 export async function getStaff(req: Request, res: Response) {
@@ -36,7 +37,6 @@ export async function getStaff(req: Request, res: Response) {
 export async function getUsers(req: Request, res: Response) {
   try {
     const queries = req.query;
-    console.log(queries);
     const page = Math.max(1, Number(queries.page || 1));
     const pageSize = Math.min(100, Math.max(1, Number(queries.pageSize || 20)));
 
@@ -116,3 +116,5 @@ export async function getUsers(req: Request, res: Response) {
         })
   }
 }
+
+

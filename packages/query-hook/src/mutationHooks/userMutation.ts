@@ -55,3 +55,19 @@ export const useToggleActive = () => {
     })
 }
 
+export const useChangeUserRole = () => {
+    return useMutation({
+        mutationFn: async ({userId,role} : {userId:string,role:string}) => {
+            return authenticatedFetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/change-role/${userId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({role})
+            });
+        },
+        onError: (error) => {
+            toast.error(error.message || "Unexpected Error")
+        }
+    })
+}

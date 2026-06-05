@@ -50,9 +50,37 @@ export default function BasicInfoSection({ agent }: { agent: AgentDetailType }) 
                 </div>
                 <p className="text-secondary-600 dark:text-secondary-300">Email: {agent.email}</p>
                 <p className="text-secondary-600 dark:text-secondary-300">Contact: {agent.contact}</p>
-                <p className="text-secondary-600 dark:text-secondary-300">
-                    Created By: {agent.createdBy?.name || "Unknown"}
-                </p>
+                {/* <p className="text-secondary-600 dark:text-secondary-300">
+                    Role: {agent.role?.toUpperCase() || "Unknown"}
+                </p> */}
+                {/* Dynamic Role Badge */}
+                <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-secondary-500 dark:text-secondary-400">
+                        Role:
+                    </span>
+                    <span
+                        className={`
+            inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold tracking-wider uppercase border
+            ${agent.role === "staff"
+                                ? "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-900/50"
+                                : agent.role === "partner"
+                                    ? "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-900/50"
+                                    : agent.role === "client"
+                                        ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-900/50"
+                                        : "bg-secondary-50 text-secondary-700 border-secondary-200 dark:bg-secondary-800 dark:text-secondary-300 dark:border-secondary-700"
+                            }
+        `}
+                    >
+                        {/* Subtle inner dot indicator */}
+                        <span
+                            className={`w-1.5 h-1.5 mr-1.5 rounded-full ${agent.role === "staff" ? "bg-blue-500" :
+                                    agent.role === "partner" ? "bg-purple-500" :
+                                        agent.role === "client" ? "bg-emerald-500" : "bg-secondary-400"
+                                }`}
+                        />
+                        {agent.role || "Unknown"}
+                    </span>
+                </div>
                 {
                     agent.isVerified ? (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs sm:text-sm font-medium bg-primary-100 text-primary-700 dark:bg-primary-dark-500 dark:text-primary-200">
