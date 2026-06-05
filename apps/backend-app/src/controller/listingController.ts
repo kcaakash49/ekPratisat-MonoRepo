@@ -746,3 +746,47 @@ export async function deleteProperty(req: Request, res: Response) {
     });
   }
 }
+
+
+
+//staff update user information in property listing
+
+export async function updatePropertyOwnerInfo(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+
+    if (!id || Array.isArray(id)) {
+      throw new AppError(400, "Invalid property id");
+    }
+
+    const user = req.user;
+    const { note } = req.body;
+
+    if (user.role !== "staff" && user.role !== "admin") {
+      throw new AppError(403, "Unauthorized!!!");
+    }
+
+    const result = await prisma.property.update({
+      where: { id },
+      data: {
+        leadNotes: note,
+      },
+    });
+
+    return res.status(200).json({
+      ok: true,
+      message: "User Info Added Successfully",
+    });
+ 
+  }catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.status).json({
+        message: err.message,
+      });
+    }
+    console.error(err);
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+}

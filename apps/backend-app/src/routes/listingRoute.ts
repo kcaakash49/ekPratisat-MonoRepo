@@ -17,6 +17,7 @@ import {
   toggleActivateListing,
   toggleFavourite,
   updateProperty,
+  updatePropertyOwnerInfo,
   uploadCategoryImageFile,
   verifyListing,
 } from "../controller/listingController.js";
@@ -42,7 +43,9 @@ listingRouter.post(
 listingRouter.post("/add-district", checkAuthentication, requireAdminOrStaff, addDistrictController);
 listingRouter.post("/add-municipality", checkAuthentication, requireAdminOrStaff, addMunicipalityController);
 listingRouter.post("/add-ward", checkAuthentication, requireAdminOrStaff, addWardController);
+
 listingRouter.put("/edit-property/:id", checkAuthentication, uploadUserFiles.any(), updateProperty);
+listingRouter.put("/update-property-owner-info/:id", checkAuthentication,requireAdminOrStaff, updatePropertyOwnerInfo);
 
 listingRouter.get("/my-listings", checkAuthentication, getUserListings);
 listingRouter.get("/my-favourites",checkAuthentication,fetchUserFavourites);

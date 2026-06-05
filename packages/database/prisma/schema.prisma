@@ -172,6 +172,8 @@ model Property {
   updatedAt       DateTime                             @updatedAt
   favourites      Favourite[]
 
+  leadNotes       Json?
+
   @@index([geoPoint], type: Gist)
   @@index([categoryId])
   @@index([type])

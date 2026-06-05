@@ -284,3 +284,24 @@ export const useDeleteProperty = () => {
     },
   });
 }
+
+
+export const useAddPropertyOwnerInfo = () => {
+  return useMutation ({
+    mutationFn: async ({propertyId, note} : {propertyId:string, note:any}) => {
+       return authenticatedFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/update-property-owner-info/${propertyId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({note})
+        },
+      );
+    },
+    onError: (error) => {
+      toast.error(error.message || "Operation Failed!!!");
+    },
+  });
+}

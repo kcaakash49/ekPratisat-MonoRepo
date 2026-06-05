@@ -17,6 +17,8 @@ import {
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import DeletePropertyButton from "./deletePropertyButton";
+import AddPropertyNoteButton from "./addPropertyNoteButton";
+import PropertyLeadNotesCard from "./propertyLeadNotes";
 // Assuming you have a way to call your backend mutations (axios/fetch)
 // import { verifyProperty, toggleFeature, deleteProperty } from "@/lib/api/admin";
 
@@ -99,6 +101,8 @@ export default function AdminPropertyDetailComponent() {
     refetch();
   }
 
+  console.log(property);
+
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-secondary-900">
 
@@ -116,6 +120,7 @@ export default function AdminPropertyDetailComponent() {
                 <Star size={14} fill="currentColor" /> Featured
               </div>
             )}
+            <AddPropertyNoteButton propertyId={property.id} />
           </div>
 
           <div className="flex items-center gap-2">
@@ -252,6 +257,7 @@ export default function AdminPropertyDetailComponent() {
           </div>
         </div>
       </div>
+      <PropertyLeadNotesCard leadNotes={property.leadNotes} />
     </div>
   );
 }
