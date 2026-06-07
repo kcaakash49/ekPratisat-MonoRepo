@@ -9,6 +9,7 @@ import zoneRouter from './routes/zoneRoute.js';
 import staffRouter from './routes/staffRoute.js';
 import userRouter from './routes/userRoute.js';
 import testRouter from './routes/testRouter.js';
+import leadRouter from './routes/leadRoute.js';
 
 // dotenv.config();
 
@@ -58,6 +59,7 @@ app.use("/zone", zoneRouter);
 app.use("/staff", staffRouter);
 app.use("/users", userRouter);
 app.use("/test", testRouter);
+app.use("/lead", leadRouter);
 
 
 app.listen(PORT, () => {

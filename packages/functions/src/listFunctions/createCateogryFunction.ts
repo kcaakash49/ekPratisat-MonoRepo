@@ -10,7 +10,6 @@ type Upload = UploadedFile | null;
 
 // adding category
 export async function addCategory({ body, file }: { body: any; file: Upload }) {
-  console.log(file);
   const finalBody = {
     name: body.name,
     addedById: body.createdById,

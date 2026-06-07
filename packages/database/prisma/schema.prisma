@@ -50,6 +50,8 @@ model User {
   createdAt           DateTime                @default(now())
   updatedAt           DateTime?               @updatedAt
   favourites          Favourite[]
+  leadsManaged               Lead[] @relation("LeadsManagedBy")
+  leadsUpdated        Lead[]          @relation("LeadUpdatedBy")
 
   @@index([role])
   @@index([contact])
@@ -146,6 +148,7 @@ model Property {
   title           String
   description     String
   price           String
+  negotiable      Boolean                              @default(false)
   type            SaleType
   categoryId      String
   category        Category                             @relation(fields: [categoryId], references: [id])
@@ -171,7 +174,7 @@ model Property {
   createdAt       DateTime                             @default(now())
   updatedAt       DateTime                             @updatedAt
   favourites      Favourite[]
-
+  leads           Lead[]
   leadNotes       Json?
 
   @@index([geoPoint], type: Gist)
@@ -254,6 +257,12 @@ enum SaleType {
   sale
 }
 
+enum DealType {
+  buy
+  sell
+  rent
+}
+
 enum DocumentType {
   CITIZENSHIP_FRONT
   CITIZENSHIP_BACK
@@ -261,4 +270,41 @@ enum DocumentType {
   PAN
   PASSPORT
   OTHER
+}
+
+enum ClientType {
+  BUYER
+  SELLER
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  INTERESTED
+  NOT_INTERESTED
+  FOLLOW_UP
+  CLOSED
+}
+
+model Lead {
+  id          String     @unique @default(uuid())
+  name        String?
+  contact     String
+  email       String?
+  source      String
+  clientType  ClientType
+  propertyId  String?
+  property    Property?   @relation(fields: [propertyId], references: [id])
+  imageUrl    String?
+  dealType    DealType
+  coordinates String?
+  managedById String?
+  managedBy   User?      @relation("LeadsManagedBy",fields: [managedById], references: [id])
+  notes       Json?
+  followUpAt  DateTime?
+  status      LeadStatus @default(NEW)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  updatedById String?
+  updatedBy   User?      @relation("LeadUpdatedBy", fields: [updatedById], references: [id])
 }
