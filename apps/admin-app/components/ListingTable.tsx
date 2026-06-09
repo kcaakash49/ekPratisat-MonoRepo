@@ -137,7 +137,7 @@ export default function ListingTable({ listings }: { listings: PropertyListing[]
                                     <Calendar size={12} />
                                     {new Date(item.createdAt).toLocaleDateString()}
                                 </div>
-                                <button className="text-sm font-bold text-gold hover:underline">View Details</button>
+                                <Link href={`/admin/properties/${item.id}`} className="text-sm font-bold text-gold hover:underline">View Details</Link>
                             </div>
                         </div>
                     </div>
