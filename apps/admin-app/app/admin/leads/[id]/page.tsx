@@ -312,7 +312,7 @@ export default function LeadDetailPage() {
                         <div className="p-4 bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-800 rounded-2xl shadow-sm space-y-2">
                             <div className="flex items-center gap-1.5 text-secondary-400 font-semibold tracking-wide uppercase text-[9px]">
                                 <ShieldAlert className="w-3.5 h-3.5" />
-                                <span>Managed By</span>
+                                <span>Current Handler</span>
                             </div>
                             {lead.managedBy ? (
                                 <div className="space-y-0.5">
@@ -349,7 +349,7 @@ export default function LeadDetailPage() {
                             <div className="relative max-w-md rounded-xl overflow-hidden border border-secondary-200 dark:border-secondary-800 shadow-inner group bg-secondary-50">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
-                                    src={lead.imageUrl}
+                                    src={`${process.env.NEXT_PUBLIC_BASE_URL}${lead.imageUrl}`}
                                     alt="Lead profile attachment graphic documentation"
                                     className="w-full h-auto max-h-64 object-cover group-hover:scale-[1.02] transition-transform duration-300"
                                 />
