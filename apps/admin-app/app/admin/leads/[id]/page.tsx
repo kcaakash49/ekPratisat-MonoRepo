@@ -24,6 +24,7 @@ import {
     ChevronRight
 } from "lucide-react";
 import UpdateLeadStatus from "../../../../components/lead/UpdateLeadStatus";
+import UpdateFollowUpTime from "../../../../components/lead/ChangeFollowUptime";
 
 export default function LeadDetailPage() {
     const params = useParams();
@@ -85,16 +86,9 @@ export default function LeadDetailPage() {
 
                 {/* Dummy Operational Handler Buttons Workspace */}
                 <div className="flex flex-wrap items-center gap-2 border-t pt-3 lg:border-t-0 lg:pt-0">
-                    {/* <button type="button" className="inline-flex items-center gap-1.5 px-3 py-2 border border-secondary-200 dark:border-secondary-800 hover:bg-secondary-50 dark:hover:bg-secondary-800 rounded-xl text-xs font-semibold text-secondary-700 dark:text-secondary-300 transition-colors">
-                        <RefreshCw className="w-3.5 h-3.5 text-secondary-400" />
-                        <span>Update Status</span>
-                    </button> */}
+                    
                     <UpdateLeadStatus lead={lead}/>
-
-                    <button type="button" className="inline-flex items-center gap-1.5 px-3 py-2 border border-secondary-200 dark:border-secondary-800 hover:bg-secondary-50 dark:hover:bg-secondary-800 rounded-xl text-xs font-semibold text-secondary-700 dark:text-secondary-300 transition-colors">
-                        <Calendar className="w-3.5 h-3.5 text-secondary-400" />
-                        <span>Follow-up Timer</span>
-                    </button>
+                    <UpdateFollowUpTime followUpAt={lead.followUpAt} id={lead.id}/>
 
                     <button type="button" className="inline-flex items-center gap-1.5 px-3 py-2 border border-secondary-200 dark:border-secondary-800 hover:bg-secondary-50 dark:hover:bg-secondary-800 rounded-xl text-xs font-semibold text-secondary-700 dark:text-secondary-300 transition-colors">
                         <Edit3 className="w-3.5 h-3.5 text-secondary-400" />

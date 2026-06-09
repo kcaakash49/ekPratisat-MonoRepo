@@ -8,14 +8,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@repo/ui/button";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { useChangeUserRole } from "@repo/query-hook";
+import { useChangeUserRole, useUpdateFollowUpTime } from "@repo/query-hook";
+import { Calendar } from "lucide-react";
 
 interface Props {
-    agentId: string;
-    role: string;
+    followUpAt: string | null;
+    id: string;
 }
 
-type UserRole = "client" | "partner" | "staff";
 
 const generateConfirmationText = () => {
     const words = ["verify", "confirm", "proceed", "continue", "accept", "approve"];
@@ -23,23 +23,27 @@ const generateConfirmationText = () => {
     return `Type "${randomWord}" to verify`;
 };
 
-export default function UpdateFollowUpTime({ agentId, role }: Props) {
+export default function UpdateFollowUpTime({ followUpAt, id }: Props) {
+    console.log("Follow-up",followUpAt)
     const [open, setOpen] = useState(false);
     const [confirmationText, setConfirmationText] = useState("");
-    const [newRole, setNewRole] = useState<UserRole>(role as UserRole);
+    const [followUp, setFollowUp] = useState<Date | null>(
+        followUpAt ? new Date(followUpAt) : null
+    );
+    console.log(followUp);
     const [userInput, setUserInput] = useState("");
-    const { mutate: changeUserRole, isPending } = useChangeUserRole();
+    const { mutate, isPending } = useUpdateFollowUpTime(id);
     const queryClient = useQueryClient();
 
     const handleOpenDialog = () => {
         setOpen(true);
         setConfirmationText(generateConfirmationText());
         setUserInput("");
-        setNewRole(role as UserRole); // Reset dropdown to the user's current role on open
+        setFollowUp(followUpAt ? new Date(followUpAt) : null);
     };
 
     const handleVerify = () => {
-        
+
         const expectedText = confirmationText.replace('Type "', '').replace('" to verify', '');
 
         if (userInput.trim().toLowerCase() !== expectedText.toLowerCase()) {
@@ -47,89 +51,60 @@ export default function UpdateFollowUpTime({ agentId, role }: Props) {
             return;
         }
 
-        if (newRole === role) {
-            toast.error("Selected role is the same as the current role. Please choose a different role.");
+        if (!followUp) {
+            toast.error("Please update follow-up time!!!");
             return;
         }
 
-        changeUserRole({ userId: agentId, role: newRole }, {
-            onSuccess: () => {
-                toast.success("Operation Successful!!!!");
+        mutate({ followUpAt: followUp }, {
+            onSuccess: (data) => {
+                toast.success(data.message || "Operation Successful!!!");
+                queryClient.invalidateQueries({
+                    queryKey: ["lead-detail", id]
+                });
+                queryClient.invalidateQueries({
+                    queryKey: ["leads"]
+                });
                 setOpen(false);
-                setUserInput("");
-                queryClient.invalidateQueries({
-                    queryKey: ["all-users"]
-                });
-                queryClient.invalidateQueries({
-                    queryKey: ["agent-detail", agentId]
-                });
-            },
-        });
+            }
+        })
     };
 
     const isConfirmButtonDisabled = isPending || userInput.trim() === "";
 
-    // Available roles to loop through in our dropdown
-    const availableRoles: { value: UserRole; label: string }[] = [
-        { value: "client", label: "Client" },
-        { value: "partner", label: "Partner" },
-        { value: "staff", label: "Staff" },
-    ];
 
     return (
         <>
-            <button
-                onClick={handleOpenDialog}
-                className="w-full flex items-center gap-3 p-3 text-left hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors group text-green-600 dark:text-green-400"
-            >
-                <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.586-9.414a2 2 0 112.828 2.828L12 14l-4 1 1-4 8.414-8.414z"
-                    />
-                </svg>
-                <div>
-                    <div className="font-medium">Change User Role</div>
-                    <div className="text-sm">Update the user's role and permissions</div>
-                </div>
+            <button onClick={handleOpenDialog} className="inline-flex items-center gap-1.5 px-3 py-2 border border-secondary-200 dark:border-secondary-800 hover:bg-secondary-50 dark:hover:bg-secondary-800 rounded-xl text-xs font-semibold text-secondary-700 dark:text-secondary-300 transition-colors">
+                <Calendar className="w-3.5 h-3.5 text-secondary-400" />
+                <span>Follow-up Timer</span>
             </button>
 
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent onClose={() => setOpen(false)} className="max-w-lg">
                     <DialogHeader>
-                        <DialogTitle>Change User Role</DialogTitle>
+                        <DialogTitle>Change Follow-up Time</DialogTitle>
                     </DialogHeader>
 
                     <div className="space-y-5">
                         <p className="text-secondary-600 dark:text-secondary-300 text-sm break-words whitespace-normal">
-                            Select the new role you want to assign to this user. This action requires safety confirmation.
+                            Use this to update follow-up date and time. This action requires safety confirmation.
                         </p>
 
                         {/* Dropdown Section */}
                         <div className="flex flex-col space-y-2">
-                            <label htmlFor="role-select" className="text-sm font-medium text-secondary-700 dark:text-secondary-300">
-                                Select New Role
+                            <label htmlFor="followUpAt" className="text-sm font-medium text-secondary-700 dark:text-secondary-300">
+                                Follow Up Date & Time <span className="text-red-500">*</span>
                             </label>
-                            <select
-                                id="role-select"
-                                value={newRole}
-                                onChange={(e) => setNewRole(e.target.value as UserRole)}
-                                disabled={isPending}
+                            <input
+                                type="datetime-local"
+                                id="followUp"
+                                min={new Date().toISOString().slice(0, 16)}
                                 className="w-full px-3 py-2 border border-secondary-300 dark:border-secondary-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100"
-                            >
-                                {availableRoles.map((roleOpt) => (
-                                    <option key={roleOpt.value} value={roleOpt.value}>
-                                        {roleOpt.label}
-                                    </option>
-                                ))}
-                            </select>
+                                // Convert the string from the picker into a valid JS Date object for your state
+                                onChange={(e) => setFollowUp(e.target.value ? new Date(e.target.value) : null)}
+                            />
+
                         </div>
 
                         {/* Confirmation Challenge - Stacked vertically */}
