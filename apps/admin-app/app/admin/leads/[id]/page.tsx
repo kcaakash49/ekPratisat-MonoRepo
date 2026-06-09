@@ -173,7 +173,7 @@ export default function LeadDetailPage() {
                     {/* Main Optional Parameters Base Block */}
                     <div className="bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-800 rounded-2xl shadow-sm overflow-hidden">
                         <div className="p-4 bg-secondary-50/50 dark:bg-secondary-800/40 border-b border-secondary-100 dark:border-secondary-800">
-                            <h2 className="text-xs font-bold uppercase tracking-wider text-secondary-500">Supplemental Pipeline Intelligence</h2>
+                            <h2 className="text-xs font-bold uppercase tracking-wider text-secondary-500">Other Parameters</h2>
                         </div>
 
                         <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-5 text-xs">
@@ -274,7 +274,7 @@ export default function LeadDetailPage() {
                         {/* Terminal Status Final Audit Remarks Layer */}
                         {lead.remarks && (
                             <div className="px-5 pb-5 space-y-1.5 text-xs">
-                                <span className="text-secondary-400 block font-semibold uppercase tracking-wider text-[10px]">Terminal Pipeline Closure Log</span>
+                                <span className="text-secondary-400 block font-semibold uppercase tracking-wider text-[10px]">Lead Closure Remark</span>
                                 <div className="flex items-start gap-2.5 p-3 rounded-xl bg-secondary-50 dark:bg-secondary-800/40 border border-secondary-100 dark:border-secondary-800 text-secondary-700 dark:text-secondary-300">
                                     <FileText className="w-4 h-4 text-secondary-400 shrink-0 mt-0.5" />
                                     <p className="leading-relaxed font-medium">{lead.remarks}</p>
@@ -286,7 +286,7 @@ export default function LeadDetailPage() {
                     {/* Render Meta Custom Key-Value Object Data mapping */}
                     {lead.notes && Object.keys(lead.notes).length > 0 && (
                         <div className="bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-800 rounded-2xl p-5 shadow-sm space-y-3">
-                            <span className="text-secondary-400 text-[10px] font-bold uppercase tracking-wider block">Custom Extension Key-Value Pairs (JSON)</span>
+                            <span className="text-secondary-400 text-[10px] font-bold uppercase tracking-wider block">Notes</span>
                             <div className="flex flex-wrap gap-2">
                                 {Object.entries(lead.notes).map(([key, value]) => {
                                     if (value === null || value === undefined || value === "") return null;
