@@ -21,14 +21,15 @@ export default function ListingCard({ listing }: {listing:PropertyListing}) {
           <div className="flex h-full w-full items-center justify-center bg-[var(--ek-bg-card-soft)] text-sm text-[var(--ek-text-muted)] dark:bg-[var(--ek-dark-elevated)] dark:text-[var(--ek-dark-soft)]">No Image</div>
         )}
 
-        {/* Price Badge */}
-        <div className="absolute left-4 top-4 rounded-full bg-[rgba(255,253,248,0.94)] px-4 py-1.5 text-sm font-bold text-[var(--ek-gold-text)] shadow-md ring-1 ring-[var(--ek-border-soft)] backdrop-blur-sm dark:bg-[rgba(33,28,20,0.88)] dark:text-[var(--ek-dark-gold)] dark:ring-[var(--ek-dark-border)]">
-          Rs. {formattedPrice} {listing.type === "rent" ? "/mo" : ""}
-        </div>
+        {/* Price + Category bar — flex prevents overlap on narrow cards */}
+        <div className="absolute inset-x-4 top-4 flex items-start justify-between gap-2">
+          <div className="shrink-0 rounded-full bg-[rgba(255,253,248,0.94)] px-4 py-1.5 text-sm font-bold text-[var(--ek-gold-text)] shadow-md ring-1 ring-[var(--ek-border-soft)] backdrop-blur-sm dark:bg-[rgba(33,28,20,0.88)] dark:text-[var(--ek-dark-gold)] dark:ring-[var(--ek-dark-border)]">
+            Rs. {formattedPrice} {listing.type === "rent" ? "/mo" : ""}
+          </div>
 
-        {/* Category Tag */}
-        <div className="absolute right-4 top-4 rounded-lg bg-black/48 px-3 py-1 text-xs font-medium uppercase tracking-wider text-white backdrop-blur-sm">
-          {listing.category?.name}
+          <div className="max-w-[50%] truncate rounded-lg bg-black/48 px-3 py-1 text-xs font-medium uppercase tracking-wider text-white backdrop-blur-sm">
+            {listing.category?.name}
+          </div>
         </div>
       </div>
 
@@ -36,7 +37,7 @@ export default function ListingCard({ listing }: {listing:PropertyListing}) {
       <div className="p-5">
         {typeof listing.propertyCode === "number" && (
           <div className="mb-3 inline-flex w-fit items-center rounded-full border border-[var(--ek-border-soft)] bg-[var(--ek-bg-card-soft)] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--ek-text-muted)] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-elevated)] dark:text-[var(--ek-dark-soft)]">
-            Code EP-{listing.propertyCode}
+            EP-{listing.propertyCode}
           </div>
         )}
 

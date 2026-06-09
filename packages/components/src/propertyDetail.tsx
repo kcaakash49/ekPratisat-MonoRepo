@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useFeatureProperty, useFetchPropertyDetail, useToggleActive, usetoggleActiveListing, useVerifyProperty } from "@repo/query-hook";
 import PageLoading from "@repo/ui/pageloading";
 import { useParams, useRouter } from "next/navigation";
@@ -12,7 +13,10 @@ import {
   Trash2,
   AlertCircle,
   CheckCircle2,
-  XCircle
+  XCircle,
+  X,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
@@ -37,6 +41,35 @@ export default function AdminPropertyDetailComponent() {
   const { mutate: activeMutate, isPending: activePending } = usetoggleActiveListing();
 
   const router = useRouter();
+
+  const [activeImage, setActiveImage] = useState(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const images = property?.images ?? [];
+
+  const openLightbox = (startIndex?: number) => {
+    if (typeof startIndex === "number") setActiveImage(startIndex);
+    setIsLightboxOpen(true);
+  };
+  const closeLightbox = () => setIsLightboxOpen(false);
+  const showNextImage = () => setActiveImage((c) => (c + 1) % images.length);
+  const showPrevImage = () => setActiveImage((c) => (c - 1 + images.length) % images.length);
+
+  useEffect(() => {
+    if (!isLightboxOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeLightbox();
+      else if (e.key === "ArrowRight") showNextImage();
+      else if (e.key === "ArrowLeft") showPrevImage();
+    };
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLightboxOpen, images.length]);
 
   if (isLoading) return <PageLoading />;
 
@@ -104,7 +137,65 @@ export default function AdminPropertyDetailComponent() {
   console.log(property);
 
   return (
-    <div className="flex flex-col min-h-screen bg-white dark:bg-secondary-900">
+    <div className="flex flex-col min-h-screen overflow-x-hidden bg-white dark:bg-secondary-900">
+
+      {/* ---------------- LIGHTBOX ---------------- */}
+      {isLightboxOpen && images.length > 0 && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Property photos"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/92 backdrop-blur-sm"
+          onClick={closeLightbox}
+        >
+          <button
+            type="button"
+            onClick={closeLightbox}
+            aria-label="Close"
+            className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-secondary-900/90 text-white transition hover:bg-secondary-900"
+          >
+            <X size={22} />
+          </button>
+
+          {images.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); showPrevImage(); }}
+                aria-label="Previous photo"
+                className="absolute left-2 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-secondary-900/90 text-white transition hover:bg-secondary-900 sm:left-6"
+              >
+                <ChevronLeft size={26} />
+              </button>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); showNextImage(); }}
+                aria-label="Next photo"
+                className="absolute right-2 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-secondary-900/90 text-white transition hover:bg-secondary-900 sm:right-6"
+              >
+                <ChevronRight size={26} />
+              </button>
+            </>
+          )}
+
+          <div className="relative flex h-full w-full items-center justify-center px-12 py-16 sm:px-20" onClick={(e) => e.stopPropagation()}>
+            <div className="relative h-full w-full">
+              <Image
+                src={`${process.env.NEXT_PUBLIC_BASE_URL}${images[activeImage]?.url}`}
+                alt={`${property.title} photo ${activeImage + 1} of ${images.length}`}
+                fill
+                className="object-contain"
+                sizes="100vw"
+                priority
+              />
+            </div>
+          </div>
+
+          <div className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full border border-white/25 bg-secondary-900/90 px-4 py-1.5 text-sm font-semibold text-white">
+            {activeImage + 1} / {images.length}
+          </div>
+        </div>
+      )}
 
       {/* ---------------- ADMIN MANAGEMENT BAR ---------------- */}
       <div className="z-50 bg-white/80 dark:bg-secondary-900/80  border-b border-secondary-200 dark:border-secondary-800 px-4 py-4">
@@ -123,7 +214,7 @@ export default function AdminPropertyDetailComponent() {
             <AddPropertyNoteButton propertyId={property.id} leadNotes={property.leadNotes}/>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {/* Verification Button: Hidden if already verified */}
             {!property.verified && (
               <button
@@ -168,10 +259,13 @@ export default function AdminPropertyDetailComponent() {
       </div>
 
       {/* ---------------- Rest of the UI (Same as your provided layout) ---------------- */}
-      <div className="relative w-full h-[50vh] bg-secondary-100 dark:bg-secondary-800">
-        {property.images && property.images.length > 0 ? (
+      <div
+        className={`relative w-full aspect-[16/10] max-h-[70vh] bg-secondary-100 dark:bg-secondary-800 ${images.length > 0 ? "cursor-zoom-in" : ""}`}
+        onClick={() => images.length > 0 && openLightbox(activeImage)}
+      >
+        {images.length > 0 ? (
           <Image
-            src={`${process.env.NEXT_PUBLIC_BASE_URL}${property.images[0]!.url}`}
+            src={`${process.env.NEXT_PUBLIC_BASE_URL}${images[activeImage]?.url ?? images[0]!.url}`}
             alt={property.title}
             fill
             priority
@@ -180,14 +274,44 @@ export default function AdminPropertyDetailComponent() {
         ) : (
           <div className="flex items-center justify-center h-full text-secondary-500">No Image Available</div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 text-white">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
+        {images.length > 1 && (
+          <span className="absolute top-4 right-4 rounded-full bg-black/55 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm">
+            {activeImage + 1} / {images.length}
+          </span>
+        )}
+        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 text-white pointer-events-none">
           <h1 className="text-2xl md:text-5xl font-black tracking-tight">{property.title}</h1>
           <p className="mt-2 text-sm md:text-lg font-medium opacity-90">
             {property.location.municipality.district.name}, {property.location.municipality.name}, {property.tole}
           </p>
         </div>
       </div>
+
+      {/* Thumbnail strip */}
+      {images.length > 1 && (
+        <div className="flex gap-2 overflow-x-auto bg-secondary-50 dark:bg-secondary-900/50 px-4 py-3 border-b border-secondary-100 dark:border-secondary-800">
+          {images.map((img, idx) => (
+            <button
+              key={img.url}
+              type="button"
+              onClick={() => setActiveImage(idx)}
+              aria-label={`Show image ${idx + 1} of ${images.length}`}
+              className={`relative h-16 w-24 shrink-0 overflow-hidden rounded-lg border-2 transition-all ${idx === activeImage
+                ? "border-primary-500 ring-2 ring-primary-500/30"
+                : "border-transparent opacity-70 hover:opacity-100"
+                }`}
+            >
+              <Image
+                src={`${process.env.NEXT_PUBLIC_BASE_URL}${img.url}`}
+                alt={`${property.title} thumbnail ${idx + 1}`}
+                fill
+                className="object-cover"
+              />
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="max-w-7xl mx-auto w-full px-4 md:px-6 py-12 space-y-12">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-secondary-100 dark:border-secondary-800 pb-8">
@@ -265,9 +389,9 @@ export default function AdminPropertyDetailComponent() {
 // Small helper for the sidebar
 function DetailLine({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between items-center text-sm">
-      <span className="text-secondary-500 font-medium">{label}</span>
-      <span className="text-secondary-900 dark:text-secondary-200 font-mono text-xs">{value}</span>
+    <div className="flex justify-between items-start gap-2 text-sm">
+      <span className="text-secondary-500 font-medium shrink-0">{label}</span>
+      <span className="text-secondary-900 dark:text-secondary-200 font-mono text-xs break-all text-right">{value}</span>
     </div>
   );
 }
