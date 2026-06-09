@@ -174,21 +174,21 @@ export default function UpdateBasicInfo({ leadId, name, email, coordinates, note
                             <label htmlFor="name" className="text-sm font-medium text-secondary-700 dark:text-secondary-300">
                                 Name <span className="text-red-500">*</span>
                             </label>
-                            <input value={newName} className="w-full px-3 py-2  border  border-secondary-300 dark:border-secondary-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100" placeholder="This closes our lead, so give remarks" onChange={(e) => setNewName(e.target.value)} />
+                            <input value={newName} className="w-full px-3 py-2  border  border-secondary-300 dark:border-secondary-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100" placeholder="Change or remove name altogether" onChange={(e) => setNewName(e.target.value)} />
                         </div>
 
                         <div className="flex flex-col space-y-2">
                             <label htmlFor="email" className="text-sm font-medium text-secondary-700 dark:text-secondary-300">
                                 Email <span className="text-red-500">*</span>
                             </label>
-                            <input value={newEmail} className="w-full px-3 py-2  border  border-secondary-300 dark:border-secondary-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100" placeholder="This closes our lead, so give remarks" onChange={(e) => setNewEmail(e.target.value)} />
+                            <input value={newEmail} className="w-full px-3 py-2  border  border-secondary-300 dark:border-secondary-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100" placeholder="Change or remove mail altogether" onChange={(e) => setNewEmail(e.target.value)} />
                         </div>
 
                         <div className="flex flex-col space-y-2">
                             <label htmlFor="coordinates" className="text-sm font-medium text-secondary-700 dark:text-secondary-300">
                                 Coordinates <span className="text-red-500">*</span>
                             </label>
-                            <input value={newCoordinates} className="w-full px-3 py-2  border  border-secondary-300 dark:border-secondary-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100" placeholder="This closes our lead, so give remarks" onChange={(e) => setNewCoordinates(e.target.value)} />
+                            <input value={newCoordinates} className="w-full px-3 py-2  border  border-secondary-300 dark:border-secondary-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100" placeholder="Change or remove coordinates altogether" onChange={(e) => setNewCoordinates(e.target.value)} />
                         </div>
 
                         <div className="space-y-3">
