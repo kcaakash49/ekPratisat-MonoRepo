@@ -7,3 +7,4 @@ export * from "./mutationHooks/userMutation";
 export * from "./mutationHooks/geoZoneMutation";
 export * from "./queries/zoneQueries";
 export * from "./mutationHooks/leadMutations";
+export * from "./queries/leadQueries";

@@ -13,6 +13,7 @@ const navSections = [
   { name: "Dashboard", path: "/admin/dashboard", accessibleRoles: ["admin"] },
   { name: "Users", path: "/admin/users", accessibleRoles: ["admin"] },
   { name: "Properties", path: "/admin/properties", accessibleRoles: ["admin", "staff"] },
+  { name: "Leads", path: "/admin/leads", accessibleRoles: ["admin", "staff"] },
 
   { name: "Geozones", path: "/admin/geo-zones", accessibleRoles: ["admin"] },
   { name: "List-Zones", path: "/admin/geo-zones/list-zones", accessibleRoles: ["admin"] },

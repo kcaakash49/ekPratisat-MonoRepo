@@ -240,7 +240,7 @@ export default function PropertiesListPage() {
                                 >
                                     <option value="">All Types</option>
                                     <option value="rent">For Rent</option>
-                                    <option value="saler">For Sale</option>
+                                    <option value="sale">For Sale</option>
                                 </select>
                             </FilterGroup>
 

@@ -2,6 +2,12 @@ import { authenticatedFetch } from "@repo/shared-provider";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+interface UpdateStatusProps {
+  status:string;
+  remarks?:string;
+  followUpAt?:Date;
+}
+
 export const useCreateLead = () => {
   return useMutation({
     mutationFn: async ({ formData }: { formData: FormData }) => {
@@ -18,3 +24,43 @@ export const useCreateLead = () => {
     },
   });
 };
+
+export const useUpdateleadStatus = (id:string) => {
+  return useMutation({
+    mutationFn: async(payload:UpdateStatusProps) => {
+      return authenticatedFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/lead/status/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload)
+        }
+      )
+    },
+    onError: (error) => {
+      toast.error(error.message || "Operation Failed!!!");
+    },
+  })
+}
+
+export const useUpdateFollowUpTime = (id:string) => {
+  return useMutation({
+    mutationFn: async({followUpAt} : {followUpAt:Date}) => {
+      return authenticatedFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/lead/follow-up/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({followUpAt})
+        }
+      )
+    },
+      onError: (error) => {
+      toast.error(error.message || "Operation Failed!!!");
+    },
+  })
+}

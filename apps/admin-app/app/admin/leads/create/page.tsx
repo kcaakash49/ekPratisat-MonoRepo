@@ -147,10 +147,6 @@ export default function CreateLeadForm() {
             formData.append("notes", JSON.stringify(finalNoteObject));
         }
 
-
-
-
-
         mutate({ formData }, {
             onSuccess: (data) => {
                 toast.success(data.message || "New acquisition pipeline lead recorded successfully!");
@@ -171,7 +167,7 @@ export default function CreateLeadForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto p-6 bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-800 rounded-2xl">
+        <form onSubmit={handleSubmit} className="space-y-6 max-w-7xl p-6 bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-800 rounded-2xl">
             <div className="space-y-4">
                 <h3 className="text-sm font-bold text-secondary-900 dark:text-secondary-100 tracking-wide uppercase">
                     Mandatory Parameters

@@ -283,7 +283,10 @@ enum LeadStatus {
   INTERESTED
   NOT_INTERESTED
   FOLLOW_UP
-  CLOSED
+  IN_PROGRESS
+  IN_NEGOTIATION
+  WON
+  LOST
 }
 
 model Lead {
@@ -307,4 +310,5 @@ model Lead {
   updatedAt   DateTime   @updatedAt
   updatedById String?
   updatedBy   User?      @relation("LeadUpdatedBy", fields: [updatedById], references: [id])
+  remarks     String?
 }

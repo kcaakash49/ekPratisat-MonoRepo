@@ -94,3 +94,39 @@ export interface PropertyFormdata{
   images: ImageType[];
   verified?: boolean;
 };
+
+
+
+export interface Lead {
+  id: string;
+  name: string | null;
+  contact: string;
+  email: string | null;
+  source: string;
+  clientType: "BUYER" | "SELLER";
+  propertyId: string | null;
+  imageUrl: string | null;
+  dealType: "buy" | "sell" | "rent";
+  coordinates: string | null;
+  managedById: string | null;
+  notes: Record<string, any> | null;
+  followUpAt: string | null;
+  status: string;
+  createdAt: string;
+  remarks: string | null;
+  managedBy?: {
+    name: string;
+    email: string;
+  } | null;
+}
+
+export interface LeadDetailType extends Lead {
+  updatedById:string | null;
+  updatedBy?: {
+    name: string;
+    email: string;
+  } | null;
+  updatedAt:string;
+}
+
+export type LeadStatus = "NEW" | "CONTACTED" |"INTERESTED" | "NOT_INTERESTED" | "FOLLOW_UP" | "IN_PROGRESS" | "IN_NEGOTIATION" | "WON" | "LOST"
