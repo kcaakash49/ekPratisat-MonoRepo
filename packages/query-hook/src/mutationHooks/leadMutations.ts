@@ -3,9 +3,16 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 interface UpdateStatusProps {
-  status:string;
-  remarks?:string;
-  followUpAt?:Date;
+  status: string;
+  remarks?: string;
+  followUpAt?: Date;
+}
+
+interface UpdateLeadBasicInfoProps{
+  name?:string;
+  email?:string;
+  coordinates?:string;
+  notes?:Record<string,any>|null|any;
 }
 
 export const useCreateLead = () => {
@@ -25,9 +32,9 @@ export const useCreateLead = () => {
   });
 };
 
-export const useUpdateleadStatus = (id:string) => {
+export const useUpdateleadStatus = (id: string) => {
   return useMutation({
-    mutationFn: async(payload:UpdateStatusProps) => {
+    mutationFn: async (payload: UpdateStatusProps) => {
       return authenticatedFetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/lead/status/${id}`,
         {
@@ -35,19 +42,19 @@ export const useUpdateleadStatus = (id:string) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(payload)
-        }
-      )
+          body: JSON.stringify(payload),
+        },
+      );
     },
     onError: (error) => {
       toast.error(error.message || "Operation Failed!!!");
     },
-  })
-}
+  });
+};
 
-export const useUpdateFollowUpTime = (id:string) => {
+export const useUpdateFollowUpTime = (id: string) => {
   return useMutation({
-    mutationFn: async({followUpAt} : {followUpAt:Date}) => {
+    mutationFn: async ({ followUpAt }: { followUpAt: Date }) => {
       return authenticatedFetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/lead/follow-up/${id}`,
         {
@@ -55,12 +62,32 @@ export const useUpdateFollowUpTime = (id:string) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({followUpAt})
-        }
-      )
+          body: JSON.stringify({ followUpAt }),
+        },
+      );
     },
-      onError: (error) => {
+    onError: (error) => {
       toast.error(error.message || "Operation Failed!!!");
     },
-  })
-}
+  });
+};
+
+export const useLeadBasicInfo = (id: string) => {
+  return useMutation({
+    mutationFn: async (payload: UpdateLeadBasicInfoProps) => {
+      return authenticatedFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/lead/edit-basic/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        },
+      );
+    },
+    onError: (error) => {
+      toast.error(error.message || "Operation Failed!!!");
+    },
+  });
+};

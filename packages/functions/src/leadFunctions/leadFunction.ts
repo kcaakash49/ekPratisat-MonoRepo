@@ -34,6 +34,7 @@ export async function createLead({body, file}: {body: any, file: Upload}) {
               name: body.name?.trim() ?? null,
               email: body.email?.trim() ?? null,
               contact: body.contact?.trim(),
+              coordinates:body.coordinates?.trim() ?? null,
               source: body.source?.trim(),
               clientType: body.clientType,
               propertyId: body.propertyId?.trim() ?? null,

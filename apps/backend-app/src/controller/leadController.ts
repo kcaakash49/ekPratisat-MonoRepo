@@ -1,5 +1,6 @@
 import { Prisma, prisma } from "@repo/database";
 import { AppError, createLead } from "@repo/functions";
+import { UpdateLeadSchema } from "@repo/validators";
 import { Request, Response } from "express";
 
 type LeadStatus =
@@ -311,6 +312,70 @@ export async function updateFollowUpTime(req:Request,res:Response){
     })
     
   } catch (error) {
+    return res.status(500).json({
+        message: "Server couldn't process your request, so try again later"
+      })
+  }
+}
+
+
+export async function updateLeadBasicInformation(req:Request, res:Response){
+  try {
+    console.log("Body", req.body);
+    const {id} = req.params;
+    const user = req.user;
+    const {name,email,coordinates,notes} = req.body;
+
+    const parsedData = UpdateLeadSchema.safeParse(req.body);
+
+    if (!parsedData.success){
+      throw new AppError(412,"Input validation failed");
+    }
+
+    if(!id || Array.isArray(id)) {
+      throw new AppError(400,"Invalid Lead Id")
+    }
+
+    const checkExistingStatus = await prisma.lead.findUnique({
+      where: {id}
+    })
+
+    if (!checkExistingStatus) {
+      return res.status(404).json({ message: "Lead record not found." });
+    }
+
+    if(checkExistingStatus?.status === "WON" || checkExistingStatus?.status === "LOST") {
+      return res.status(400).json({
+        message: "Lead is already Closed and locked down."
+      })
+    }
+
+    const data = parsedData.data;
+
+    console.log("Data in update", data);
+
+    await prisma.lead.update({
+      where: {id},
+      data: {
+        name:data.name ?? null,
+        email:data.email ?? null,
+        coordinates: data.coordinates ?? null,
+        notes: (data.notes && Object.keys(data.notes).length > 0) ? data.notes : null
+      }
+    })
+
+    return res.status(200).json({
+      ok:true,
+      message:"Information Updated Successfully"
+    })
+
+
+  } catch (error) {
+    if(error instanceof AppError){
+      return res.status(error.status).json({
+        message:error.message
+      })
+    }
     return res.status(500).json({
         message: "Server couldn't process your request, so try again later"
       })

@@ -4,3 +4,4 @@ export * from "./validator/categorySchema.js";
 export * from "./types/utils.js";
 export * from "./validator/propertySchema.js";
 export * from "./validator/editAgentProfileSchema.js"
+export * from "./validator/leadSchema.js"

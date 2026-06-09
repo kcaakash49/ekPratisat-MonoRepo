@@ -21,10 +21,12 @@ import {
     Trash2,
     CheckCircle,
     ExternalLink,
-    ChevronRight
+    ChevronRight,
+    Edit
 } from "lucide-react";
 import UpdateLeadStatus from "../../../../components/lead/UpdateLeadStatus";
 import UpdateFollowUpTime from "../../../../components/lead/ChangeFollowUptime";
+import UpdateBasicInfo from "../../../../components/lead/UpdateBasicInfo";
 
 export default function LeadDetailPage() {
     const params = useParams();
@@ -88,12 +90,8 @@ export default function LeadDetailPage() {
                 <div className="flex flex-wrap items-center gap-2 border-t pt-3 lg:border-t-0 lg:pt-0">
                     
                     <UpdateLeadStatus lead={lead}/>
-                    <UpdateFollowUpTime followUpAt={lead.followUpAt} id={lead.id}/>
-
-                    <button type="button" className="inline-flex items-center gap-1.5 px-3 py-2 border border-secondary-200 dark:border-secondary-800 hover:bg-secondary-50 dark:hover:bg-secondary-800 rounded-xl text-xs font-semibold text-secondary-700 dark:text-secondary-300 transition-colors">
-                        <Edit3 className="w-3.5 h-3.5 text-secondary-400" />
-                        <span>Edit Basic Info</span>
-                    </button>
+                    <UpdateFollowUpTime followUpAt={lead.followUpAt} id={lead.id} status={lead.status}/>
+                    <UpdateBasicInfo leadId={lead.id} name={lead.name} email={lead.email} coordinates={lead.coordinates} notes={lead.notes} status={lead.status}/>
 
                     <button type="button" className="inline-flex items-center gap-1.5 px-3 py-2 border border-secondary-200 dark:border-secondary-800 hover:bg-secondary-50 dark:hover:bg-secondary-800 rounded-xl text-xs font-semibold text-secondary-700 dark:text-secondary-300 transition-colors">
                         <ShieldAlert className="w-3.5 h-3.5 text-secondary-400" />
@@ -117,8 +115,9 @@ export default function LeadDetailPage() {
             SECTION 2: PRIMARY COMPULSORY ATTRIBUTES
            ========================================== */}
                 <div className="lg:col-span-1 bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-800 rounded-2xl overflow-hidden shadow-sm">
-                    <div className="p-4 bg-secondary-50/50 dark:bg-secondary-800/40 border-b border-secondary-100 dark:border-secondary-800">
+                    <div className="p-4 bg-secondary-50/50 dark:bg-secondary-800/40 border-b border-secondary-100 dark:border-secondary-800 flex justify-between items-center">
                         <h2 className="text-xs font-bold uppercase tracking-wider text-secondary-500">Compulsory Parameters</h2>
+                        <button><Edit className="w-4 h-4"/></button>
                     </div>
                     <div className="p-5 space-y-4">
 

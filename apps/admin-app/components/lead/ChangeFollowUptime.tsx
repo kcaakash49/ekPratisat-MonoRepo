@@ -8,12 +8,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@repo/ui/button";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { useChangeUserRole, useUpdateFollowUpTime } from "@repo/query-hook";
+import { useUpdateFollowUpTime } from "@repo/query-hook";
 import { Calendar } from "lucide-react";
 
 interface Props {
     followUpAt: string | null;
     id: string;
+    status:string;
 }
 
 
@@ -23,14 +24,13 @@ const generateConfirmationText = () => {
     return `Type "${randomWord}" to verify`;
 };
 
-export default function UpdateFollowUpTime({ followUpAt, id }: Props) {
+export default function UpdateFollowUpTime({ followUpAt, id, status }: Props) {
     console.log("Follow-up",followUpAt)
     const [open, setOpen] = useState(false);
     const [confirmationText, setConfirmationText] = useState("");
     const [followUp, setFollowUp] = useState<Date | null>(
         followUpAt ? new Date(followUpAt) : null
     );
-    console.log(followUp);
     const [userInput, setUserInput] = useState("");
     const { mutate, isPending } = useUpdateFollowUpTime(id);
     const queryClient = useQueryClient();
@@ -71,11 +71,12 @@ export default function UpdateFollowUpTime({ followUpAt, id }: Props) {
     };
 
     const isConfirmButtonDisabled = isPending || userInput.trim() === "";
+    const disabledCondition = status === "WON" || status === "LOST";
 
 
     return (
         <>
-            <button onClick={handleOpenDialog} className="inline-flex items-center gap-1.5 px-3 py-2 border border-secondary-200 dark:border-secondary-800 hover:bg-secondary-50 dark:hover:bg-secondary-800 rounded-xl text-xs font-semibold text-secondary-700 dark:text-secondary-300 transition-colors">
+            <button onClick={handleOpenDialog} className={`inline-flex items-center gap-1.5 px-3 py-2 border border-secondary-200 dark:border-secondary-800 hover:bg-secondary-50 dark:hover:bg-secondary-800 rounded-xl text-xs font-semibold text-secondary-700 dark:text-secondary-300 transition-colors ${disabledCondition ? "cursor-not-allowed":"cursor-pointer"}`} disabled={disabledCondition}>
                 <Calendar className="w-3.5 h-3.5 text-secondary-400" />
                 <span>Follow-up Timer</span>
             </button>

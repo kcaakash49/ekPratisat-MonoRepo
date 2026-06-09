@@ -130,3 +130,4 @@ export interface LeadDetailType extends Lead {
 }
 
 export type LeadStatus = "NEW" | "CONTACTED" |"INTERESTED" | "NOT_INTERESTED" | "FOLLOW_UP" | "IN_PROGRESS" | "IN_NEGOTIATION" | "WON" | "LOST"
+
