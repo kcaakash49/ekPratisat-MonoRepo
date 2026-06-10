@@ -86,7 +86,6 @@ export default function LeadDetailPage() {
                     </div>
                 </div>
 
-                {/* Dummy Operational Handler Buttons Workspace */}
                 <div className="flex flex-wrap items-center gap-2 border-t pt-3 lg:border-t-0 lg:pt-0">
                     
                     <UpdateLeadStatus lead={lead}/>

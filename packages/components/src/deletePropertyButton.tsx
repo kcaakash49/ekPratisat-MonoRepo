@@ -4,7 +4,7 @@ import { useDeleteProperty } from "@repo/query-hook";
 import { Button } from "@repo/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@repo/ui/dialog";
 import { useQueryClient } from "@tanstack/react-query";
-import { Trash } from "lucide-react";
+import { Delete, DeleteIcon, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -74,9 +74,10 @@ export default function DeletePropertyButton({ id, isActive }: Props) {
     const isConfirmButtonDisabled = isPending || userInput.trim() === "";
     return (
         <>
-            <button className="p-2 text-secondary-600 hover:bg-secondary-100 dark:hover:bg-secondary-800 rounded-lg transition-colors" onClick={handleDeleteDialog}>
-                <Trash size={20} />
-            </button>
+            <button onClick={handleDeleteDialog} className="inline-flex items-center gap-1.5 px-3 py-2 border border-secondary-200 dark:border-secondary-800 hover:bg-secondary-50 dark:hover:bg-secondary-800 rounded-xl text-xs font-semibold text-secondary-700 dark:text-secondary-300 transition-colors">
+                        <Trash className="w-3.5 h-3.5 text-secondary-400" />
+                        <span>Delete Property</span>
+                    </button>
 
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent onClose={() => setOpen(false)} className="max-w-lg">

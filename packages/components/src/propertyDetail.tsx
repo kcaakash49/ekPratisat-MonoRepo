@@ -16,7 +16,8 @@ import {
   XCircle,
   X,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  LandPlot
 } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
@@ -134,7 +135,14 @@ export default function AdminPropertyDetailComponent() {
     refetch();
   }
 
-  console.log(property);
+  const getStatusStyle = (isVerified: boolean) => {
+
+    if (isVerified) return "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900";
+    if (!isVerified) return "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/30 dark:text-rose-400 dark:border-rose-900";
+    return "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-900";
+  };
+
+  const isPending = verifyPending || activePending || featurePending;
 
   return (
     <div className="flex flex-col min-h-screen overflow-x-hidden bg-white dark:bg-secondary-900">
@@ -198,64 +206,68 @@ export default function AdminPropertyDetailComponent() {
       )}
 
       {/* ---------------- ADMIN MANAGEMENT BAR ---------------- */}
-      <div className="z-50 bg-white/80 dark:bg-secondary-900/80  border-b border-secondary-200 dark:border-secondary-800 px-4 py-4">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${property.verified ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
-              }`}>
-              {property.verified ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
-              {property.verified ? "Verified" : "Pending Verification"}
-            </div>
-            {property.isFeatured && (
-              <div className="bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400 px-3 py-1 rounded-full text-xs font-bold uppercase flex items-center gap-1.5">
-                <Star size={14} fill="currentColor" /> Featured
-              </div>
-            )}
-            <AddPropertyNoteButton propertyId={property.id} leadNotes={property.leadNotes}/>
+      <div className="max-w-7xl bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-800 p-4 rounded-2xl shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-primary-50 dark:bg-primary-950/30 text-primary-600 dark:text-primary-400 rounded-xl">
+            <LandPlot className="w-5 h-5" />
           </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            {/* Verification Button: Hidden if already verified */}
-            {!property.verified && (
-              <button
-                onClick={handleVerify}
-                disabled={verifyPending}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-bold transition-all"
-              >
-                <ShieldCheck size={18} /> Verify Property
-              </button>
-            )}
-
-            {/* Toggle Feature Button */}
-            <button
-              onClick={handleToggleFeature}
-              disabled={featurePending}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all border ${property.isFeatured
-                ? "border-amber-500 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20"
-                : "bg-amber-500 hover:bg-amber-600 text-white"
-                }`}
-            >
-              <Star size={18} fill={property.isFeatured ? "currentColor" : "none"} />
-              {property.isFeatured ? "Remove from Featured" : "Make Featured"}
-            </button>
-
-            <div className="h-6 w-px bg-secondary-200 dark:bg-secondary-800 mx-1" />
-
-            <button className="p-2 text-secondary-600 hover:bg-secondary-100 dark:hover:bg-secondary-800 rounded-lg transition-colors" onClick={() => router.push(`/admin/properties/edit/${property.id}`)}>
-              <Edit3 size={20} />
-            </button>
-            <button className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all border ${property.isActive
-              ? "border-amber-500 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20"
-              : "bg-amber-500 hover:bg-amber-600 text-white"
-              }`} onClick={handleActiveToggle} disabled={activePending}>
-              {/* <Trash2 size={20} /> */}
-              {/* <Trash2 size={18} fill={property.isActive ? "currentColor" : "none"} /> */}
-              {property.isActive ? "Deactivate" : "Activate"}
-            </button>
-            <DeletePropertyButton id={property.id} isActive={property.isActive} />
-
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-base font-bold tracking-tight">{property.title || "Anonymous Prospect"}</h1>
+              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border tracking-wide ${getStatusStyle(property.verified)}`}>
+                {property.verified ? "Verified" : "Not Verified"}
+              </span>
+            </div>
+            <p className="text-xs text-secondary-500 mt-0.5 font-mono">P-CODE: EP-{property.propertyCode}</p>
           </div>
         </div>
+
+        <div className="flex flex-wrap items-center gap-2 border-t pt-3 lg:border-t-0 lg:pt-0">
+          <AddPropertyNoteButton propertyId={property.id} leadNotes={property.leadNotes} />
+          {
+            !property.verified && (
+              <button type="button" onClick={handleVerify} disabled={isPending} className="inline-flex items-center gap-1.5 px-3 py-2 border border-secondary-200 dark:border-secondary-800 hover:bg-secondary-50 dark:hover:bg-secondary-800 rounded-xl text-xs font-semibold text-secondary-700 dark:text-secondary-300 transition-colors">
+                <ShieldCheck className="w-3.5 h-3.5 text-secondary-400" />
+                <span>Verify Property</span>
+              </button>
+            )
+          }
+          <button
+            onClick={handleToggleFeature}
+            disabled={isPending}
+            className={`inline-flex items-center gap-1.5 px-3 py-2 border rounded-xl text-xs font-semibold  ${property.isFeatured
+              ? "border-amber-500 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors"
+              : "border-secondary-200 dark:border-secondary-800 hover:bg-secondary-50 dark:hover:bg-secondary-800 text-secondary-700 dark:text-secondary-300 transition-colors"
+              }`}
+          >
+            <Star size={18} fill={property.isFeatured ? "currentColor" : "none"} />
+            {property.isFeatured ? "Remove from Featured" : "Make Featured"}
+          </button>
+          <button onClick={() => router.push(`/admin/properties/edit/${property.id}`)} className="inline-flex items-center gap-1.5 px-3 py-2 border border-secondary-200 dark:border-secondary-800 hover:bg-secondary-50 dark:hover:bg-secondary-800 rounded-xl text-xs font-semibold text-secondary-700 dark:text-secondary-300 transition-colors">
+            <Edit3 className="w-3.5 h-3.5 text-secondary-400" />
+            <span>Edit Property</span>
+          </button>
+
+          <button
+            onClick={handleActiveToggle}
+            className={`inline-flex items-center gap-1.5 px-3 py-2 border rounded-xl text-xs font-semibold transition-all duration-200 ${!property.isActive
+                ? "border-amber-500 text-amber-700 bg-amber-50/50 dark:text-amber-400 dark:bg-amber-950/20 animate-pulse shadow-sm shadow-amber-500/10" // 🔥 Staff attention focus state when inactive
+                : "border-secondary-200 dark:border-secondary-800 text-secondary-700 dark:text-secondary-300 hover:bg-secondary-50 dark:hover:bg-secondary-800" // Default neutral state when active
+              }`}
+          >
+            {/* Optional: Add a small visual dot indicator to enhance the layout anchor */}
+            {!property.isActive && (
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping absolute inline-flex" />
+            )}
+            <span className={!property.isActive ? "pl-3" : ""}>
+              {property.isActive ? "Mark Property as Inactive" : "Mark Property as Active"}
+            </span>
+          </button>
+
+          <DeletePropertyButton id={property.id} isActive={property.isActive} />
+
+        </div>
+
       </div>
 
       {/* ---------------- Rest of the UI (Same as your provided layout) ---------------- */}
@@ -314,23 +326,53 @@ export default function AdminPropertyDetailComponent() {
       )}
 
       <div className="max-w-7xl mx-auto w-full px-4 md:px-6 py-12 space-y-12">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-secondary-100 dark:border-secondary-800 pb-8">
-          <div>
-            <p className="text-4xl font-black text-primary-600 dark:text-primary-400">
-              Rs. {property.price.toLocaleString()}
-            </p>
-            <p className="text-secondary-500 dark:text-secondary-400 mt-1 font-bold">
-              {property.category?.name} • {property.type}
-            </p>
-          </div>
-          <div className="bg-secondary-50 dark:bg-secondary-800/50 p-4 rounded-2xl flex items-center gap-4">
-            <div className="w-10 h-10 rounded-full bg-secondary-200 dark:bg-secondary-700 flex items-center justify-center font-bold">
-              {property.user?.name?.charAt(0)}
-            </div>
-            <div>
-              <p className="text-xs text-secondary-500 font-bold uppercase">Posted by</p>
-              <p className="font-bold text-secondary-900 dark:text-secondary-100">{property.user?.name}</p>
+        <div className="bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-800 rounded-3xl p-6 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-6">
 
+          {/* Left Core Segment: Pricing, Category Meta, & Status Badges */}
+          <div className="space-y-4">
+            {/* System Metadata Tracking Status Flags */}
+            <div className="flex flex-wrap items-center gap-2">
+              <div className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 border ${property.verified
+                ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-900/50"
+                : "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-900/50"
+                }`}>
+                {property.verified ? <CheckCircle2 size={13} /> : <AlertCircle size={13} />}
+                <span>{property.verified ? "Verified Property" : "Pending Verification"}</span>
+              </div>
+
+              {property.isFeatured && (
+                <div className="bg-primary-50 text-primary-700 border border-primary-200 dark:bg-primary-950/30 dark:text-primary-400 dark:border-primary-900/50 px-2.5 py-1 rounded-full text-[11px] font-bold uppercase flex items-center gap-1.5 shadow-sm">
+                  <Star size={13} fill="currentColor" className="text-primary-500" />
+                  <span>Featured Asset</span>
+                </div>
+              )}
+            </div>
+
+            {/* Price & Class Descriptors */}
+            <div>
+              <h1 className="text-3xl md:text-4xl font-black tracking-tight text-primary-600 dark:text-primary-400">
+                Rs. {property.price.toLocaleString()}
+              </h1>
+              <p className="text-sm text-secondary-500 dark:text-secondary-400 mt-1 font-semibold flex items-center gap-1.5">
+                <span className="capitalize">{property.category?.name}</span>
+                <span className="text-secondary-300 dark:text-secondary-700">•</span>
+                <span className="uppercase tracking-wide text-xs bg-secondary-100 dark:bg-secondary-800 px-2 py-0.5 rounded-md font-bold text-secondary-700 dark:text-secondary-300">
+                  {property.type}
+                </span>
+              </p>
+            </div>
+          </div>
+
+          {/* Right Core Segment: Owner/Agent Identity Node */}
+          <div className="flex items-center gap-3.5 p-4 bg-secondary-50/60 dark:bg-secondary-800/30 border border-secondary-100 dark:border-secondary-800/60 rounded-2xl md:min-w-[240px] shadow-inner transition-colors duration-200">
+            <div className="w-11 h-11 rounded-full bg-primary-600 dark:bg-primary-500 text-white flex items-center justify-center text-base font-black shadow-sm shrink-0 uppercase">
+              {property.user?.name?.charAt(0) || "?"}
+            </div>
+            <div className="min-w-0">
+              <span className="block text-[10px] text-secondary-400 font-bold uppercase tracking-wider">Posted Agent</span>
+              <p className="font-bold text-secondary-900 dark:text-secondary-100 truncate text-sm mt-0.5">
+                {property.user?.name || "Anonymous User"}
+              </p>
             </div>
           </div>
 

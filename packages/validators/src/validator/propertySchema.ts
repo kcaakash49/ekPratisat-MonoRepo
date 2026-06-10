@@ -11,7 +11,7 @@ export const createPropertySchema = z.object({
   landArea: z.string().nullable(),
   noOfFloors: z.string().nullable(),
   propertyAge: z.string().nullable(),
-  facingDirection: z.enum(["east", "west", "north", "south", "northeast", "northewest", "southeast", "southwest"]).nullable(),
+  facingDirection: z.enum(["east", "west", "north", "south", "northeast", "northwest", "southeast", "southwest"]).nullable(),
   floorArea: z.string().nullable(),
   roadSize: z.string().nullable(),
   floorLevel: z.string().nullable(),

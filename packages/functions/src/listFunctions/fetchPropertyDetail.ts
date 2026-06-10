@@ -23,6 +23,7 @@ export async function fetchPropertyDetal(id: string) {
         isActive:true,
         floorArea: true,
         roadSize: true,
+        propertyCode:true,
         floorLevel: true,
         isFeatured:true,
         leadNotes:true,
