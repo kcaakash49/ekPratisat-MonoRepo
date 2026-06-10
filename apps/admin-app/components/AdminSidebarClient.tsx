@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ToggleTheme } from "@repo/components/toggleTheme";
 import { SidebarDropdownSection } from "@repo/ui/sideBarDropdownSection";
 import { toast } from "sonner";
 import { useUser } from "@repo/query-hook";
@@ -89,7 +88,7 @@ export default function AdminSidebarClient() {
         </button>
 
         <h2 className="text-lg font-semibold">
-          Welcome, {user.name.split(" ")[0]}
+          Welcome, {user?.name?.split(" ")[0]}
         </h2>
 
         {/* Empty div for flex spacing */}
@@ -136,10 +135,6 @@ export default function AdminSidebarClient() {
         </div>
 
         <div className="mt-auto flex flex-col space-y-3 text-sm">
-           <div className="flex items-center justify-center">
-            <ToggleTheme />
-
-          </div>
           <button
             onClick={async () => {
               const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signout`, {
