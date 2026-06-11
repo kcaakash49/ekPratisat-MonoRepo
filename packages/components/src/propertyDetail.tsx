@@ -23,9 +23,8 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import DeletePropertyButton from "./deletePropertyButton";
 import AddPropertyNoteButton from "./addPropertyNoteButton";
-import PropertyLeadNotesCard from "./propertyLeadNotes";
-// Assuming you have a way to call your backend mutations (axios/fetch)
-// import { verifyProperty, toggleFeature, deleteProperty } from "@/lib/api/admin";
+import NotesCard from "./notesCard";
+
 
 export default function AdminPropertyDetailComponent() {
   const param = useParams();
@@ -396,7 +395,7 @@ export default function AdminPropertyDetailComponent() {
                 {property.description}
               </p>
             </div>
-
+            <NotesCard notes={property.features} header="Property Features" subheader="Specific feature of the property"/>
             {/* Map Section */}
             {typeof (property as any).lat === "number" && typeof (property as any).lng === "number" ? (
               <div className="space-y-4">
@@ -423,7 +422,7 @@ export default function AdminPropertyDetailComponent() {
           </div>
         </div>
       </div>
-      <PropertyLeadNotesCard leadNotes={property.leadNotes} />
+      <NotesCard notes={property.leadNotes} header="Acquisition and Owner Lead Info" subheader="Offline parameters caputred by field agent"/>
     </div>
   );
 }

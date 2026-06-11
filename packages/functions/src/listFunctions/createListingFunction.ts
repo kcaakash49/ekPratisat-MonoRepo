@@ -19,36 +19,25 @@ export async function createListingFunction({
   imageFiles: UploadedFile[];
 }) {
   const parsed = createPropertySchema.safeParse(body);
-  if (!parsed.success) throw new AppError(422, "Validation Failed!!!");
+  // if (!parsed.success) throw new AppError(422, "Validation Failed!!!");
+
+  if (!parsed.success) {
+    const fieldErrors = parsed.error.flatten().fieldErrors;
+
+    const formatted: Record<string, string> = {};
+
+    (Object.keys(fieldErrors) as (keyof typeof fieldErrors)[]).forEach(
+      (key) => {
+        const msg = fieldErrors[key]?.[0];
+        if (msg) formatted[key as string] = msg;
+      },
+    );
+
+    throw new AppError(422, "Validation failed", formatted);
+  }
 
   // Limit parallel processing to avoid CPU spikes
   const limit = pLimit(MAX_CONCURRENT_IMAGES);
-
-  // Process images in parallel, streaming to disk immediately
-  // const imageUrls = await Promise.all(
-  //   imageFiles.map((file) =>
-  //     limit(async () => {
-  //       // const safeName = path.basename(file.originalname);
-  //       // const finalFilename = `${Date.now()}-${safeName.replace(path.extname(safeName), ".webp")}`;
-  //       const ext = path.extname(file.originalname);
-  //       const baseName = path
-  //         .basename(file.originalname, ext)
-  //         .replace(/\s+/g, "-")
-  //         .replace(/[^a-zA-Z0-9-_]/g, "")
-  //         .toLowerCase();
-
-  //       const finalFilename = `${Date.now()}-${baseName || "property-image"}.webp`;
-  //       const filePath = path.join(IMAGE_DIR, finalFilename);
-
-  //       await sharp(Buffer.from(file.buffer))
-  //         .resize(1200)
-  //         .toFormat("webp", { quality: 90 })
-  //         .toFile(filePath);
-
-  //       return `/image/propertyImage/${finalFilename}`;
-  //     }),
-  //   ),
-  // );
 
   const imageUrls = await Promise.all(
   imageFiles.map((file) =>
@@ -98,6 +87,7 @@ export async function createListingFunction({
     "id",
     "title",
     "description",
+    "negotiable",
     "price",
     "type",
     "categoryId",
@@ -116,12 +106,14 @@ export async function createListingFunction({
     "updatedAt",
     "floorLevel",
     "tole",
-    "geoPoint"
+    "geoPoint",
+    "features"
   )
   VALUES (
     ${propertyId},
     ${data.title},
     ${data.description},
+    ${data.negotiable},
     ${data.price},
     ${data.type}::"SaleType",
     ${data.categoryId},
@@ -140,7 +132,8 @@ export async function createListingFunction({
     NOW(),
     ${data.floorLevel},
     ${data.tole},
-    ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)
+    ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326),
+    ${data.features ? JSON.parse(data.features) : null}
   )
   RETURNING
     "id",

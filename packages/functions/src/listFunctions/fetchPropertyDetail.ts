@@ -16,6 +16,8 @@ export async function fetchPropertyDetal(id: string) {
         createdAt: true,
         noOfBedRooms: true,
         noOfRestRooms: true,
+        negotiable:true,
+        features:true,
         landArea: true,
         noOfFloors: true,
         propertyAge: true,

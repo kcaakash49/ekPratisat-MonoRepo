@@ -78,6 +78,8 @@ export interface PropertyFormdata{
   locationId: string;
   price: string;
   tole: string;
+  negotiable:boolean;
+  features:Record<string,any> | null | any;
 
   lat: number | null;
   lng: number | null;

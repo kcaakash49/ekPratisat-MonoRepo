@@ -4,12 +4,14 @@ import { ClipboardList, FileText } from "lucide-react";
 
 interface Props {
     // Accepts your nullable Prisma Json object
-    leadNotes: Record<string, any> | null | any;
+    notes: Record<string, any> | null | any;
+    header:string;
+    subheader:string;
 }
 
-export default function PropertyLeadNotesCard({ leadNotes }: Props) {
+export default function NotesCard({ notes, header, subheader }: Props) {
     // 1. Parse or validate the records array safely
-    const hasNotes = leadNotes && typeof leadNotes === "object" && Object.keys(leadNotes).length > 0;
+    const hasNotes = notes && typeof notes === "object" && Object.keys(notes).length > 0;
 
     return (
         <div className="max-w-7xl mx-auto w-full bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-800 rounded-xl overflow-hidden shadow-sm">
@@ -18,10 +20,10 @@ export default function PropertyLeadNotesCard({ leadNotes }: Props) {
                 <ClipboardList className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                 <div>
                     <h3 className="font-semibold text-secondary-900 dark:text-secondary-100 text-sm md:text-base">
-                        Acquisition & Owner Lead Info
+                        {header}
                     </h3>
                     <p className="text-xs text-secondary-500">
-                        Offline parameters captured by field agents
+                        {subheader}
                     </p>
                 </div>
             </div>
@@ -30,7 +32,7 @@ export default function PropertyLeadNotesCard({ leadNotes }: Props) {
             <div className="p-5">
                 {hasNotes ? (
                     <div className="divide-y divide-secondary-100 dark:divide-secondary-800/60">
-                        {Object.entries(leadNotes).map(([key, value]) => {
+                        {Object.entries(notes).map(([key, value]) => {
                             // Clean up formatting (e.g., camelCase to Title Case if necessary, or just display raw string)
                             const displayKey = key.replace(/([A-Z])/g, ' $1').trim();
                             const displayValue = typeof value === "string" ? value : JSON.stringify(value);

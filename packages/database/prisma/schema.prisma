@@ -176,6 +176,7 @@ model Property {
   favourites      Favourite[]
   leads           Lead[]
   leadNotes       Json?
+  features        Json?
 
   @@index([geoPoint], type: Gist)
   @@index([categoryId])

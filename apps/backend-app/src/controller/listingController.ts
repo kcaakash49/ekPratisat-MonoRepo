@@ -74,6 +74,7 @@ export const addProperty = async (req: Request, res: Response) => {
       lat: normalized.lat ? Number(normalized.lat) : null,
       lng: normalized.lng ? Number(normalized.lng) : null,
       verified: normalized.verified === "true",
+      negotiable: normalized.negotiable === "true",
       userId: user.id,
     };
 
@@ -100,13 +101,14 @@ export const addProperty = async (req: Request, res: Response) => {
       triggerFrontendUpdate("properties");
     }
 
-    // triggerFrontendUpdate(`listings-${result.listing.userId}`);
+    triggerFrontendUpdate(`listings-${result.listing.userId}`);
 
     return res.status(201).json({
       ok: true,
       message: "Property added successfully",
     });
   } catch (err) {
+    console.error(err);
     if (err instanceof AppError) {
       return res.status(err.status).json({
         message: err.message,

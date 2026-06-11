@@ -57,7 +57,6 @@ export default function CreateLeadForm() {
         return () => {
             if (imagePreview) {
                 URL.revokeObjectURL(imagePreview);
-                console.log("Memory Cleared: Revoked preview URL on unmount.");
             }
         };
     }, [imagePreview]);
