@@ -123,7 +123,9 @@ export async function updateListingFunction({
     "floorLevel" = ${data.floorLevel},
     "tole" = ${data.tole},
     "updatedAt" = NOW(),
-    "geoPoint" = ${geoPointQuery}
+    "geoPoint" = ${geoPointQuery},
+    "negotiable"=${data.negotiable},
+    "features" = ${data.features ? JSON.parse(data.features) : null}
   WHERE "id" = ${body.propertyId}
   RETURNING 
   "id",

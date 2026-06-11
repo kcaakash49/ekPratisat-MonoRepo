@@ -460,8 +460,6 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
         .map(([key, value]) => [key, value === "" ? null : value])
     ) as CreatePropertySchema;
 
-    console.log(cleanedData);
-
     const cleanedImages = images.map((img) => img.file);
     setCompressing(true);
     const compressedImages = await Promise.all(
@@ -611,6 +609,8 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
           </select>
         </div>
 
+        
+
         {/* Category */}
         <div>
           <label className="block font-medium mb-1">Category</label>
@@ -664,6 +664,21 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
             />
           </div>
         </div>
+
+        {/* Negotiation */}
+        <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              name="negotiable"
+              id="negotiable"
+              checked={formData.negotiable}
+              onChange={() => setFormData((prev: any) => ({ ...prev, negotiable: !prev.negotiable }))}
+              className="h-4 w-4 accent-primary-600 cursor-pointer"
+            />
+            <label htmlFor="verified" className="font-medium text-secondary-900 dark:text-secondary-50">
+              Is the pricing negotiable?
+            </label>
+          </div>
 
         <div className="space-y-6">
           <div className="flex justify-between items-center">

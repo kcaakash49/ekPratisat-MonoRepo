@@ -358,6 +358,7 @@ export default function AdminPropertyDetailComponent() {
                 <span className="uppercase tracking-wide text-xs bg-secondary-100 dark:bg-secondary-800 px-2 py-0.5 rounded-md font-bold text-secondary-700 dark:text-secondary-300">
                   {property.type}
                 </span>
+                <span className="uppercase tracking-wide text-xs bg-secondary-100 dark:bg-secondary-800 px-2 py-0.5 rounded-md font-bold text-secondary-700 dark:text-secondary-300">{property.negotiable ? "Negotiable" : "Not Negotiable"}</span>
               </p>
             </div>
           </div>

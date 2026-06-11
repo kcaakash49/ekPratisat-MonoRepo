@@ -21,6 +21,8 @@ import { revalidateTagPathAction } from "../../../../actions/revalidateAction";
         noOfRestRooms: "",
         landArea: "",
         noOfFloors: "",
+        negotiable: false,
+        features:null,
         propertyAge: "",
         facingDirection: "east",
         floorArea: "",

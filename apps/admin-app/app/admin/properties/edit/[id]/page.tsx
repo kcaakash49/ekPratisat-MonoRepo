@@ -43,6 +43,8 @@ export default function EditPropertyPage() {
         districtId: property.location.municipality.district.id,
         municipalityId: property.location.municipality.id,
         locationId: property.location.id,
+        negotiable:property.negotiable,
+        features:property.features,
         price: property.price,
         tole: property.tole,
         lat: property.lat,

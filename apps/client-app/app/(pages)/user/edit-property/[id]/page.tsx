@@ -59,6 +59,8 @@ export default function EditPropertyPage() {
         tole: property.tole,
         lat: property.lat,
         lng: property.lng,
+        features:property.features,
+        negotiable:property.negotiable,
         noOfBedRooms: property.noOfBedRooms ? property.noOfBedRooms : "",
         noOfRestRooms: property.noOfRestRooms ? property.noOfRestRooms : "",
         landArea: property.landArea ? property.landArea : "",

@@ -528,6 +528,7 @@ export async function updateProperty(req: Request, res: Response) {
       lng: normalized.lng ? Number(normalized.lng) : null,
       // verified: user.role === "admin" && normalized.verified === "true",
       verified: normalized.verified === "true",
+      negotiable: normalized.negotiable === "true",
       deleteImageIds,
       propertyId: id,
     };
