@@ -206,7 +206,7 @@ export default function AdminPropertyDetailComponent() {
       )}
 
       {/* ---------------- ADMIN MANAGEMENT BAR ---------------- */}
-      <div className="max-w-7xl bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-800 p-4 rounded-2xl shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="max-w-[1400px] bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-800 p-4 rounded-2xl shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-primary-50 dark:bg-primary-950/30 text-primary-600 dark:text-primary-400 rounded-xl">
             <LandPlot className="w-5 h-5" />
