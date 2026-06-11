@@ -292,6 +292,7 @@ enum LeadStatus {
 
 model Lead {
   id          String     @unique @default(uuid())
+  leadCode    Int @unique @default(autoincrement())
   name        String?
   contact     String
   email       String?
