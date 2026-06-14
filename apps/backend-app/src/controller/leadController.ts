@@ -39,7 +39,7 @@ export const addLead = async (req: Request, res: Response) => {
     const result = await createLead({
       body: req.body,
       file: adaptedFile,
-      user
+      user,
     });
 
     return res
@@ -60,11 +60,6 @@ export const addLead = async (req: Request, res: Response) => {
 
 export const getLeads = async (req: Request, res: Response) => {
   try {
-    // 1. Extract and sanitize query parameters with defensive fallbacks
-    console.log(
-      "I am in the getLeads controller with query params:",
-      req.query,
-    );
     const q = (req.query.q as string)?.trim() || "";
     const statusFilter = (req.query.status as string)?.toUpperCase() || "ALL";
     const dealType = (req.query.dealType as string)?.toLowerCase() || "ALL";
@@ -78,7 +73,6 @@ export const getLeads = async (req: Request, res: Response) => {
     const skip = (page - 1) * limit;
 
     // 2. Build the dynamic database WHERE filter payload
-    
 
     const VALID_LEAD_STATUSES = [
       "NEW",
@@ -95,28 +89,35 @@ export const getLeads = async (req: Request, res: Response) => {
     const validDealTypes = ["buy", "rent", "sell"] as const;
     const validClientType = ["BUYER", "SELLER"] as const;
 
-    const finalDealType = (validDealTypes as readonly string[]).includes(dealType)
+    const finalDealType = (validDealTypes as readonly string[]).includes(
+      dealType,
+    )
       ? dealType
       : undefined;
-    const finalClientType = (validClientType as readonly string[]).includes(clientType)
+    const finalClientType = (validClientType as readonly string[]).includes(
+      clientType,
+    )
       ? clientType
       : undefined;
-    const finalStatus = (VALID_LEAD_STATUSES as readonly string[]).includes(statusFilter) ? statusFilter : undefined;
+    const finalStatus = (VALID_LEAD_STATUSES as readonly string[]).includes(
+      statusFilter,
+    )
+      ? statusFilter
+      : undefined;
 
     const whereClause = {
       ...(q && {
         OR: [
           { name: { contains: q, mode: "insensitive" as const } },
           { contact: { contains: q, mode: "insensitive" as const } },
-          { email: { contains: q, mode: "insensitive" as const} },
+          { email: { contains: q, mode: "insensitive" as const } },
           { source: { contains: q, mode: "insensitive" } as const },
         ],
       }),
-      ...(finalDealType && {dealType: finalDealType}),
-      ...(finalClientType && {clientType:finalClientType}),
-      ...(finalStatus && {status: finalStatus})
+      ...(finalDealType && { dealType: finalDealType }),
+      ...(finalClientType && { clientType: finalClientType }),
+      ...(finalStatus && { status: finalStatus }),
     };
-
 
     // 3. Execute queries concurrently using a Promise transaction to optimize execution time
     const [leads, totalRecords] = await prisma.$transaction([
@@ -130,7 +131,7 @@ export const getLeads = async (req: Request, res: Response) => {
           managedBy: { select: { name: true, email: true } },
         },
       }),
-      prisma.lead.count({ where: whereClause as any}),
+      prisma.lead.count({ where: whereClause as any }),
     ]);
 
     // 4. Calculate total pages for UI button handling limits
@@ -143,9 +144,9 @@ export const getLeads = async (req: Request, res: Response) => {
       meta: {
         total: totalRecords,
         page,
-        pageSize:limit,
-        totalPages
-      }
+        pageSize: limit,
+        totalPages,
+      },
     });
   } catch (error: any) {
     console.error("Error inside getLeads controller pipeline:", error);
@@ -158,8 +159,7 @@ export const getLeads = async (req: Request, res: Response) => {
   }
 };
 
-
-export async function getLeadById(req:Request, res:Response){
+export async function getLeadById(req: Request, res: Response) {
   try {
     const { id } = req.params;
 
@@ -168,75 +168,79 @@ export async function getLeadById(req:Request, res:Response){
     }
 
     const result = await prisma.lead.findUnique({
-      where: {id},
+      where: { id },
       include: {
-        managedBy: {select : {name:true, email:true}},
-        updatedBy: {select: {name:true, email:true}}
+        managedBy: { select: { name: true, email: true } },
+        updatedBy: { select: { name: true, email: true } },
       },
-    })
+    });
 
-    if(!result) {
+    if (!result) {
       return res.status(404).json({
-        message: "No lead for the id found!!!"
-      })
+        message: "No lead for the id found!!!",
+      });
     }
 
     return res.status(200).json({
-      ok:true,
-      result
-    })
-
+      ok: true,
+      result,
+    });
   } catch (error) {
-      if (error instanceof AppError) {
-        return res.status(error.status).json({
-          message:error.message
-        })
-      }
-      return res.status(500).json({
-        message: "Couldn't fetch lead data"
-      })
+    if (error instanceof AppError) {
+      return res.status(error.status).json({
+        message: error.message,
+      });
+    }
+    return res.status(500).json({
+      message: "Couldn't fetch lead data",
+    });
   }
 }
 
-export async function updateLeadStatus(req:Request,res:Response){
+export async function updateLeadStatus(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const user = req.user;
-    const { status, remarks,followUpAt } = req.body;
+    const { status, remarks, followUpAt } = req.body;
 
-    if(!id || Array.isArray(id)) {
-      throw new AppError(400,"Invalid Lead Id")
+    if (!id || Array.isArray(id)) {
+      throw new AppError(400, "Invalid Lead Id");
     }
-    
+
     const checkExistingStatus = await prisma.lead.findUnique({
-      where: {id}
-    })
+      where: { id },
+    });
 
     if (!checkExistingStatus) {
       return res.status(404).json({ message: "Lead record not found." });
     }
 
-    if(checkExistingStatus?.status === "WON" || checkExistingStatus?.status === "LOST") {
+    if (
+      checkExistingStatus?.status === "WON" ||
+      checkExistingStatus?.status === "LOST"
+    ) {
       return res.status(400).json({
-        message: "Lead is already Closed and locked down."
-      })
+        message: "Lead is already Closed and locked down.",
+      });
     }
 
-    if(status === "FOLLOW_UP" && !followUpAt) {
+    if (status === "FOLLOW_UP" && !followUpAt) {
       return res.status(400).json({
-        message:"Follow Up status updates require an explicitly set follow-up time. status should have followup time aswell"
-      })
+        message:
+          "Follow Up status updates require an explicitly set follow-up time. status should have followup time aswell",
+      });
     }
 
-    if((status === "WON" || status === "LOST") && !remarks.trim()) {
+    if ((status === "WON" || status === "LOST") && !remarks.trim()) {
       return res.status(400).json({
-        message:"WON and LOST statuses mean a lead is closed; audit remarks are strictly mandatory!"
-      })
+        message:
+          "WON and LOST statuses mean a lead is closed; audit remarks are strictly mandatory!",
+      });
     }
 
-   const updateData: any = {
+    const updateData: any = {
       status: status,
-      updatedById: user.id
+      updatedById: user.id,
     };
 
     // Only touch remarks if provided in request, or if forcing a terminal state
@@ -252,140 +256,329 @@ export async function updateLeadStatus(req:Request,res:Response){
       updateData.followUpAt = null;
     }
 
-    // Execute database pipeline patch
-    await (prisma.lead.update as any)({
-      where: { id },
-      data: updateData
+    const result = await prisma.$transaction(async (tx) => {
+      const lead = await (tx.lead.update as any)({
+        where: { id },
+        data: updateData,
+      });
+
+      if (user.role === "staff") {
+        const admins = await tx.user.findMany({
+          where: { role: "admin" },
+          select: { id: true, name: true },
+        });
+
+        await tx.notificationEvent.create({
+          data: {
+            senderId: user.id,
+            title: `Lead Status updated from ${checkExistingStatus.status} to ${lead.status}`,
+            body: `${user.name} updated status to ${lead.status}`,
+            link: `/admin/leads/${lead.id}`,
+            recipients: {
+              create: admins.map((admin) => ({
+                recipientId: admin.id,
+              })),
+            },
+          },
+        });
+      }
+
+      if (user.role === "admin") {
+        const otherAdmins = await tx.user.findMany({
+          where: {
+            role: "admin",
+            id: { not: user.id },
+          },
+          select: { id: true },
+        });
+
+        const recipientSet = new Set<string>(
+          otherAdmins.map((admin) => admin.id),
+        );
+
+        if (lead.managedById && lead.managedById !== user.id) {
+          recipientSet.add(lead.managedById);
+        }
+
+        const recipientIds = Array.from(recipientSet);
+
+        // 4. Fire the single insert transaction query
+        await tx.notificationEvent.create({
+          data: {
+            senderId: user.id,
+            title: `Lead Adjusted by ${user.name}`,
+            body: `Admin ${user.name} changed lead status from ${checkExistingStatus.status} to ${lead.status}`,
+            link: `/admin/leads/${lead.id}`,
+            recipients: {
+              create: recipientIds.map((id) => ({
+                recipientId: id,
+              })),
+            },
+          },
+        });
+      }
+      return true;
     });
 
     return res.status(200).json({
-      ok:true,
-      message:"Status Update Succesfully!!!"
-    })
+      ok: true,
+      message: "Status Update Succesfully!!!",
+    });
   } catch (error) {
-      if (error instanceof AppError) {
-        return res.status(error.status).json({
-          message: error.message
-        })
-      }
+    if (error instanceof AppError) {
+      return res.status(error.status).json({
+        message: error.message,
+      });
+    }
 
-      return res.status(500).json({
-        message: "Server couldn't update status, so try again later"
-      })
+    return res.status(500).json({
+      message: "Server couldn't update status, so try again later",
+    });
   }
 }
 
-
-export async function updateFollowUpTime(req:Request,res:Response){
+export async function updateFollowUpTime(req: Request, res: Response) {
   try {
     const user = req.user;
-    const {followUpAt} = req.body;
-    const {id} = req.params;
-    if(!id || Array.isArray(id)) {
-      throw new AppError(400,"Invalid Lead Id")
+    const { followUpAt } = req.body;
+    const { id } = req.params;
+    if (!id || Array.isArray(id)) {
+      throw new AppError(400, "Invalid Lead Id");
     }
 
     const checkExistingStatus = await prisma.lead.findUnique({
-      where: {id}
-    })
+      where: { id },
+    });
 
     if (!checkExistingStatus) {
       return res.status(404).json({ message: "Lead record not found." });
     }
 
-    if(checkExistingStatus?.status === "WON" || checkExistingStatus?.status === "LOST") {
+    if (
+      checkExistingStatus?.status === "WON" ||
+      checkExistingStatus?.status === "LOST"
+    ) {
       return res.status(400).json({
-        message: "Lead is already Closed and locked down."
-      })
+        message: "Lead is already Closed and locked down.",
+      });
     }
 
-    if(checkExistingStatus.status === "NEW"){
+    if (checkExistingStatus.status === "NEW") {
       return res.status(400).json({
-        message: "Lead stauts is NEW so change status to update follow-up time!!!"
-      })
+        message:
+          "Lead stauts is NEW so change status to update follow-up time!!!",
+      });
     }
 
-    await prisma.lead.update({
-      where: {id},
-      data: {
-        followUpAt,
-        updatedById:user.id
+    const result = await prisma.$transaction(async (tx) => {
+      const lead = await tx.lead.update({
+        where: { id },
+        data: {
+          followUpAt,
+          updatedById: user.id,
+        },
+      });
+
+      if (user.role === "staff") {
+        // 1. Fetch all admin users
+        const admins = await tx.user.findMany({
+          where: { role: "admin" },
+          select: { id: true, name: true },
+        });
+
+        // 2. Create the unified event and distribute it instantly to all admins
+        await tx.notificationEvent.create({
+          data: {
+            senderId: user.id,
+            title: `Follow up time updated by ${user.name}`,
+            body: `${user.name} updated followUp time to ${lead.followUpAt}`,
+            link: `/admin/leads/${lead.id}`,
+
+            // Connect everyone dynamically via relational mapping
+            recipients: {
+              create: admins.map((admin) => ({
+                recipientId: admin.id,
+              })),
+            },
+          },
+        });
       }
-    })
+
+      if (user.role === "admin") {
+        const otherAdmins = await tx.user.findMany({
+          where: {
+            role: "admin",
+            id: { not: user.id },
+          },
+          select: { id: true },
+        });
+
+        const recipientSet = new Set<string>(
+          otherAdmins.map((admin) => admin.id),
+        );
+
+        // ✅ FIX: Only alert the handler if they exist AND they aren't the one who created this lead entry record
+        if (lead.managedById && lead.managedById !== user.id) {
+          recipientSet.add(lead.managedById);
+        }
+
+        const recipientIds = Array.from(recipientSet);
+
+        // 4. Fire the single insert transaction query
+        await tx.notificationEvent.create({
+          data: {
+            senderId: user.id,
+            title: `Lead Adjusted by ${user.name}`,
+            body: `Admin ${user.name} updated follow up time to: ${lead.followUpAt}`,
+            link: `/admin/leads/${lead.id}`,
+            recipients: {
+              create: recipientIds.map((id) => ({
+                recipientId: id,
+              })),
+            },
+          },
+        });
+      }
+      return true;
+    });
 
     return res.status(200).json({
-      ok:true,
-      message:"Follow-up Time updated succesfully!!!"
-    })
-    
+      ok: true,
+      message: "Follow-up Time updated succesfully!!!",
+    });
   } catch (error) {
     return res.status(500).json({
-        message: "Server couldn't process your request, so try again later"
-      })
+      message: "Server couldn't process your request, so try again later",
+    });
   }
 }
 
-
-export async function updateLeadBasicInformation(req:Request, res:Response){
+export async function updateLeadBasicInformation(req: Request, res: Response) {
   try {
     console.log("Body", req.body);
-    const {id} = req.params;
+    const { id } = req.params;
     const user = req.user;
-    const {name,email,coordinates,notes} = req.body;
+    const { name, email, coordinates, notes } = req.body;
 
     const parsedData = UpdateLeadSchema.safeParse(req.body);
 
-    if (!parsedData.success){
-      throw new AppError(412,"Input validation failed");
+    if (!parsedData.success) {
+      throw new AppError(412, "Input validation failed");
     }
 
-    if(!id || Array.isArray(id)) {
-      throw new AppError(400,"Invalid Lead Id")
+    if (!id || Array.isArray(id)) {
+      throw new AppError(400, "Invalid Lead Id");
     }
 
     const checkExistingStatus = await prisma.lead.findUnique({
-      where: {id}
-    })
+      where: { id },
+    });
 
     if (!checkExistingStatus) {
       return res.status(404).json({ message: "Lead record not found." });
     }
 
-    if(checkExistingStatus?.status === "WON" || checkExistingStatus?.status === "LOST") {
+    if (
+      checkExistingStatus?.status === "WON" ||
+      checkExistingStatus?.status === "LOST"
+    ) {
       return res.status(400).json({
-        message: "Lead is already Closed and locked down."
-      })
+        message: "Lead is already Closed and locked down.",
+      });
     }
 
     const data = parsedData.data;
 
-    console.log("Data in update", data);
+    const result = await prisma.$transaction(async (tx) => {
+      const lead = await tx.lead.update({
+        where: { id },
+        data: {
+          name: data.name ?? null,
+          email: data.email ?? null,
+          coordinates: data.coordinates ?? null,
+          notes:
+            data.notes && Object.keys(data.notes).length > 0
+              ? data.notes
+              : null,
+        },
+      });
+      if (user.role === "staff") {
+        // 1. Fetch all admin users
+        const admins = await tx.user.findMany({
+          where: { role: "admin" },
+          select: { id: true, name: true },
+        });
 
-    await prisma.lead.update({
-      where: {id},
-      data: {
-        name:data.name ?? null,
-        email:data.email ?? null,
-        coordinates: data.coordinates ?? null,
-        notes: (data.notes && Object.keys(data.notes).length > 0) ? data.notes : null
+        // 2. Create the unified event and distribute it instantly to all admins
+        await tx.notificationEvent.create({
+          data: {
+            senderId: user.id,
+            title: `Lead basic information updated by ${user.name}`,
+            body: `${user.name} changed basic information for ${lead.leadCode}`,
+            link: `/admin/leads/${lead.id}`,
+
+            // Connect everyone dynamically via relational mapping
+            recipients: {
+              create: admins.map((admin) => ({
+                recipientId: admin.id,
+              })),
+            },
+          },
+        });
       }
-    })
+
+      if (user.role === "admin") {
+        const otherAdmins = await tx.user.findMany({
+          where: {
+            role: "admin",
+            id: { not: user.id },
+          },
+          select: { id: true },
+        });
+
+        const recipientSet = new Set<string>(
+          otherAdmins.map((admin) => admin.id),
+        );
+
+        // ✅ FIX: Only alert the handler if they exist AND they aren't the one who created this lead entry record
+        if (lead.managedById && lead.managedById !== user.id) {
+          recipientSet.add(lead.managedById);
+        }
+
+        const recipientIds = Array.from(recipientSet);
+
+        // 4. Fire the single insert transaction query
+        await tx.notificationEvent.create({
+          data: {
+            senderId: user.id,
+            title: `Lead Adjusted by ${user.name}`,
+            body: `Admin ${user.name} updated basic info for lead: LC-${lead.leadCode}`,
+            link: `/admin/leads/${lead.id}`,
+            recipients: {
+              create: recipientIds.map((id) => ({
+                recipientId: id,
+              })),
+            },
+          },
+        });
+      }
+      return true;
+    });
+
+    
 
     return res.status(200).json({
-      ok:true,
-      message:"Information Updated Successfully"
-    })
-
-
+      ok: true,
+      message: "Information Updated Successfully",
+    });
   } catch (error) {
-    if(error instanceof AppError){
+    if (error instanceof AppError) {
       return res.status(error.status).json({
-        message:error.message
-      })
+        message: error.message,
+      });
     }
     return res.status(500).json({
-        message: "Server couldn't process your request, so try again later"
-      })
+      message: "Server couldn't process your request, so try again later",
+    });
   }
 }
-

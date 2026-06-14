@@ -142,6 +142,7 @@ export default function UpdateBasicInfo({ leadId, name, email, coordinates, note
                 queryClient.invalidateQueries({
                     queryKey:["lead-detail", leadId ]
                 })
+                setOpen(false);
             }
         })
 
