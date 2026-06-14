@@ -1,9 +1,10 @@
 import { authenticatedFetch } from "@repo/shared-provider";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+
 export const useMarkAllRead = () => {
-    return useMutation({
+  return useMutation({
     mutationFn: async () => {
       return authenticatedFetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/notifications/mark-all-read`,
@@ -16,12 +17,12 @@ export const useMarkAllRead = () => {
       toast.error(error.message || "Operation Failed!!!");
     },
   });
-}
-
+};
 
 export const useMarkread = () => {
-    return useMutation({
-    mutationFn: async (id:string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
       return authenticatedFetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/notifications/mark-read/${id}`,
         {
@@ -29,8 +30,12 @@ export const useMarkread = () => {
         },
       );
     },
+    onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["notifications"] });
+        queryClient.invalidateQueries({ queryKey: ["user-info"] });
+      },
     onError: (error) => {
       toast.error(error.message || "Operation Failed!!!");
     },
   });
-}
+};

@@ -19,8 +19,6 @@ export default function NotificationPage(){
         return <div className="min-h-screen flex items-center justify-center text-red-500">{error.message}</div>
       }
 
-      console.log(data);
-
       return (
         <>
             <NotificationRenderList notifications={data.result}/>

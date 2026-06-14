@@ -33,15 +33,7 @@ export default function NotificationRenderList({ notifications = [] }: Notificat
   // ⚡ The Asynchronous Action Handler
   const handleNotificationAction = (id: string, targetLink: string, e: React.MouseEvent) => {
     e.preventDefault();
-    markRead(id, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["notifications"] });
-        queryClient.invalidateQueries({ queryKey: ["user-info"] });
-      },
-      onError: (err) => {
-        console.error("Background notification update failed:", err);
-      }
-    });
+    markRead(id);
 
     router.push(targetLink);
   };
@@ -50,8 +42,6 @@ export default function NotificationRenderList({ notifications = [] }: Notificat
     markRead(id, {
       onSuccess: (data) => {
         toast.success(data.message || "Operation Successful");
-        queryClient.invalidateQueries({ queryKey: ["notifications"] });
-        queryClient.invalidateQueries({ queryKey: ["user-info"] });
       }
     });
   };
@@ -71,6 +61,7 @@ export default function NotificationRenderList({ notifications = [] }: Notificat
   return (
     <div className="max-w-7xl px-4 py-8 space-y-6">
       
+      {/* Module Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-secondary-200 dark:border-secondary-800 pb-5">
         <div>
           <h1 className="text-2xl font-bold text-secondary-900 dark:text-secondary-50 flex items-center gap-2">
