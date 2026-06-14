@@ -10,6 +10,7 @@ import staffRouter from './routes/staffRoute.js';
 import userRouter from './routes/userRoute.js';
 import testRouter from './routes/testRouter.js';
 import leadRouter from './routes/leadRoute.js';
+import notificationRouter from './routes/notificationRoute.js';
 
 // dotenv.config();
 
@@ -60,6 +61,7 @@ app.use("/staff", staffRouter);
 app.use("/users", userRouter);
 app.use("/test", testRouter);
 app.use("/lead", leadRouter);
+app.use("/notifications", notificationRouter);
 
 
 app.listen(PORT, () => {

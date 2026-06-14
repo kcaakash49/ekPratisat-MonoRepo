@@ -263,6 +263,20 @@ export const myInfo = async (req: Request, res: Response) => {
 
     const checkUser = await prisma.user.findUnique({
       where: { id: payload.userId },
+      select: {
+        id:true,
+        name:true,
+        role:true,
+        profileImageUrl:true,
+        isActive: true,
+        _count: {
+          select: {
+            notificationReceive: {
+              where: {isRead: false}
+            }
+          }
+        }
+      }
     });
     if (!checkUser || !checkUser.isActive) {
       res.clearCookie("accessToken", {
@@ -288,6 +302,7 @@ export const myInfo = async (req: Request, res: Response) => {
         role: checkUser.role,
         name: checkUser.name,
         profileImageUrl: checkUser.profileImageUrl,
+        notification: checkUser._count.notificationReceive
       },
     });
   } catch (err) {

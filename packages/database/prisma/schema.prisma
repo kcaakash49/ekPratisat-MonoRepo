@@ -52,6 +52,8 @@ model User {
   favourites          Favourite[]
   leadsManaged               Lead[] @relation("LeadsManagedBy")
   leadsUpdated        Lead[]          @relation("LeadUpdatedBy")
+  notificationEvents  NotificationEvent[]
+  notificationReceive NotificationRecipient[]
 
   @@index([role])
   @@index([contact])
@@ -313,4 +315,31 @@ model Lead {
   updatedById String?
   updatedBy   User?      @relation("LeadUpdatedBy", fields: [updatedById], references: [id])
   remarks     String?
+}
+
+
+model NotificationEvent {
+  id          String   @id @default(uuid())
+  senderId    String   
+  title       String   
+  body        String
+  link        String?  
+  createdAt   DateTime @default(now())
+
+  // Relations
+  sender      User     @relation(fields: [senderId], references: [id])
+  recipients  NotificationRecipient[]
+}
+
+model NotificationRecipient {
+  id                  String   @id @default(uuid())
+  notificationEventId String
+  recipientId         String   
+  isDelivered         Boolean  @default(false)
+  isRead              Boolean  @default(false)
+  readAt              DateTime?
+  event               NotificationEvent @relation(fields: [notificationEventId], references: [id], onDelete: Cascade)
+  recipient           User              @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@unique([notificationEventId, recipientId]) // Guarantees a user doesn't get the same notification twice
 }

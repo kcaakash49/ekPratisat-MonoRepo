@@ -31,6 +31,7 @@ import UpdateBasicInfo from "../../../../components/lead/UpdateBasicInfo";
 export default function LeadDetailPage() {
     const params = useParams();
     const { data, isLoading, isError, error } = useGetLeadById(params.id as string);
+    console.log(params.id as string);
 
     if (isLoading) {
         return (

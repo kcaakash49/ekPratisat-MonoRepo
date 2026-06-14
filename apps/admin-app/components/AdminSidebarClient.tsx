@@ -9,7 +9,7 @@ import { useUser } from "@repo/query-hook";
 import { useQueryClient } from "@tanstack/react-query";
 
 const navSections = [
-  { name: "Dashboard", path: "/admin/dashboard", accessibleRoles: ["admin"] },
+  { name: "Dashboard", path: "/admin/dashboard", accessibleRoles: ["admin","staff"] },
   { name: "Users", path: "/admin/users", accessibleRoles: ["admin"] },
   { name: "Properties", path: "/admin/properties", accessibleRoles: ["admin", "staff"] },
   { name: "Leads", path: "/admin/leads", accessibleRoles: ["admin", "staff"] },
@@ -35,11 +35,12 @@ export default function AdminSidebarClient() {
   if (isLoading || !mounted) {
     return null; // or a loading spinner
   }
+
+  console.log(user);
   const isSectionActive = (children: { path: string }[]) => {
     return children.some(child => pathname === child.path);
   };
   const userRole = user?.role?.toLowerCase();
-  console.log("User Role in Sidebar:", userRole);
 
   // Helper to check if a user has permission for a specific item
   const hasAccess = (accessibleRoles: string[]) => {
@@ -118,6 +119,31 @@ export default function AdminSidebarClient() {
         </h2>
 
         <div className="flex flex-col space-y-2 text-sm sm:text-base">
+          <Link
+            href="/admin/notifications"
+            className={`inline-flex items-center relative px-4 py-3 rounded-lg transition-all duration-200 ${pathname === "/admin/notifications"
+                ? "bg-primary-500 text-white shadow-sm"
+                : "text-secondary-700 dark:text-secondary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 dark:hover:text-primary-400"
+              }`}
+          >
+            {/* The Base Text Container */}
+            <span className="relative">
+              Notifications
+
+              {/* 🔥 Move conditional check here: Floating Messenger-style Badge only shows if > 0 */}
+              {user.notification > 0 && (
+                <span
+                  className={`absolute -top-2 -right-4 inline-flex items-center justify-center h-4 min-w-[16px] px-1 text-[10px] font-black rounded-full shadow-sm animate-bounce ring-2 ${pathname === "/admin/notifications"
+                      ? "bg-white text-primary-500 ring-primary-500" // Inverts to stand out on the blue button
+                      : "bg-red-500 text-white ring-white dark:ring-secondary-900" // Traditional vibrant alert color
+                    }`}
+                  style={{ animationDuration: '2s' }} // Smoother, non-distracting bounce speed
+                >
+                  {user.notification > 99 ? "99+" : user.notification}
+                </span>
+              )}
+            </span>
+          </Link>
           {filteredSections.map((section) =>
           (
             <Link
@@ -154,7 +180,7 @@ export default function AdminSidebarClient() {
           >
             Log Out
           </button>
-         
+
         </div>
       </nav>
     </>

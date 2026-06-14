@@ -9,8 +9,6 @@ export const checkAuthentication = async (
   next: NextFunction,
 ) => {
   let token: string | undefined;
-  console.log("Middleware called.......from checkAuthentication")
-  // 1️⃣ Try Authorization header (mobile)
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith("Bearer")) {
     token = authHeader.split(" ")[1];
@@ -34,7 +32,6 @@ export const checkAuthentication = async (
       where: { id: payload.userId },
     });
     if (!checkUser || !checkUser.isActive) {
-      console.log("USer is not active")
       res.clearCookie("accessToken", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -50,7 +47,7 @@ export const checkAuthentication = async (
         message: "Account is Deactivated!!!",
       });
     }
-    req.user = { id: payload.userId, role: payload.role };
+    req.user = { id: payload.userId, role: payload.role, name: payload.name };
     next();
   } catch (err) {
     return res.status(401).json({

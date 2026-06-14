@@ -39,6 +39,7 @@ export const addLead = async (req: Request, res: Response) => {
     const result = await createLead({
       body: req.body,
       file: adaptedFile,
+      user
     });
 
     return res
@@ -173,6 +174,12 @@ export async function getLeadById(req:Request, res:Response){
         updatedBy: {select: {name:true, email:true}}
       },
     })
+
+    if(!result) {
+      return res.status(404).json({
+        message: "No lead for the id found!!!"
+      })
+    }
 
     return res.status(200).json({
       ok:true,
@@ -381,3 +388,4 @@ export async function updateLeadBasicInformation(req:Request, res:Response){
       })
   }
 }
+

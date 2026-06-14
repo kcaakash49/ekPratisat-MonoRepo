@@ -51,7 +51,6 @@ export const useUser = () => {
   return useQuery({
     queryKey: ["user-info"],
     queryFn: async () => {
-      console.log("Fetching user info...");
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/my-info`,
         { credentials: "include" },
