@@ -36,7 +36,7 @@ export default function AdminSidebarClient() {
     return null; // or a loading spinner
   }
 
-  console.log(user);
+  
   const isSectionActive = (children: { path: string }[]) => {
     return children.some(child => pathname === child.path);
   };

@@ -203,6 +203,23 @@ export async function updateLeadStatus(req: Request, res: Response) {
     const user = req.user;
     const { status, remarks, followUpAt } = req.body;
 
+    const allowedStatuses = [
+      "CONTACTED",
+      "INTERESTED",
+      "NOT_INTERESTED",
+      "FOLLOW_UP",
+      "IN_PROGRESS",
+      "IN_NEGOTIATION",
+      "WON",
+      "LOST",
+    ];
+
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({
+        message: "Invalid lead status",
+      });
+    }
+
     if (!id || Array.isArray(id)) {
       throw new AppError(400, "Invalid Lead Id");
     }
@@ -215,6 +232,12 @@ export async function updateLeadStatus(req: Request, res: Response) {
       return res.status(404).json({ message: "Lead record not found." });
     }
 
+    if (checkExistingStatus.status === status) {
+      return res.status(400).json({
+        message: "Lead is already in this status",
+      });
+    }
+
     if (
       checkExistingStatus?.status === "WON" ||
       checkExistingStatus?.status === "LOST"
@@ -224,14 +247,13 @@ export async function updateLeadStatus(req: Request, res: Response) {
       });
     }
 
-    if (status === "FOLLOW_UP" && !followUpAt) {
+    if (status !== "WON" && status !== "LOST" && !followUpAt) {
       return res.status(400).json({
-        message:
-          "Follow Up status updates require an explicitly set follow-up time. status should have followup time aswell",
+        message: ` ${status} updates require an explicitly set follow-up time. status should have followup time aswell`,
       });
     }
 
-    if ((status === "WON" || status === "LOST") && !remarks.trim()) {
+    if ((status === "WON" || status === "LOST") && !remarks?.trim()) {
       return res.status(400).json({
         message:
           "WON and LOST statuses mean a lead is closed; audit remarks are strictly mandatory!",
@@ -250,8 +272,15 @@ export async function updateLeadStatus(req: Request, res: Response) {
 
     // Only update follow-up alarm time if provided, or if moving away from a follow-up stage
     if (followUpAt !== undefined) {
-      updateData.followUpAt = followUpAt ? new Date(followUpAt) : null;
-    } else if (status === "WON" || status === "LOST" || status === "NEW") {
+      const parsedFollowUpAt = followUpAt ? new Date(followUpAt) : null;
+
+      if (parsedFollowUpAt && isNaN(parsedFollowUpAt.getTime())) {
+        return res.status(400).json({
+          message: "Invalid follow up date",
+        });
+      }
+      updateData.followUpAt = parsedFollowUpAt;
+    } else if (status === "WON" || status === "LOST") {
       // Clean up past stale follow-up alarms automatically when deal reaches its end
       updateData.followUpAt = null;
     }
@@ -564,8 +593,6 @@ export async function updateLeadBasicInformation(req: Request, res: Response) {
       }
       return true;
     });
-
-    
 
     return res.status(200).json({
       ok: true,

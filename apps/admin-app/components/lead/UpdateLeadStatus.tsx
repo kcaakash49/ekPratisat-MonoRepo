@@ -90,8 +90,6 @@ export default function UpdateLeadStatus({ lead }: { lead: LeadDetailType }) {
             payload.followUpAt = followUpAt;
         }
 
-        console.log(payload);
-
         mutate(payload, {
             onSuccess: (data) => {
                 toast.success(data.message || "Operation Successful!!!");

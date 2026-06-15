@@ -25,7 +25,6 @@ const generateConfirmationText = () => {
 };
 
 export default function UpdateFollowUpTime({ followUpAt, id, status }: Props) {
-    console.log("Follow-up",followUpAt)
     const [open, setOpen] = useState(false);
     const [confirmationText, setConfirmationText] = useState("");
     const [followUp, setFollowUp] = useState<Date | null>(

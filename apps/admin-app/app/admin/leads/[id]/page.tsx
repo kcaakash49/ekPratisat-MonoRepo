@@ -27,11 +27,11 @@ import {
 import UpdateLeadStatus from "../../../../components/lead/UpdateLeadStatus";
 import UpdateFollowUpTime from "../../../../components/lead/ChangeFollowUptime";
 import UpdateBasicInfo from "../../../../components/lead/UpdateBasicInfo";
+import LeadStatusUpdate from "../../../../components/lead/LeadStatusUpdate";
 
 export default function LeadDetailPage() {
     const params = useParams();
     const { data, isLoading, isError, error } = useGetLeadById(params.id as string);
-    console.log(params.id as string);
 
     if (isLoading) {
         return (
@@ -89,7 +89,8 @@ export default function LeadDetailPage() {
 
                 <div className="flex flex-wrap items-center gap-2 border-t pt-3 lg:border-t-0 lg:pt-0">
                     
-                    <UpdateLeadStatus lead={lead}/>
+                    {/* <UpdateLeadStatus lead={lead}/> */}
+                    <LeadStatusUpdate lead={lead}/>
                     <UpdateFollowUpTime followUpAt={lead.followUpAt} id={lead.id} status={lead.status}/>
                     <UpdateBasicInfo leadId={lead.id} name={lead.name} email={lead.email} coordinates={lead.coordinates} notes={lead.notes} status={lead.status}/>
 
