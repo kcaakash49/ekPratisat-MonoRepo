@@ -118,3 +118,29 @@ export async function getUsers(req: Request, res: Response) {
 }
 
 
+export async function getAdminOrStaff(req: Request, res: Response) {
+  console.log("Getting admin and staff information");
+  try {
+    const result = await prisma.user.findMany({
+      where: {
+        OR: [
+          { role: "admin" },
+          { role: "staff" },
+        ],
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    return res.status(200).json({
+      users: result,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: "Failed to fetch users",
+    });
+  }
+}

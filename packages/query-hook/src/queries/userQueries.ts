@@ -114,3 +114,20 @@ export const useGetAllUsers = ({ page = 1, q = "", pageSize = 20, isVerified = "
     retry: 1,
   });
 };
+
+export const useGetAdminStaff = (open:boolean) => {
+  return useQuery({
+    queryKey:["admin-staff"],
+    queryFn: async () => {
+            return authenticatedFetch(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/get-admin-staff`,
+                {method: "GET"}
+            )
+        },
+        staleTime:5 * 60 * 1000,
+        retry:1,
+        retryDelay:2000,
+        refetchOnWindowFocus:true,
+        enabled:open
+  })
+}

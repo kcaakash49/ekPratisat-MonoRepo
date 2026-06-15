@@ -43,7 +43,6 @@ const generateConfirmationText = () => {
 };
 
 export default function BasicInfoUpdate({ leadId, name, email, coordinates, notes, status }: LeadProps) {
-    console.log(!name,email,coordinates,notes);
     const [open, setOpen] = useState(false);
     const [confirmationText, setConfirmationText] = useState("");
     const [form, setForm] = useState({
@@ -146,23 +145,6 @@ export default function BasicInfoUpdate({ leadId, name, email, coordinates, note
             payload.notes = JSON.stringify(finalNoteObject);
         }
 
-
-        console.log(payload);
-        // const payload: PayloadType = {};
-
-        // if (newName.trim() !== "") {
-        //     payload.name = newName.trim();
-        // }
-
-        // if (newEmail.trim() !== "") {
-        //     payload.email = newEmail.trim();
-        // }
-
-        // if (newCoordinates.trim() !== "") {
-        //     payload.coordinates = newCoordinates.trim();
-        // }
-
-        // payload.notes = finalNoteObject;
         mutate(payload, {
             onSuccess: (data) => {
                 toast.success(data.message || "Operation Success!!!")

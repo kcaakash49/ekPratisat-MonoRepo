@@ -366,7 +366,6 @@ export async function fetchUserFavourites(req: Request, res: Response) {
 export async function getAllProperties(req: Request, res: Response) {
   try {
     const queries = req.query;
-    console.log("queries", queries);
     const page = Math.max(1, Number(queries.page || 1));
     const pageSize = Math.min(100, Math.max(1, Number(queries.pageSize || 20)));
 

@@ -1,6 +1,6 @@
 
 import { Router } from "express";
-import { addLead, getLeadById, getLeads, updateFollowUpTime, updateLeadBasicInformation, updateLeadStatus } from "../controller/leadController.js";
+import { addLead, changeHandler, getLeadById, getLeads, updateFollowUpTime, updateLeadBasicInformation, updateLeadStatus } from "../controller/leadController.js";
 import { checkAuthentication, requireAdminOrStaff } from "../middleware/checkAuthentication.js";
 import { uploadUserFiles } from "../middleware/userUpload.js";
 
@@ -14,5 +14,6 @@ leadRouter.get("/:id",checkAuthentication,requireAdminOrStaff, getLeadById);
 leadRouter.put("/status/:id", checkAuthentication, requireAdminOrStaff, updateLeadStatus);
 leadRouter.put("/follow-up/:id", checkAuthentication,requireAdminOrStaff,updateFollowUpTime);
 leadRouter.put("/edit-basic/:id", checkAuthentication,requireAdminOrStaff,updateLeadBasicInformation);
+leadRouter.put("/change-handler/:id", checkAuthentication,requireAdminOrStaff,changeHandler);
 
 export default leadRouter;

@@ -27,6 +27,11 @@ export async function getNotification(req: Request, res: Response) {
           },
         },
       },
+      orderBy: {
+        event: {
+          createdAt: "desc",
+        },
+      },
     });
 
     return res.status(200).json({

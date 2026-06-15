@@ -268,7 +268,6 @@ export async function updateLeadStatus(req: Request, res: Response) {
     // Only touch remarks if provided in request, or if forcing a terminal state
     if (remarks !== undefined || status === "WON" || status === "LOST") {
       updateData.remarks = remarks?.trim() || null;
-      
     }
 
     // Only update follow-up alarm time if provided, or if moving away from a follow-up stage
@@ -521,18 +520,17 @@ export async function updateLeadBasicInformation(req: Request, res: Response) {
     const data = parsedData.data;
 
     const updateData = Object.fromEntries(
-            Object.entries(data).filter(([key, value]) => {
-                return value !== "";
-            })
-        );
-    
-    console.log(updateData);
+      Object.entries(data).filter(([key, value]) => {
+        return value !== "";
+      }),
+    );
+
     const result = await prisma.$transaction(async (tx) => {
       const lead = await tx.lead.update({
         where: { id },
         data: {
           ...updateData,
-          notes: updateData.notes ? JSON.parse(notes) : null
+          notes: updateData.notes ? JSON.parse(notes) : null,
         },
       });
       if (user.role === "staff") {
@@ -610,6 +608,131 @@ export async function updateLeadBasicInformation(req: Request, res: Response) {
     }
     return res.status(500).json({
       message: "Server couldn't process your request, so try again later",
+    });
+  }
+}
+
+//change handler
+
+export async function changeHandler(req: Request, res: Response) {
+  try {
+    const { handlerId } = req.query;
+    const user = req.user;
+    const { id } = req.params;
+
+    if (typeof handlerId !== "string" || handlerId.trim() === "") {
+      return res.status(400).json({
+        message: "Invalid handler Id",
+      });
+    }
+
+    if (!id || Array.isArray(id)) {
+      return res.status(400).json({
+        message: "Invalid lead id!!!",
+      });
+    }
+
+    const result = await prisma.$transaction(async (tx) => {
+      const checkIfUserExist = await tx.user.findUnique({
+        where: { id: handlerId },
+        select: {
+          id: true,
+          name: true,
+        },
+      });
+
+      if (!checkIfUserExist) {
+        throw new AppError(404, "No such handler exist!!!");
+      }
+
+      const existingLead = await tx.lead.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          managedById: true,
+        },
+      });
+
+      if (!existingLead) {
+        throw new AppError(404, "Lead not found");
+      }
+
+      if (user.role === "staff" && user.id !== existingLead.managedById) {
+        throw new AppError(403, "You are unauthorized to carry this action");
+      }
+
+      if (existingLead.managedById === checkIfUserExist.id) {
+        throw new AppError(400, "Lead already assigned to this handler");
+      }
+
+      const lead = await tx.lead.update({
+        where: { id },
+        data: {
+          managedById: checkIfUserExist.id,
+          updatedById: user.id,
+        },
+      });
+
+      const recipientSet = new Set<string>();
+
+      // 1. All admins
+      const admins = await tx.user.findMany({
+        where: {
+          role: "admin",
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      admins.forEach((admin) => {
+        recipientSet.add(admin.id);
+      });
+
+      // 2. New handler
+      if (checkIfUserExist.id) {
+        recipientSet.add(checkIfUserExist.id);
+      }
+
+      if (existingLead.managedById) {
+        recipientSet.add(existingLead.managedById);
+      }
+
+      // 3. Remove the person who made the change
+      recipientSet.delete(user.id);
+
+      const recipientIds = Array.from(recipientSet);
+
+      await tx.notificationEvent.create({
+        data: {
+          senderId: user.id,
+          title: `Lead Handler changed by ${user.name}`,
+          body: `${user.name} changed lead handler to ${checkIfUserExist.name}`,
+          link: `/admin/leads/${lead.id}`,
+
+          recipients: {
+            create: recipientIds.map((id) => ({
+              recipientId: id,
+            })),
+          },
+        },
+      });
+      return true;
+    });
+
+    return res.status(200).json({
+      ok: true,
+      message: "Handler Updated Successfully!!!",
+    });
+  } catch (error) {
+    if (error instanceof AppError) {
+      return res.status(error.status).json({
+        message: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      message: "Server couldn't process your request!!!",
     });
   }
 }

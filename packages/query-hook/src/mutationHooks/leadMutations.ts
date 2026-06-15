@@ -91,3 +91,20 @@ export const useLeadBasicInfo = (id: string) => {
     },
   });
 };
+
+
+export const useChangeHander = (id:string) => {
+  return useMutation({
+    mutationFn: async (handlerId:string) => {
+      return authenticatedFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/lead/change-handler/${id}?handlerId=${handlerId}`,
+        {
+          method: "PUT",
+        },
+      );
+    },
+    onError: (error) => {
+      toast.error(error.message || "Operation Failed!!!");
+    },
+  })
+}
