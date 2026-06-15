@@ -268,6 +268,7 @@ export async function updateLeadStatus(req: Request, res: Response) {
     // Only touch remarks if provided in request, or if forcing a terminal state
     if (remarks !== undefined || status === "WON" || status === "LOST") {
       updateData.remarks = remarks?.trim() || null;
+      
     }
 
     // Only update follow-up alarm time if provided, or if moving away from a follow-up stage
@@ -283,6 +284,7 @@ export async function updateLeadStatus(req: Request, res: Response) {
     } else if (status === "WON" || status === "LOST") {
       // Clean up past stale follow-up alarms automatically when deal reaches its end
       updateData.followUpAt = null;
+      updateData.notes = null;
     }
 
     const result = await prisma.$transaction(async (tx) => {

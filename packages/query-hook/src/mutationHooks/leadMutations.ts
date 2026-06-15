@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 interface UpdateStatusProps {
-  status: string;
+  status?: string;
   remarks?: string;
   followUpAt?: Date;
 }

@@ -68,6 +68,10 @@ export default function LeadStatusUpdate({ lead }: { lead: LeadDetailType }) {
         }
 
         if (name === "status") {
+            setError((prev:any) => ({
+                ...prev,
+                [name]:""
+            }))
             setForm({
                 status: value,
                 remarks: "",
@@ -91,7 +95,6 @@ export default function LeadStatusUpdate({ lead }: { lead: LeadDetailType }) {
             return;
         }
 
-        console.log(form);
         if (form.status === lead.status) {
             setError((prev: any) => ({
                 ...prev,
@@ -100,30 +103,27 @@ export default function LeadStatusUpdate({ lead }: { lead: LeadDetailType }) {
             return;
         }
 
-        // const payload: UpdateStatusProps = {
-        //     status: newStatus,
-        // }
+        const payload = Object.fromEntries(
+            Object.entries(form).filter(([key, value]) => {
+                if (key === "remarks") return value !== "";
+                if (key === "followUpAt") return value !== null;
+                return true;
+            })
+        );
 
-        // if (remarks.trim() !== "") {
-        //     payload.remarks = remarks.trim();
-        // }
 
-        // if (followUpAt) {
-        //     payload.followUpAt = followUpAt;
-        // }
-
-        // mutate(payload, {
-        //     onSuccess: (data) => {
-        //         toast.success(data.message || "Operation Successful!!!");
-        //         queryClient.invalidateQueries({
-        //             queryKey: ["lead-detail", lead.id]
-        //         });
-        //         queryClient.invalidateQueries({
-        //             queryKey: ["leads"]
-        //         });
-        //         setOpen(false);
-        //     }
-        // })
+        mutate(payload, {
+            onSuccess: (data) => {
+                toast.success(data.message || "Operation Successful!!!");
+                queryClient.invalidateQueries({
+                    queryKey: ["lead-detail", lead.id]
+                });
+                queryClient.invalidateQueries({
+                    queryKey: ["leads"]
+                });
+                setOpen(false);
+            }
+        })
 
     };
 
