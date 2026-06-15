@@ -23,8 +23,7 @@ interface LeadTableProps {
 }
 
 export default function LeadTable({ leads }: LeadTableProps) {
-  // Track open state for optional detail dropdown rows
-  console.log(leads);
+
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
 
   const toggleRow = (id: string) => {

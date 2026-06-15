@@ -28,6 +28,7 @@ import UpdateLeadStatus from "../../../../components/lead/UpdateLeadStatus";
 import UpdateFollowUpTime from "../../../../components/lead/ChangeFollowUptime";
 import UpdateBasicInfo from "../../../../components/lead/UpdateBasicInfo";
 import LeadStatusUpdate from "../../../../components/lead/LeadStatusUpdate";
+import BasicInfoUpdate from "../../../../components/lead/BasicInfoUpdate";
 
 export default function LeadDetailPage() {
     const params = useParams();
@@ -92,7 +93,8 @@ export default function LeadDetailPage() {
                     {/* <UpdateLeadStatus lead={lead}/> */}
                     <LeadStatusUpdate lead={lead}/>
                     <UpdateFollowUpTime followUpAt={lead.followUpAt} id={lead.id} status={lead.status}/>
-                    <UpdateBasicInfo leadId={lead.id} name={lead.name} email={lead.email} coordinates={lead.coordinates} notes={lead.notes} status={lead.status}/>
+                    {/* <UpdateBasicInfo leadId={lead.id} name={lead.name} email={lead.email} coordinates={lead.coordinates} notes={lead.notes} status={lead.status}/> */}
+                    <BasicInfoUpdate leadId={lead.id} name={lead.name} email={lead.email} coordinates={lead.coordinates} notes={lead.notes} status={lead.status}/>
 
                     <button type="button" className="inline-flex items-center gap-1.5 px-3 py-2 border border-secondary-200 dark:border-secondary-800 hover:bg-secondary-50 dark:hover:bg-secondary-800 rounded-xl text-xs font-semibold text-secondary-700 dark:text-secondary-300 transition-colors">
                         <ShieldAlert className="w-3.5 h-3.5 text-secondary-400" />

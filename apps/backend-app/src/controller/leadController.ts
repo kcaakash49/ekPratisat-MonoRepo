@@ -520,17 +520,19 @@ export async function updateLeadBasicInformation(req: Request, res: Response) {
 
     const data = parsedData.data;
 
+    const updateData = Object.fromEntries(
+            Object.entries(data).filter(([key, value]) => {
+                return value !== "";
+            })
+        );
+    
+    console.log(updateData);
     const result = await prisma.$transaction(async (tx) => {
       const lead = await tx.lead.update({
         where: { id },
         data: {
-          name: data.name ?? null,
-          email: data.email ?? null,
-          coordinates: data.coordinates ?? null,
-          notes:
-            data.notes && Object.keys(data.notes).length > 0
-              ? data.notes
-              : null,
+          ...updateData,
+          notes: updateData.notes ? JSON.parse(notes) : null
         },
       });
       if (user.role === "staff") {
