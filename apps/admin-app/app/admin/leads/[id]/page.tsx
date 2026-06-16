@@ -16,8 +16,6 @@ import {
     Activity,
     Clock,
     ShieldAlert,
-    RefreshCw,
-    Edit3,
     Trash2,
     CheckCircle,
     ExternalLink,
@@ -25,16 +23,25 @@ import {
     Edit,
     AlertTriangle
 } from "lucide-react";
-import UpdateLeadStatus from "../../../../components/lead/UpdateLeadStatus";
+
 import UpdateFollowUpTime from "../../../../components/lead/ChangeFollowUptime";
-import UpdateBasicInfo from "../../../../components/lead/UpdateBasicInfo";
 import LeadStatusUpdate from "../../../../components/lead/LeadStatusUpdate";
 import BasicInfoUpdate from "../../../../components/lead/BasicInfoUpdate";
 import ChangeHandler from "../../../../components/lead/ChangeHandler";
+import { useEffect, useState } from "react";
 
 export default function LeadDetailPage() {
     const params = useParams();
     const { data, isLoading, isError, error } = useGetLeadById(params.id as string);
+    const [currentTime, setCurrentTime] = useState(new Date());
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentTime(new Date());
+        },30000);
+
+        return () => clearInterval(interval);
+    },[])
 
     if (isLoading) {
         return (
@@ -58,7 +65,7 @@ export default function LeadDetailPage() {
     };
 
     const isFollowUpOverdue =
-        lead.followUpAt && new Date(lead.followUpAt) < new Date();
+        lead.followUpAt && new Date(lead.followUpAt) < currentTime;
 
     return (
         <div className="max-w-7xl p-4 md:p-6 space-y-6 text-secondary-900 dark:text-secondary-100">

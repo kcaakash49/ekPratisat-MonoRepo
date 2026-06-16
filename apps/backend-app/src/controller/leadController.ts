@@ -757,7 +757,7 @@ export async function changeHandler(req: Request, res: Response) {
 }
 
 export async function getUserLeads(req:Request, res:Response){
-
+  console.log("I am renderd get user elad");
   try {
     const { id } = req.user;
     const result = await prisma.lead.findMany({
@@ -773,5 +773,64 @@ export async function getUserLeads(req:Request, res:Response){
     return res.status(500).json({
       message: "Server couldn't process your request!!!"
     })
+  }
+}
+
+export async function getTodayFollowUpLead(req: Request, res: Response) {
+  try {
+    // 1. Get the current exact time matching the agent's time zone
+    const now = new Date();
+
+    // 2. Format a localized string targeting Nepal to extract the exact calendar day digits
+    const nepalString = now.toLocaleString("en-US", { timeZone: "Asia/Kathmandu" });
+    const nepalTime = new Date(nepalString);
+
+    const year = nepalTime.getFullYear();
+    const month = nepalTime.getMonth();
+    const day = nepalTime.getDate();
+
+    // 3. Construct target dates anchoring the clock to Nepal's timezone boundaries
+    // This tells JavaScript: "Create a time at 00:00:00 in Asia/Kathmandu"
+    const startOfNepalToday = new Date(
+      new Date(year, month, day, 0, 0, 0, 0).toLocaleString("en-US", { timeZone: "Asia/Kathmandu" })
+    );
+
+    // This tells JavaScript: "Create a time at 23:59:59 in Asia/Kathmandu"
+    const endOfNepalToday = new Date(
+      new Date(year, month, day, 23, 59, 59, 999).toLocaleString("en-US", { timeZone: "Asia/Kathmandu" })
+    );
+
+    // 4. Query Prisma using the calculated range barriers
+    // Prisma will automatically map these Dates to the correct 'Z' format for the database
+    const result = await prisma.lead.findMany({
+      where: {
+        followUpAt: {
+          gte: startOfNepalToday, // >= Start of today in NPT
+          lte: endOfNepalToday,   // <= End of today in NPT
+        }
+      },
+      include: {
+        managedBy: {
+          select: {
+            id:true,
+            name:true
+          }
+        }
+      },
+      orderBy: {
+        followUpAt: 'asc'
+      }
+    });
+
+    return res.status(200).json({
+      ok: true,
+      count: result.length,
+      result
+    });
+  } catch (error) {
+    console.error("Time-zone bounded query failed:", error);
+    return res.status(500).json({
+      message: "Server couldn't process your request. Try again later"
+    });
   }
 }

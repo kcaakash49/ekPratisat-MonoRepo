@@ -155,6 +155,9 @@ export default function BasicInfoUpdate({ leadId, name, email, coordinates, note
                 queryClient.invalidateQueries({
                     queryKey:["user-leads"]
                 });
+                queryClient.invalidateQueries({
+                    queryKey:["followups-today"]
+                });
                 setOpen(false);
             }
         })

@@ -4,6 +4,7 @@ import {
   changeHandler,
   getLeadById,
   getLeads,
+  getTodayFollowUpLead,
   getUserLeads,
   updateFollowUpTime,
   updateLeadBasicInformation,
@@ -11,6 +12,7 @@ import {
 } from "../controller/leadController.js";
 import {
   checkAuthentication,
+  requireAdmin,
   requireAdminOrStaff,
 } from "../middleware/checkAuthentication.js";
 import { uploadUserFiles } from "../middleware/userUpload.js";
@@ -27,6 +29,7 @@ leadRouter.post(
 
 leadRouter.get("/", checkAuthentication, requireAdminOrStaff, getLeads);
 leadRouter.get("/user-leads", checkAuthentication, getUserLeads);
+leadRouter.get("/today-followups", checkAuthentication,requireAdmin,getTodayFollowUpLead);
 leadRouter.get("/:id", checkAuthentication, requireAdminOrStaff, getLeadById);
 
 leadRouter.put(

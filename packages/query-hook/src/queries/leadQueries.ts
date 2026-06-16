@@ -18,7 +18,7 @@ export const useGetLeads = ({page=1,limit=20,status="",dealType="",clientType=""
                 {method: "GET"}
             );
         },
-        staleTime: 5 * 60 * 1000, // 5 minutes
+        staleTime: 2 * 60 * 1000,
         retry: 1,
         retryDelay: 2000,
         refetchOnWindowFocus: true,
@@ -35,7 +35,7 @@ export const useGetLeadById = (id:string) => {
                 {method: "GET"}
             )
         },
-        staleTime:5 * 60 * 1000,
+        staleTime:2 * 60 * 1000,
         retry:1,
         retryDelay:2000,
         refetchOnWindowFocus:true
@@ -52,9 +52,26 @@ export const useGetUserLead = () => {
                 {method: "GET"}
             )
         },
-        staleTime:10 * 60 * 1000,
+        staleTime:2 * 60 * 1000,
         retry:1,
         retryDelay:2000,
         refetchOnWindowFocus:true
+    })
+}
+
+export const useGetFollowUpToday = ({enabled}: {enabled:boolean}) => {
+    return useQuery({
+        queryKey:["followups-today"],
+        queryFn: async () => {
+            return authenticatedFetch(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/lead/today-followups`,
+                {method: "GET"}
+            )
+        },
+        staleTime:2 * 60 * 1000,
+        retry:1,
+        retryDelay:2000,
+        refetchOnWindowFocus:true,
+        enabled:enabled
     })
 }

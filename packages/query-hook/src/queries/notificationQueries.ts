@@ -10,7 +10,7 @@ export const useGetNotifications = () => {
         { method: "GET" },
       );
     },
-    staleTime: 10 * 60 * 1000,
+    staleTime: 2 * 60 * 1000,
     retry: 1,
     retryDelay: 2000,
     refetchOnWindowFocus: true,

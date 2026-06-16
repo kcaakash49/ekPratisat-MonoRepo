@@ -124,6 +124,9 @@ export default function LeadStatusUpdate({ lead }: { lead: LeadDetailType }) {
                 queryClient.invalidateQueries({
                     queryKey:["user-leads"]
                 })
+                queryClient.invalidateQueries({
+                    queryKey:["followups-today"]
+                })
 
                 setOpen(false);
             }

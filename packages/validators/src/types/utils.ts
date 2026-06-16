@@ -101,6 +101,7 @@ export interface PropertyFormdata{
 
 export interface Lead {
   id: string;
+  leadCode:number;
   name: string | null;
   contact: string;
   email: string | null;

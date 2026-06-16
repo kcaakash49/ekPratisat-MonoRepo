@@ -65,7 +65,7 @@ export const useUser = () => {
       return data.user;
     },
     retry: 1,
-    staleTime: 10 * 60 * 1000,
+    staleTime: 2 * 60 * 1000,
     refetchOnWindowFocus: true,
   });
 };
