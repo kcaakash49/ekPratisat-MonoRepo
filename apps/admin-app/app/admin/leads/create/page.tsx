@@ -152,6 +152,9 @@ export default function CreateLeadForm() {
                 queryClient.invalidateQueries({
                     queryKey: ["leads"] 
                 });
+                queryClient.invalidateQueries({
+                    queryKey:["user-leads"]
+                })
                 // Reset form controls
                 setContact("");
                 setName("");

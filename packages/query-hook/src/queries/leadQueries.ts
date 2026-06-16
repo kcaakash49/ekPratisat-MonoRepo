@@ -41,3 +41,20 @@ export const useGetLeadById = (id:string) => {
         refetchOnWindowFocus:true
     })
 }
+
+
+export const useGetUserLead = () => {
+    return useQuery({
+        queryKey:["user-leads"],
+        queryFn: async () => {
+            return authenticatedFetch(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/lead/user-leads`,
+                {method: "GET"}
+            )
+        },
+        staleTime:10 * 60 * 1000,
+        retry:1,
+        retryDelay:2000,
+        refetchOnWindowFocus:true
+    })
+}

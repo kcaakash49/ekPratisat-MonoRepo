@@ -133,8 +133,6 @@ export default function BasicInfoUpdate({ leadId, name, email, coordinates, note
             return;
         }
 
-        console.log(form);
-
         const payload = Object.fromEntries(
             Object.entries(form).filter(([key, value]) => {
                 return value !== "";
@@ -151,6 +149,12 @@ export default function BasicInfoUpdate({ leadId, name, email, coordinates, note
                 queryClient.invalidateQueries({
                     queryKey: ["lead-detail", leadId]
                 })
+                queryClient.invalidateQueries({
+                    queryKey:["leads"]
+                });
+                queryClient.invalidateQueries({
+                    queryKey:["user-leads"]
+                });
                 setOpen(false);
             }
         })

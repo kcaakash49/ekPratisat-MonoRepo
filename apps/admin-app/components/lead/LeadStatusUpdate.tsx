@@ -121,6 +121,10 @@ export default function LeadStatusUpdate({ lead }: { lead: LeadDetailType }) {
                 queryClient.invalidateQueries({
                     queryKey: ["leads"]
                 });
+                queryClient.invalidateQueries({
+                    queryKey:["user-leads"]
+                })
+
                 setOpen(false);
             }
         })

@@ -160,6 +160,7 @@ export const getLeads = async (req: Request, res: Response) => {
 };
 
 export async function getLeadById(req: Request, res: Response) {
+
   try {
     const { id } = req.params;
 
@@ -734,5 +735,25 @@ export async function changeHandler(req: Request, res: Response) {
     return res.status(500).json({
       message: "Server couldn't process your request!!!",
     });
+  }
+}
+
+export async function getUserLeads(req:Request, res:Response){
+
+  try {
+    const { id } = req.user;
+    const result = await prisma.lead.findMany({
+      where: {managedById: id, status:{notIn:["WON","LOST"]}},
+      orderBy: {createdAt:"desc"}
+    })
+
+    return res.status(200).json({
+      ok:true,
+      result
+    })
+  } catch (error) {
+    return res.status(500).json({
+      message: "Server couldn't process your request!!!"
+    })
   }
 }

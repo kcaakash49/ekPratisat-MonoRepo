@@ -1,5 +1,9 @@
+import GetMyLeads from "../../../components/lead/GetUserLeads";
+
 export default function Dashboard(){
     return (
-        <div className="text-red-600"></div>
+        <>
+            <GetMyLeads/>
+        </>
     )
 }

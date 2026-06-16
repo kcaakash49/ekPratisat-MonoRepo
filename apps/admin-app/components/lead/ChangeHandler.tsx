@@ -8,8 +8,8 @@ import { Button } from "@repo/ui/button";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useChangeHander, useGetAdminStaff } from "@repo/query-hook";
-import { LeadDetailType, LeadStatus } from "@repo/validators";
-import { RefreshCw, ShieldAlert } from "lucide-react";
+import { LeadDetailType } from "@repo/validators";
+import { ShieldAlert } from "lucide-react";
 
 interface HandlerProps {
     id: string;
@@ -60,6 +60,9 @@ export default function ChangeHandler({ lead }: { lead: LeadDetailType }) {
                 queryClient.invalidateQueries({
                     queryKey: ["leads"]
                 });
+                queryClient.invalidateQueries({
+                    queryKey:["user-leads"]
+                })
                 setOpen(false);
             }
         })

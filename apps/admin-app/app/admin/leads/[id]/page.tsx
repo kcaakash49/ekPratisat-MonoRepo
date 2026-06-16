@@ -22,7 +22,8 @@ import {
     CheckCircle,
     ExternalLink,
     ChevronRight,
-    Edit
+    Edit,
+    AlertTriangle
 } from "lucide-react";
 import UpdateLeadStatus from "../../../../components/lead/UpdateLeadStatus";
 import UpdateFollowUpTime from "../../../../components/lead/ChangeFollowUptime";
@@ -55,6 +56,9 @@ export default function LeadDetailPage() {
         if (s === "FOLLOW_UP") return "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-900";
         return "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-900";
     };
+
+    const isFollowUpOverdue =
+        lead.followUpAt && new Date(lead.followUpAt) < new Date();
 
     return (
         <div className="max-w-7xl p-4 md:p-6 space-y-6 text-secondary-900 dark:text-secondary-100">
@@ -90,18 +94,18 @@ export default function LeadDetailPage() {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2 border-t pt-3 lg:border-t-0 lg:pt-0">
-                    
+
                     {/* <UpdateLeadStatus lead={lead}/> */}
-                    <LeadStatusUpdate lead={lead}/>
-                    <UpdateFollowUpTime followUpAt={lead.followUpAt} id={lead.id} status={lead.status}/>
+                    <LeadStatusUpdate lead={lead} />
+                    <UpdateFollowUpTime followUpAt={lead.followUpAt} id={lead.id} status={lead.status} />
                     {/* <UpdateBasicInfo leadId={lead.id} name={lead.name} email={lead.email} coordinates={lead.coordinates} notes={lead.notes} status={lead.status}/> */}
-                    <BasicInfoUpdate leadId={lead.id} name={lead.name} email={lead.email} coordinates={lead.coordinates} notes={lead.notes} status={lead.status}/>
+                    <BasicInfoUpdate leadId={lead.id} name={lead.name} email={lead.email} coordinates={lead.coordinates} notes={lead.notes} status={lead.status} />
 
                     {/* <button type="button" className="inline-flex items-center gap-1.5 px-3 py-2 border border-secondary-200 dark:border-secondary-800 hover:bg-secondary-50 dark:hover:bg-secondary-800 rounded-xl text-xs font-semibold text-secondary-700 dark:text-secondary-300 transition-colors">
                         <ShieldAlert className="w-3.5 h-3.5 text-secondary-400" />
                         <span>Change Handler</span>
                     </button> */}
-                    <ChangeHandler lead={lead}/>
+                    <ChangeHandler lead={lead} />
 
                     <div className="h-6 w-[1px] bg-secondary-200 dark:bg-secondary-800 hidden sm:block mx-1" />
 
@@ -122,7 +126,7 @@ export default function LeadDetailPage() {
                 <div className="lg:col-span-1 bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-800 rounded-2xl overflow-hidden shadow-sm">
                     <div className="p-4 bg-secondary-50/50 dark:bg-secondary-800/40 border-b border-secondary-100 dark:border-secondary-800 flex justify-between items-center">
                         <h2 className="text-xs font-bold uppercase tracking-wider text-secondary-500">Compulsory Parameters</h2>
-                        <button><Edit className="w-4 h-4"/></button>
+                        <button><Edit className="w-4 h-4" /></button>
                     </div>
                     <div className="p-5 space-y-4">
 
@@ -229,16 +233,32 @@ export default function LeadDetailPage() {
 
                             {lead.followUpAt && (
                                 <div className="space-y-1">
-                                    <span className="text-secondary-400 block font-medium">Scheduled Alarm Follow-Up Date</span>
-                                    <div className="flex items-center gap-2 p-2 rounded-xl border border-secondary-100 dark:border-secondary-800 text-amber-700 dark:text-amber-400 bg-amber-50/40 dark:bg-amber-950/10 font-semibold">
-                                        <Calendar className="w-4 h-4" />
-                                         <span>
-                                        {new Date(lead.followUpAt).toLocaleString("en-US", {
-                                            timeZone: "Asia/Kathmandu",
-                                            dateStyle: "medium",
-                                            timeStyle: "short",
-                                        })}
+                                    <span className="text-secondary-400 block font-medium">
+                                        Scheduled Alarm Follow-Up Date
                                     </span>
+
+                                    <div
+                                        className={`flex items-center gap-2 p-2 rounded-xl border font-semibold ${isFollowUpOverdue
+                                            ? "border-red-300 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950/20 dark:text-red-400 animate-pulse"
+                                            : "border-secondary-100 dark:border-secondary-800 bg-amber-50/40 dark:bg-amber-950/10 text-amber-700 dark:text-amber-400"
+                                            }`}
+                                    >
+                                        {isFollowUpOverdue ? (
+                                            <>
+                                                <AlertTriangle className="w-4 h-4" />
+                                                <span>⚠️ OVERDUE • </span>
+                                            </>
+                                        ) : (
+                                            <Calendar className="w-4 h-4" />
+                                        )}
+
+                                        <span>
+                                            {new Date(lead.followUpAt).toLocaleString("en-US", {
+                                                timeZone: "Asia/Kathmandu",
+                                                dateStyle: "medium",
+                                                timeStyle: "short",
+                                            })}
+                                        </span>
                                     </div>
                                 </div>
                             )}
@@ -248,13 +268,13 @@ export default function LeadDetailPage() {
                                     <span className="text-secondary-400 block font-medium">Last Update Time</span>
                                     <div className="flex items-center gap-2 p-2 rounded-xl border border-secondary-100 dark:border-secondary-800 text-secondary-600 dark:text-secondary-400 bg-amber-50/40 dark:bg-amber-950/10 font-semibold">
                                         <Calendar className="w-4 h-4" />
-                                         <span>
-                                        {new Date(lead.updatedAt).toLocaleString("en-US", {
-                                            timeZone: "Asia/Kathmandu",
-                                            dateStyle: "medium",
-                                            timeStyle: "short",
-                                        })}
-                                    </span>
+                                        <span>
+                                            {new Date(lead.updatedAt).toLocaleString("en-US", {
+                                                timeZone: "Asia/Kathmandu",
+                                                dateStyle: "medium",
+                                                timeStyle: "short",
+                                            })}
+                                        </span>
                                     </div>
                                 </div>
                             )}

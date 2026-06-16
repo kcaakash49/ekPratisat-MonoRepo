@@ -64,6 +64,9 @@ export default function UpdateFollowUpTime({ followUpAt, id, status }: Props) {
                 queryClient.invalidateQueries({
                     queryKey: ["leads"]
                 });
+                queryClient.invalidateQueries({
+                    queryKey:["user-leads"]
+                })
                 setOpen(false);
             }
         })
