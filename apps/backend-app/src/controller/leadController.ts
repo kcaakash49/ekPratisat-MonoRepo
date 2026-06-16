@@ -239,6 +239,12 @@ export async function updateLeadStatus(req: Request, res: Response) {
       });
     }
 
+    if (user.role !== "admin" && checkExistingStatus.managedById !== user.id){
+      return res.status(403).json({
+        message: "You are not authorized to perform this operation"
+      })
+    }
+
     if (
       checkExistingStatus?.status === "WON" ||
       checkExistingStatus?.status === "LOST"
@@ -385,6 +391,12 @@ export async function updateFollowUpTime(req: Request, res: Response) {
       return res.status(404).json({ message: "Lead record not found." });
     }
 
+     if (user.role !== "admin" && checkExistingStatus.managedById !== user.id){
+      return res.status(403).json({
+        message: "You are not authorized to perform this operation"
+      })
+    }
+
     if (
       checkExistingStatus?.status === "WON" ||
       checkExistingStatus?.status === "LOST"
@@ -506,6 +518,12 @@ export async function updateLeadBasicInformation(req: Request, res: Response) {
 
     if (!checkExistingStatus) {
       return res.status(404).json({ message: "Lead record not found." });
+    }
+
+     if (user.role !== "admin" && checkExistingStatus.managedById !== user.id){
+      return res.status(403).json({
+        message: "You are not authorized to perform this operation"
+      })
     }
 
     if (
