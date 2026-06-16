@@ -7,13 +7,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@repo/ui/button";
 
 import { useQueryClient } from "@tanstack/react-query";
-import {  useChangeHander, useGetAdminStaff } from "@repo/query-hook";
+import { useChangeHander, useGetAdminStaff } from "@repo/query-hook";
 import { LeadDetailType, LeadStatus } from "@repo/validators";
 import { RefreshCw, ShieldAlert } from "lucide-react";
 
 interface HandlerProps {
-    id:string;
-    name:string;
+    id: string;
+    name: string;
+    role:string;
 }
 
 
@@ -27,18 +28,19 @@ const generateConfirmationText = () => {
 export default function ChangeHandler({ lead }: { lead: LeadDetailType }) {
     const [open, setOpen] = useState(false);
     const [confirmationText, setConfirmationText] = useState("");
-    const [handlerId, setHandlerId] = useState("")
-    
-    const {data, isLoading,isError,error} = useGetAdminStaff(open);
+    const [handlerId, setHandlerId] = useState(lead.managedById)
+
+    const { data, isLoading, isError, error } = useGetAdminStaff(open);
 
     const [userInput, setUserInput] = useState("");
-    const {mutate,isPending} = useChangeHander(lead.id);
+    const { mutate, isPending } = useChangeHander(lead.id);
     const queryClient = useQueryClient();
 
     const handleOpenDialog = () => {
         setOpen(true);
         setConfirmationText(generateConfirmationText());
         setUserInput("");
+        setHandlerId(lead.managedById);
     };
 
     const handleVerify = () => {
@@ -49,7 +51,7 @@ export default function ChangeHandler({ lead }: { lead: LeadDetailType }) {
             return;
         }
 
-        mutate(handlerId, {
+        mutate(handlerId!, {
             onSuccess: (data) => {
                 toast.success(data.message || "Operation Success!!!");
                 queryClient.invalidateQueries({
@@ -69,7 +71,7 @@ export default function ChangeHandler({ lead }: { lead: LeadDetailType }) {
 
     return (
         <>
-            <button type="button" onClick={handleOpenDialog} className={`inline-flex items-center gap-1.5 px-3 py-2 border border-secondary-200 dark:border-secondary-800 hover:bg-secondary-50 dark:hover:bg-secondary-800 rounded-xl text-xs font-semibold text-secondary-700 dark:text-secondary-300 transition-colors ${disabledCondition ? "cursor-not-allowed":"cursor-pointer"}`} disabled = {disabledCondition}>
+            <button type="button" onClick={handleOpenDialog} className={`inline-flex items-center gap-1.5 px-3 py-2 border border-secondary-200 dark:border-secondary-800 hover:bg-secondary-50 dark:hover:bg-secondary-800 rounded-xl text-xs font-semibold text-secondary-700 dark:text-secondary-300 transition-colors ${disabledCondition ? "cursor-not-allowed" : "cursor-pointer"}`} disabled={disabledCondition}>
                 <ShieldAlert className="w-3.5 h-3.5 text-secondary-400" />
                 <span>Change Handler</span>
             </button>
@@ -91,19 +93,19 @@ export default function ChangeHandler({ lead }: { lead: LeadDetailType }) {
                                 Select New Handler
                             </label>
                             <select
-                                id="status-select"
-                                value={handlerId}
+                                id="handler-select"
+                                value={handlerId!}
                                 onChange={(e) => {
                                     setHandlerId(e.target.value);
-                                   
+
                                 }}
                                 disabled={isPending}
                                 className="w-full px-3 py-2 border border-secondary-300 dark:border-secondary-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100"
                             >
-                                <option value="">All</option>
-                                {data?.users?.map((handler:HandlerProps) => (
+                                {/* <option value="">All</option> */}
+                                {data?.users?.map((handler: HandlerProps) => (
                                     <option key={handler.id} value={handler.id}>
-                                        {handler.name}
+                                        {handler.role === "admin" ? "⭐" : "👤"} {handler.name}
                                     </option>
                                 ))}
                             </select>
@@ -150,11 +152,4 @@ export default function ChangeHandler({ lead }: { lead: LeadDetailType }) {
             </Dialog>
         </>
     );
-}
-
-
-function DisplayErrorMessage({ text }: { text: string }) {
-    return (
-        <span className="text-xs text-red-500 text-center">**{text}**</span>
-    )
 }

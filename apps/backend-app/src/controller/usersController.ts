@@ -119,7 +119,7 @@ export async function getUsers(req: Request, res: Response) {
 
 
 export async function getAdminOrStaff(req: Request, res: Response) {
-  console.log("Getting admin and staff information");
+  const user = req.user;
   try {
     const result = await prisma.user.findMany({
       where: {
@@ -131,6 +131,7 @@ export async function getAdminOrStaff(req: Request, res: Response) {
       select: {
         id: true,
         name: true,
+        role:true
       },
     });
 
