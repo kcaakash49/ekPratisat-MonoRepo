@@ -153,7 +153,7 @@ export default function MyLeadsDashboard() {
               <div className="flex items-center justify-between border-b border-red-100 dark:border-red-950/40 pb-3">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                  <h2 className="text-xs font-black tracking-widest text-red-600 dark:text-red-400 uppercase flex items-center gap-1.5">
+                  <h2 className="text-xs font-black tracking-widest text-red-600 dark:text-red-400 uppercase flex items-center gap-1.5 animate-pulse duration-100">
                     <AlertOctagon className="w-4 h-4 text-red-500" />
                     Critical Overdue Tasks ({overdueLeads.length})
                   </h2>
@@ -192,7 +192,7 @@ export default function MyLeadsDashboard() {
                 <div className="flex items-center gap-2 border-b border-secondary-100 dark:border-secondary-800 pb-3">
                   <h2 className="text-xs font-black tracking-widest text-secondary-400 uppercase flex items-center gap-1.5">
                     <Layers className="w-3.5 h-3.5" />
-                    General Allocation Pipeline ({standardLeads.length})
+                    General Leads ({standardLeads.length})
                   </h2>
                 </div>
               )}
@@ -246,7 +246,7 @@ function LeadCard({ lead, alertType }: { lead: LeadItem; alertType: 'overdue' | 
               {lead.name ? lead.name : "Anonymous Prospect"}
             </h4>
             <div className="text-[10px] text-secondary-400 font-mono tracking-wider uppercase">
-              System ID: #{lead.leadCode}
+              Lead-Code: #{lead.leadCode}
             </div>
           </div>
           <span className={`text-[10px] px-2.5 py-0.5 rounded-md font-black tracking-wider uppercase shrink-0 ${styleConfig.badge}`}>
