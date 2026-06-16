@@ -486,7 +486,6 @@ export async function updateFollowUpTime(req: Request, res: Response) {
 
 export async function updateLeadBasicInformation(req: Request, res: Response) {
   try {
-    console.log("Body", req.body);
     const { id } = req.params;
     const user = req.user;
     const { name, email, coordinates, notes } = req.body;
@@ -532,6 +531,7 @@ export async function updateLeadBasicInformation(req: Request, res: Response) {
         data: {
           ...updateData,
           notes: updateData.notes ? JSON.parse(notes) : null,
+          updatedById:user.id
         },
       });
       if (user.role === "staff") {
