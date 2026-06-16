@@ -778,42 +778,38 @@ export async function getUserLeads(req:Request, res:Response){
 
 export async function getTodayFollowUpLead(req: Request, res: Response) {
   try {
-    // 1. Get the current exact time matching the agent's time zone
+    // 1. Get the current exact absolute timestamp
     const now = new Date();
 
-    // 2. Format a localized string targeting Nepal to extract the exact calendar day digits
-    const nepalString = now.toLocaleString("en-US", { timeZone: "Asia/Kathmandu" });
-    const nepalTime = new Date(nepalString);
+    // 2. Calculate the current time in Nepal by adding the 5h 45m offset (in milliseconds)
+    // 5 hours = 5 * 60 * 60 * 1000 = 18,000,000 ms
+    // 45 minutes = 45 * 60 * 1000   =  2,700,000 ms
+    const NEPAL_OFFSET_MS = 20700000; 
+    const nepalTimeNow = new Date(now.getTime() + NEPAL_OFFSET_MS);
 
-    const year = nepalTime.getFullYear();
-    const month = nepalTime.getMonth();
-    const day = nepalTime.getDate();
+    // 3. Extract calendar day components based on Nepal's clock
+    const year = nepalTimeNow.getUTCFullYear();
+    const month = nepalTimeNow.getUTCMonth();
+    const day = nepalTimeNow.getUTCDate();
 
-    // 3. Construct target dates anchoring the clock to Nepal's timezone boundaries
-    // This tells JavaScript: "Create a time at 00:00:00 in Asia/Kathmandu"
-    const startOfNepalToday = new Date(
-      new Date(year, month, day, 0, 0, 0, 0).toLocaleString("en-US", { timeZone: "Asia/Kathmandu" })
-    );
+    // 4. Construct the start and end of the day in Nepal time, 
+    // then subtract the offset to shift them back into absolute UTC for Prisma
+    const startOfNepalToday = new Date(Date.UTC(year, month, day, 0, 0, 0, 0) - NEPAL_OFFSET_MS);
+    const endOfNepalToday = new Date(Date.UTC(year, month, day, 23, 59, 59, 999) - NEPAL_OFFSET_MS);
 
-    // This tells JavaScript: "Create a time at 23:59:59 in Asia/Kathmandu"
-    const endOfNepalToday = new Date(
-      new Date(year, month, day, 23, 59, 59, 999).toLocaleString("en-US", { timeZone: "Asia/Kathmandu" })
-    );
-
-    // 4. Query Prisma using the calculated range barriers
-    // Prisma will automatically map these Dates to the correct 'Z' format for the database
+    // 5. Query Prisma using absolute, environment-safe UTC Date boundaries
     const result = await prisma.lead.findMany({
       where: {
         followUpAt: {
-          gte: startOfNepalToday, // >= Start of today in NPT
-          lte: endOfNepalToday,   // <= End of today in NPT
+          gte: startOfNepalToday, 
+          lte: endOfNepalToday,   
         }
       },
       include: {
         managedBy: {
           select: {
-            id:true,
-            name:true
+            id: true,
+            name: true
           }
         }
       },
