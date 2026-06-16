@@ -2,23 +2,22 @@ import { getAgentDetailAction, getAgentListAction } from "@repo/actions";
 import { authenticatedFetch } from "@repo/shared-provider";
 import { useQuery } from "@tanstack/react-query";
 
-
-interface UserProps{
-  id:string;
-  name:string;
-  role:string;
+interface UserProps {
+  id: string;
+  name: string;
+  role: string;
   profileImageUrl: string | null;
 }
 
 type User = UserProps | null;
 
 interface UserQueryType {
-  page?:number,
-  pageSize?:number;
-  isVerified?:string;
-  q?:string;
-  role?:string;
-  isActive?:string;
+  page?: number;
+  pageSize?: number;
+  isVerified?: string;
+  q?: string;
+  role?: string;
+  isActive?: string;
 }
 
 export const useGetAgents = (options = {}) => {
@@ -66,35 +65,50 @@ export const useUser = () => {
     },
     retry: 1,
     staleTime: 2 * 60 * 1000,
+    refetchInterval: 2 * 60 * 1000,
     refetchOnWindowFocus: true,
   });
 };
 
-
-export const useCheckFavourite = ({propertyId,user}: {propertyId:string, user:User}) => {
+export const useCheckFavourite = ({
+  propertyId,
+  user,
+}: {
+  propertyId: string;
+  user: User;
+}) => {
   return useQuery({
     queryKey: ["favourite", user?.id, propertyId],
     queryFn: async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/check-favourite`,{
-        method: "POST",
-        headers: {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/check-favourite`,
+        {
+          method: "POST",
+          headers: {
             "Content-Type": "application/json",
           },
-        body:JSON.stringify({propertyId,userId: user?.id})
-      });
+          body: JSON.stringify({ propertyId, userId: user?.id }),
+        },
+      );
       const data = await res.json();
       return data.result;
     },
     enabled: !!user && !!propertyId,
-    staleTime:5 * 60 * 1000
-  })
-}
-
+    staleTime: 5 * 60 * 1000,
+  });
+};
 
 //get staff,agent and client list
-export const useGetAllUsers = ({ page = 1, q = "", pageSize = 20, isVerified = "", role = "", isActive="" }: UserQueryType) => {
+export const useGetAllUsers = ({
+  page = 1,
+  q = "",
+  pageSize = 20,
+  isVerified = "",
+  role = "",
+  isActive = "",
+}: UserQueryType) => {
   return useQuery({
-    queryKey: ["all-users", { page, role, isVerified, q, pageSize,isActive }],
+    queryKey: ["all-users", { page, role, isVerified, q, pageSize, isActive }],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: String(page),
@@ -106,8 +120,8 @@ export const useGetAllUsers = ({ page = 1, q = "", pageSize = 20, isVerified = "
       });
 
       return authenticatedFetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/get-all?${params.toString()}`, 
-        { method: "GET" }
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/get-all?${params.toString()}`,
+        { method: "GET" },
       );
     },
     staleTime: 2 * 60 * 1000,
@@ -115,19 +129,19 @@ export const useGetAllUsers = ({ page = 1, q = "", pageSize = 20, isVerified = "
   });
 };
 
-export const useGetAdminStaff = (open:boolean) => {
+export const useGetAdminStaff = (open: boolean) => {
   return useQuery({
-    queryKey:["admin-staff"],
+    queryKey: ["admin-staff"],
     queryFn: async () => {
-            return authenticatedFetch(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/get-admin-staff`,
-                {method: "GET"}
-            )
-        },
-        staleTime:5 * 60 * 1000,
-        retry:1,
-        retryDelay:2000,
-        refetchOnWindowFocus:true,
-        enabled:open
-  })
-}
+      return authenticatedFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/get-admin-staff`,
+        { method: "GET" },
+      );
+    },
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
+    retryDelay: 2000,
+    refetchOnWindowFocus: true,
+    enabled: open,
+  });
+};

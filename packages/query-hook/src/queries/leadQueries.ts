@@ -19,6 +19,7 @@ export const useGetLeads = ({page=1,limit=20,status="",dealType="",clientType=""
             );
         },
         staleTime: 2 * 60 * 1000,
+        refetchInterval:2 * 60 * 1000,
         retry: 1,
         retryDelay: 2000,
         refetchOnWindowFocus: true,
@@ -36,6 +37,7 @@ export const useGetLeadById = (id:string) => {
             )
         },
         staleTime:2 * 60 * 1000,
+        refetchInterval:2 * 60 * 1000,
         retry:1,
         retryDelay:2000,
         refetchOnWindowFocus:true
@@ -53,6 +55,7 @@ export const useGetUserLead = () => {
             )
         },
         staleTime:2 * 60 * 1000,
+        refetchInterval:2 * 60 * 1000,
         retry:1,
         retryDelay:2000,
         refetchOnWindowFocus:true
@@ -69,6 +72,7 @@ export const useGetFollowUpToday = ({enabled}: {enabled:boolean}) => {
             )
         },
         staleTime:2 * 60 * 1000,
+        refetchInterval:2 * 60 * 1000,
         retry:1,
         retryDelay:2000,
         refetchOnWindowFocus:true,
