@@ -1,7 +1,7 @@
 
 
 import Image from "next/image";
-import { Bed, Bath, Maximize, MapPin, Crown, Sparkles, TrendingUp } from "lucide-react";
+import { Bed, Bath, Maximize, MapPin, Crown, Sparkles } from "lucide-react";
 import { PropertyListing } from "@repo/validators";
 
 
@@ -65,16 +65,6 @@ export default function PremiumListingCard({ listing }: { listing: PropertyListi
             <div className="rounded-lg bg-[rgba(255,253,248,0.94)] px-4 py-1.5 text-[var(--ek-gold-text)] shadow-md ring-1 ring-[var(--ek-border-soft)] backdrop-blur-sm dark:bg-[rgba(33,28,20,0.88)] dark:text-[var(--ek-dark-gold)] dark:ring-[var(--ek-dark-border)]">
               <div className="text-xs font-semibold opacity-90">Price</div>
               <div className="text-lg font-bold">Rs. {formattedPrice}{listing.type === "rent" ? <span className="text-xs">/mo</span> : ""}</div>
-            </div>
-          </div>
-
-          {/* Trending Badge */}
-          <div className="absolute bottom-3 right-3 z-20">
-            <div className="rounded-lg bg-black/48 px-2.5 py-1.5 backdrop-blur-sm">
-              <div className="flex items-center gap-1 text-white text-xs">
-                <TrendingUp className="w-3 h-3 text-gold-300" />
-                <span>High Demand</span>
-              </div>
             </div>
           </div>
         </div>

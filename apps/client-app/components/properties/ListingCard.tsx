@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Bed, Bath, Maximize, MapPin } from "lucide-react";
+import { Bed, Bath, Maximize, MapPin, Crown } from "lucide-react";
 import { PropertyListing } from "@repo/validators";
 
 export default function ListingCard({ listing }: {listing:PropertyListing}) {
@@ -21,16 +21,19 @@ export default function ListingCard({ listing }: {listing:PropertyListing}) {
           <div className="flex h-full w-full items-center justify-center bg-[var(--ek-bg-card-soft)] text-sm text-[var(--ek-text-muted)] dark:bg-[var(--ek-dark-elevated)] dark:text-[var(--ek-dark-soft)]">No Image</div>
         )}
 
-        {/* Price + Category bar — flex prevents overlap on narrow cards */}
-        <div className="absolute inset-x-4 top-4 flex items-start justify-between gap-2">
-          <div className="shrink-0 rounded-full bg-[rgba(255,253,248,0.94)] px-4 py-1.5 text-sm font-bold text-[var(--ek-gold-text)] shadow-md ring-1 ring-[var(--ek-border-soft)] backdrop-blur-sm dark:bg-[rgba(33,28,20,0.88)] dark:text-[var(--ek-dark-gold)] dark:ring-[var(--ek-dark-border)]">
-            Rs. {formattedPrice} {listing.type === "rent" ? "/mo" : ""}
-          </div>
-
-          <div className="max-w-[50%] truncate rounded-lg bg-black/48 px-3 py-1 text-xs font-medium uppercase tracking-wider text-white backdrop-blur-sm">
-            {listing.category?.name}
-          </div>
+        {/* Price badge */}
+        <div className="absolute left-4 top-4 rounded-full bg-[rgba(255,253,248,0.94)] px-4 py-1.5 text-sm font-bold text-[var(--ek-gold-text)] shadow-md ring-1 ring-[var(--ek-border-soft)] backdrop-blur-sm dark:bg-[rgba(33,28,20,0.88)] dark:text-[var(--ek-dark-gold)] dark:ring-[var(--ek-dark-border)]">
+          Rs. {formattedPrice} {listing.type === "rent" ? "/mo" : ""}
         </div>
+
+        {/* Premium crown — only for featured listings (same gold styling as PremiumListingCard) */}
+        {listing.isFeatured && (
+          <div className="absolute top-0 right-0 z-20">
+            <div className="relative rounded-bl-xl bg-[rgba(255,253,248,0.92)] px-2.5 py-2 text-[var(--ek-gold-text)] shadow-sm ring-1 ring-[var(--ek-border-soft)] backdrop-blur-sm dark:bg-[rgba(42,36,27,0.86)] dark:text-[var(--ek-dark-gold)] dark:ring-[var(--ek-dark-border)]">
+              <Crown className="w-4 h-4" />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Info Section */}

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { SVGProps } from "react";
 import {
   ArrowUpRight,
   Building,
@@ -13,21 +14,43 @@ import {
   Key,
   LandPlot,
   Linkedin,
+  Mail,
   Phone,
   Search,
   Shield,
   Store,
-  Twitter,
   UserPlus,
   Youtube,
 } from "lucide-react";
 
+function XLogo(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
+
+function ThreadsLogo(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.781 3.631 2.695 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Z" />
+    </svg>
+  );
+}
+
 const socialLinks = [
   { label: "Facebook", href: "#", icon: Facebook },
-  { label: "Instagram", href: "#", icon: Instagram },
-  { label: "Twitter", href: "#", icon: Twitter },
-  { label: "YouTube", href: "#", icon: Youtube },
-  { label: "LinkedIn", href: "#", icon: Linkedin },
+  { label: "Instagram", href: "https://www.instagram.com/ek_pratishat", icon: Instagram },
+  { label: "X", href: "https://x.com/ekpratishat", icon: XLogo },
+  { label: "Threads", href: "https://www.threads.com/@ek_pratishat?xmt=AQG0-GUE39y0Z1f5q6MluhmS6sycaBeh_Q3c79HBDYk6-0Q", icon: ThreadsLogo },
+  { label: "YouTube", href: "https://www.youtube.com/@ekpratishat", icon: Youtube },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/ek-pratishat-real-estate-pvt-ltd/?viewAsMember=true", icon: Linkedin },
+];
+
+const contactItems = [
+  { label: "Call us", value: "97120 68341 / 97120 68342", href: "tel:+9779712068341", icon: Phone },
+  { label: "Email", value: "hello@ekpratishat.com", href: "mailto:hello@ekpratishat.com", icon: Mail },
 ];
 
 const footerColumns = [
@@ -105,16 +128,36 @@ export default function Footer() {
         <div className="relative z-10 mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
           <div className="grid gap-7 border-b border-[var(--ek-dark-border)] py-9 dark:border-[var(--ek-border-soft)] lg:grid-cols-[minmax(0,0.9fr)_minmax(320px,0.55fr)] lg:items-start lg:gap-12">
             <div>
-              <p className="mb-3 text-[10px] font-black uppercase tracking-[0.34em] text-[var(--ek-dark-gold)] dark:text-[var(--ek-gold-text)]">
+              {/* <p className="mb-3 text-[10px] font-black uppercase tracking-[0.34em] text-[var(--ek-dark-gold)] dark:text-[var(--ek-gold-text)]">
                 Ekpratishat Real Estate
-              </p>
+              </p> */}
               <h2 className="max-w-3xl text-2xl font-black leading-tight tracking-tight text-[var(--ek-dark-text)] dark:text-[var(--ek-text-primary)] sm:text-4xl lg:text-[2.5rem]">
-                Property decisions made clearer.
+                Real Estate!{" "}
+                <span className="text-[var(--ek-dark-gold)] dark:text-[var(--ek-gold)]">Ekpratishat</span>{" "}
+                भए पुग्छ।
               </h2>
 
-              <p className="mt-3 text-sm font-bold text-[var(--ek-dark-gold)] dark:text-[var(--ek-gold-text)]">
-                &ldquo;एक प्रतिशत - उत्कृष्ट सेवा, उत्तम कारोबार।&rdquo;
-              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                {contactItems.map(({ label, value, href, icon: Icon }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    className="inline-flex items-center gap-3 rounded-2xl border border-[var(--ek-dark-border)] bg-[rgba(255,255,255,0.035)] px-4 py-2.5 transition-colors hover:border-[var(--ek-dark-border-strong)] dark:border-[var(--ek-border-soft)] dark:bg-[rgba(255,253,248,0.55)] dark:hover:border-[var(--ek-border-strong)]"
+                  >
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--ek-dark-border)] text-[var(--ek-dark-gold)] dark:border-[var(--ek-border-soft)] dark:text-[var(--ek-gold-text)]">
+                      <Icon className="h-4 w-4" aria-hidden="true" />
+                    </span>
+                    <span className="flex flex-col leading-tight">
+                      <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[var(--ek-dark-soft)] dark:text-[var(--ek-text-muted)]">
+                        {label}
+                      </span>
+                      <span className="text-sm font-black text-[var(--ek-dark-text)] dark:text-[var(--ek-text-primary)]">
+                        {value}
+                      </span>
+                    </span>
+                  </a>
+                ))}
+              </div>
 
               <div className="mt-5 flex w-fit flex-wrap items-center gap-x-4 gap-y-2 rounded-2xl border border-[var(--ek-dark-border)] bg-[rgba(255,255,255,0.035)] px-4 py-3 shadow-[0_18px_36px_rgba(0,0,0,0.18)] dark:border-[var(--ek-border-soft)] dark:bg-[rgba(255,253,248,0.50)] dark:shadow-[0_14px_34px_rgba(15,23,42,0.05)]">
                 <span className="text-[10px] font-black uppercase tracking-[0.22em] text-[var(--ek-dark-gold)] dark:text-[var(--ek-gold-text)]">
@@ -134,6 +177,8 @@ export default function Footer() {
                   <a
                     key={label}
                     href={href}
+                    target={href === "#" ? undefined : "_blank"}
+                    rel={href === "#" ? undefined : "noopener noreferrer"}
                     aria-label={label}
                     className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--ek-dark-border)] bg-[rgba(255,255,255,0.045)] text-[var(--ek-dark-muted)] transition-colors hover:border-[var(--ek-dark-border-strong)] hover:bg-white/[0.075] hover:text-[var(--ek-dark-gold)] dark:border-[var(--ek-border-soft)] dark:bg-[rgba(255,253,248,0.68)] dark:text-[var(--ek-text-secondary)] dark:hover:border-[var(--ek-border-strong)] dark:hover:bg-[var(--ek-bg-card)] dark:hover:text-[var(--ek-gold-text)]"
                   >
@@ -144,8 +189,11 @@ export default function Footer() {
             </div>
 
             <div className="rounded-2xl border border-[var(--ek-dark-border)] bg-[rgba(255,255,255,0.04)] p-5 shadow-[0_18px_42px_rgba(0,0,0,0.20)] dark:border-[var(--ek-border-soft)] dark:bg-[rgba(255,253,248,0.62)] dark:shadow-[0_16px_36px_rgba(15,23,42,0.06)]">
-              <p className="mb-3 text-[10px] font-black uppercase tracking-[0.22em] text-[var(--ek-dark-soft)] dark:text-[var(--ek-text-muted)]">
+              <p className="mb-2 text-[10px] font-black uppercase tracking-[0.22em] text-[var(--ek-dark-soft)] dark:text-[var(--ek-text-muted)]">
                 Get the app
+              </p>
+              <p className="mb-4 text-sm leading-relaxed text-[var(--ek-dark-muted)] dark:text-[var(--ek-text-secondary)]">
+                Browse listings, track valuations and talk to advisors on the go.
               </p>
               <div className="flex flex-wrap gap-2">
                 <a href="#" className="inline-block w-fit transition-transform hover:-translate-y-0.5">
