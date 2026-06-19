@@ -89,7 +89,7 @@ body {
 
   body {
     @apply text-secondary-900 antialiased transition-colors duration-200;
-    font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-sans), var(--font-devanagari), ui-sans-serif, system-ui, sans-serif;
     background-color: var(--ek-bg-main);
     background-image:
       radial-gradient(circle at top left, rgba(214, 169, 54, 0.08), transparent 18%),

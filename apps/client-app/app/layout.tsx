@@ -1,10 +1,45 @@
 import type { Metadata } from "next";
+import { Ubuntu, Ubuntu_Mono } from "next/font/google";
+import localFont from "next/font/local";
 
 import "./globals.css";
 import { ClientProvider } from "./clientProvider";
 import { Toaster } from "sonner";
 import Script from "next/script";
 import { PERF_DETECT_SCRIPT } from "@repo/perf-detection";
+
+/*
+  Self-hosted brand fonts (shipped with the build via next/font, so every
+  device renders identically instead of falling back to its own system font).
+  This pins the exact typefaces the UI was built and tuned against:
+
+    --font-sans        Ubuntu      — body + headings (the whole Latin UI)
+    --font-mono        Ubuntu Mono — uppercase eyebrow labels (font-mono)
+    --font-devanagari  Lohit       — Nepali (Devanagari) glyphs
+
+  Ubuntu ships only 300/400/500/700; the design's 600/800/900 weight-match
+  down to 700 exactly as the prior system-font rendering did, so the heavy
+  headings (font-black/extrabold) and the hero metrics do not shift.
+*/
+const fontSans = Ubuntu({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
+  variable: "--font-sans",
+  display: "swap",
+});
+const fontMono = Ubuntu_Mono({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-mono",
+  display: "swap",
+});
+// Lohit is not on Google Fonts, so it's self-hosted from app/fonts/.
+const fontDevanagari = localFont({
+  src: "./fonts/Lohit-Devanagari.ttf",
+  weight: "400",
+  variable: "--font-devanagari",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -51,7 +86,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${fontSans.variable} ${fontMono.variable} ${fontDevanagari.variable}`}
+      suppressHydrationWarning
+    >
       <body>
         {/*
           Pre-paint performance detection. Runs synchronously in <head>

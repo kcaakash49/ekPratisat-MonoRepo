@@ -13,16 +13,18 @@ export default function PropertyInfo({property}:PropertyDetailClientProps){
     const specifications = [
     { label: "Property Type", value: property.type || "Not specified", icon: HomeIcon },
     { label: "Category", value: property.category?.name || "Not specified", icon: BuildingOfficeIcon },
-    { label: "Bedrooms", value: property.noOfBedRooms || "N/A", icon: HomeIcon },
-    { label: "Bathrooms", value: property.noOfRestRooms || "N/A", icon: HomeIcon },
-    { label: "Land Area (sq. MTR)", value: property.landArea || "N/A", icon: ArrowsPointingOutIcon },
-    { label: "Floor Area (sq. ft.)", value: property.floorArea || "N/A", icon: ArrowsPointingOutIcon },
-    { label: "Number of Floors", value: property.noOfFloors || "N/A", icon: BuildingOfficeIcon },
-    { label: "Floor Level", value: property.floorLevel || "N/A", icon: CursorArrowRippleIcon },
-    { label: "Property Age (years)", value: property.propertyAge || "N/A", icon: CalendarIcon },
-    { label: "Facing Direction", value: property.facingDirection || "N/A", icon: HomeIcon },
-    { label: "Road Size (ft.)", value: property.roadSize || "N/A", icon: ArrowsPointingOutIcon },
-  ];
+    { label: "Bedrooms", value: property.noOfBedRooms, icon: HomeIcon },
+    { label: "Bathrooms", value: property.noOfRestRooms, icon: HomeIcon },
+    { label: "Land Area (sq. MTR)", value: property.landArea, icon: ArrowsPointingOutIcon },
+    { label: "Floor Area (sq. ft.)", value: property.floorArea, icon: ArrowsPointingOutIcon },
+    { label: "Number of Floors", value: property.noOfFloors, icon: BuildingOfficeIcon },
+    { label: "Floor Level", value: property.floorLevel, icon: CursorArrowRippleIcon },
+    { label: "Property Age (years)", value: property.propertyAge, icon: CalendarIcon },
+    { label: "Facing Direction", value: property.facingDirection, icon: HomeIcon },
+    { label: "Road Size (ft.)", value: property.roadSize, icon: ArrowsPointingOutIcon },
+  ].filter((spec) => spec.value);
+  // Hide specs with no value (empty/null), like the admin SpecItem does — but
+  // keep "0" since it's meaningful (e.g. Property Age 0 = brand new, Floor Level 0 = ground).
 
    const formattedDate = new Date(property.createdAt).toLocaleDateString("en-US", {
     year: "numeric",
