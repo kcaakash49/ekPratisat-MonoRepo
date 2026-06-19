@@ -404,12 +404,13 @@ const Navbar = () => {
   //   - With the static handoff (balanced/lite), follow `homeLogoOwner`
   //     exactly: visible once the handoff state machine has settled
   //     into "navbar".
-  //   - On non-home routes, follow `isSolid` (legacy behavior).
+  //   - On non-home routes, always show the logo (there's no hero to
+  //     hand off from); only the navbar background reacts to scroll.
   const showStaticNavLogo = isHomePage
     ? shouldUseScrollLogo
       ? isOpen
       : homeLogoOwner === "navbar"
-    : isSolid;
+    : true;
   const showHandoffNavLogo =
     isHomePage && shouldUseStaticLogoHandoff && homeLogoOwner === "transitioning";
   const shouldShowAuthControl = mounted && !isLoading;
@@ -541,7 +542,7 @@ const Navbar = () => {
       */}
       {shouldUseScrollLogo ? <ScrollLogoTransition isMenuOpen={isOpen} /> : null}
 
-      <div className="relative z-50 mx-auto flex h-24 w-full max-w-7xl items-center justify-between px-5 sm:h-28 sm:px-6 lg:px-8">
+      <div className="relative z-50 mx-auto flex h-24 w-full max-w-[1500px] items-center justify-between px-5 sm:h-28 sm:px-6 lg:px-8">
         <Link
           href="/"
           className="flex min-w-0 shrink-0 items-center rounded-lg focus:outline-none focus-visible:outline-none"

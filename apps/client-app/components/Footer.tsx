@@ -125,7 +125,7 @@ export default function Footer() {
       >
         <div className="absolute inset-x-0 top-0 h-0.5 bg-[linear-gradient(90deg,transparent,rgba(229,184,62,0.42),rgba(255,235,170,0.88),rgba(229,184,62,0.42),transparent)]" />
 
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+        <div className="relative z-10 mx-auto w-full max-w-[1500px] px-5 sm:px-6 lg:px-8">
           <div className="grid gap-7 border-b border-[var(--ek-dark-border)] py-9 dark:border-[var(--ek-border-soft)] lg:grid-cols-[minmax(0,0.9fr)_minmax(320px,0.55fr)] lg:items-start lg:gap-12">
             <div>
               {/* <p className="mb-3 text-[10px] font-black uppercase tracking-[0.34em] text-[var(--ek-dark-gold)] dark:text-[var(--ek-gold-text)]">
@@ -249,7 +249,7 @@ export default function Footer() {
 
       <section className="sticky bottom-0 z-0 min-h-[var(--footer-reveal-min)] overflow-hidden bg-[linear-gradient(160deg,#fffaf0_0%,#f7f0df_58%,#eadcc4_100%)] text-[var(--ek-text-primary)] [--footer-reveal-min:380px] max-sm:[--footer-reveal-min:440px] dark:bg-[linear-gradient(160deg,#18150f_0%,#211a12_56%,#11100c_100%)] dark:text-[var(--ek-dark-text)] lg:[--footer-reveal-min:340px]">
         <div
-          className="relative z-10 mx-auto flex min-h-[var(--footer-reveal-min)] w-full max-w-7xl flex-col justify-between gap-4 px-4 pb-5 sm:gap-6 sm:px-6 sm:pb-7 lg:px-8"
+          className="relative z-10 mx-auto flex min-h-[var(--footer-reveal-min)] w-full max-w-[1500px] flex-col justify-between gap-4 px-4 pb-5 sm:gap-6 sm:px-6 sm:pb-7 lg:px-8"
           style={{
             paddingTop:
               "calc(clamp(1.25rem, 3svh, 2rem) + max(0px, calc(var(--site-nav-height) + 0.75rem + var(--footer-reveal-min) - 100svh)))",
