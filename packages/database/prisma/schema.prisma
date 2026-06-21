@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id            String  @unique @default(uuid())
+  id            String  @id @default(uuid())
   name          String
   contact       String  @unique
   secondContact String?
@@ -50,8 +50,8 @@ model User {
   createdAt           DateTime                @default(now())
   updatedAt           DateTime?               @updatedAt
   favourites          Favourite[]
-  leadsManaged               Lead[] @relation("LeadsManagedBy")
-  leadsUpdated        Lead[]          @relation("LeadUpdatedBy")
+  leadsManaged        Lead[]                  @relation("LeadsManagedBy")
+  leadsUpdated        Lead[]                  @relation("LeadUpdatedBy")
   notificationEvents  NotificationEvent[]
   notificationReceive NotificationRecipient[]
 
@@ -101,7 +101,7 @@ model GeoZone {
 }
 
 model UserDocument {
-  id           String       @unique @default(uuid())
+  id           String       @id @default(uuid())
   userId       String
   user         User         @relation("UserDocument", fields: [userId], references: [id])
   type         DocumentType
@@ -113,7 +113,7 @@ model UserDocument {
 }
 
 model PartnerWardAssignment {
-  id         String   @unique @default(uuid())
+  id         String   @id @default(uuid())
   partnerId  String
   wardId     String
   partner    User     @relation("UserWards", fields: [partnerId], references: [id])
@@ -125,7 +125,7 @@ model PartnerWardAssignment {
 }
 
 model Category {
-  id                       String     @unique @default(uuid())
+  id                       String     @id @default(uuid())
   name                     String
   imageUrl                 String
   properties               Property[]
@@ -145,7 +145,7 @@ model Category {
 }
 
 model Property {
-  id              String                               @unique @default(uuid())
+  id              String                               @id @default(uuid())
   propertyCode    Int                                  @unique @default(autoincrement())
   title           String
   description     String
@@ -177,6 +177,7 @@ model Property {
   updatedAt       DateTime                             @updatedAt
   favourites      Favourite[]
   leads           Lead[]
+  amnetites       Amneties[]
   leadNotes       Json?
   features        Json?
 
@@ -202,7 +203,7 @@ model Favourite {
 }
 
 model District {
-  id             String         @unique @default(uuid())
+  id             String         @id @default(uuid())
   name           String         @unique
   municipalities Municipality[]
   addedById      String
@@ -213,7 +214,7 @@ model District {
 }
 
 model Municipality {
-  id         String   @unique @default(uuid())
+  id         String   @id @default(uuid())
   name       String
   district   District @relation(fields: [districtId], references: [id])
   districtId String
@@ -226,7 +227,7 @@ model Municipality {
 }
 
 model Ward {
-  id             String                  @unique @default(uuid())
+  id             String                  @id @default(uuid())
   name           String
   municipalityId String
   municipality   Municipality            @relation(fields: [municipalityId], references: [id])
@@ -240,7 +241,7 @@ model Ward {
 }
 
 model Image {
-  id         String   @unique @default(uuid())
+  id         String   @id @default(uuid())
   url        String
   propertyId String
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
@@ -293,20 +294,20 @@ enum LeadStatus {
 }
 
 model Lead {
-  id          String     @unique @default(uuid())
-  leadCode    Int @unique @default(autoincrement())
+  id          String     @id @default(uuid())
+  leadCode    Int        @unique @default(autoincrement())
   name        String?
   contact     String
   email       String?
   source      String
   clientType  ClientType
   propertyId  String?
-  property    Property?   @relation(fields: [propertyId], references: [id])
+  property    Property?  @relation(fields: [propertyId], references: [id])
   imageUrl    String?
   dealType    DealType
   coordinates String?
   managedById String?
-  managedBy   User?      @relation("LeadsManagedBy",fields: [managedById], references: [id])
+  managedBy   User?      @relation("LeadsManagedBy", fields: [managedById], references: [id])
   notes       Json?
   followUpAt  DateTime?
   status      LeadStatus @default(NEW)
@@ -317,29 +318,36 @@ model Lead {
   remarks     String?
 }
 
-
 model NotificationEvent {
-  id          String   @id @default(uuid())
-  senderId    String   
-  title       String   
-  body        String
-  link        String?  
-  createdAt   DateTime @default(now())
+  id        String   @id @default(uuid())
+  senderId  String
+  title     String
+  body      String
+  link      String?
+  createdAt DateTime @default(now())
 
   // Relations
-  sender      User     @relation(fields: [senderId], references: [id])
-  recipients  NotificationRecipient[]
+  sender     User                    @relation(fields: [senderId], references: [id])
+  recipients NotificationRecipient[]
 }
 
 model NotificationRecipient {
-  id                  String   @id @default(uuid())
+  id                  String            @id @default(uuid())
   notificationEventId String
-  recipientId         String   
-  isDelivered         Boolean  @default(false)
-  isRead              Boolean  @default(false)
+  recipientId         String
+  isDelivered         Boolean           @default(false)
+  isRead              Boolean           @default(false)
   readAt              DateTime?
   event               NotificationEvent @relation(fields: [notificationEventId], references: [id], onDelete: Cascade)
   recipient           User              @relation(fields: [recipientId], references: [id], onDelete: Cascade)
 
   @@unique([notificationEventId, recipientId]) // Guarantees a user doesn't get the same notification twice
+}
+
+model Amneties {
+  id         String    @id @default(uuid())
+  name       String    @unique
+  icon       String
+  properties Property[]
+  createdAt  DateTime  @default(now())
 }
