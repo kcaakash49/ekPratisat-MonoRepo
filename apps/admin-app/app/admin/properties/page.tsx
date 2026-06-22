@@ -136,8 +136,7 @@ export default function PropertiesListPage() {
         setInput("");
         startTransition(() => router.push(pathname));
     };
-
-    console.log(data);
+    
     const listings = data.items;
     const { totalPages, page: currentPage } = data.meta;
 

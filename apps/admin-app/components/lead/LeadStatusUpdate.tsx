@@ -60,6 +60,7 @@ export default function LeadStatusUpdate({ lead }: { lead: LeadDetailType }) {
     ) => {
         const { name, value } = e.target;
         if (name === "followUpAt") {
+
             setForm(prev => ({
                 ...prev,
                 [name]: value ? new Date(value) : null
@@ -68,9 +69,9 @@ export default function LeadStatusUpdate({ lead }: { lead: LeadDetailType }) {
         }
 
         if (name === "status") {
-            setError((prev:any) => ({
+            setError((prev: any) => ({
                 ...prev,
-                [name]:""
+                [name]: ""
             }))
             setForm({
                 status: value,
@@ -122,10 +123,10 @@ export default function LeadStatusUpdate({ lead }: { lead: LeadDetailType }) {
                     queryKey: ["leads"]
                 });
                 queryClient.invalidateQueries({
-                    queryKey:["user-leads"]
+                    queryKey: ["user-leads"]
                 })
                 queryClient.invalidateQueries({
-                    queryKey:["followups-today"]
+                    queryKey: ["followups-today"]
                 })
 
                 setOpen(false);
@@ -135,6 +136,14 @@ export default function LeadStatusUpdate({ lead }: { lead: LeadDetailType }) {
     };
 
     const isConfirmButtonDisabled = isPending || userInput.trim() === "";
+
+    const toDateTimeLocal = (date: Date | null) => {
+        if (!date) return "";
+
+        const pad = (n: number) => String(n).padStart(2, "0");
+
+        return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    };
 
     // Available roles to loop through in our dropdown
     const availableStatus: { value: LeadStatus; label: string }[] = [
@@ -209,15 +218,10 @@ export default function LeadStatusUpdate({ lead }: { lead: LeadDetailType }) {
                                     <input
                                         type="datetime-local"
                                         name="followUpAt"
-                                        value={
-                                            form.followUpAt
-                                                ? new Date(form.followUpAt).toISOString().slice(0, 16)
-                                                : ""
-                                        }
+                                        value={toDateTimeLocal(form.followUpAt)}
+                                        min={toDateTimeLocal(new Date())}
                                         required
-                                        min={new Date().toISOString().slice(0, 16)}
                                         className="w-full px-3 py-2 border border-secondary-300 dark:border-secondary-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100"
-                                        // Convert the string from the picker into a valid JS Date object for your state
                                         onChange={handleChange}
                                     />
                                     {error.followUpAt && <DisplayErrorMessage text={error.followUpAt} />}

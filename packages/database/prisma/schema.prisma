@@ -177,7 +177,7 @@ model Property {
   updatedAt       DateTime                             @updatedAt
   favourites      Favourite[]
   leads           Lead[]
-  amnetites       Amneties[]
+  amenities      Amenities[]
   leadNotes       Json?
   features        Json?
 
@@ -344,7 +344,7 @@ model NotificationRecipient {
   @@unique([notificationEventId, recipientId]) // Guarantees a user doesn't get the same notification twice
 }
 
-model Amneties {
+model Amenities {
   id         String    @id @default(uuid())
   name       String    @unique
   icon       String

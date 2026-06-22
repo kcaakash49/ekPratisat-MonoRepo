@@ -25,23 +25,6 @@ export async function updateListingFunction({
 }) {
   const limit = pLimit(MAX_CONCURRENT_IMAGES);
 
-  // const imageUrls = await Promise.all(
-  //   imageFiles.map((file) =>
-  //     limit(async () => {
-  //       const safeName = path.basename(file.originalname);
-  //       const finalFilename = `${Date.now()}-${safeName.replace(path.extname(safeName), ".webp")}`;
-  //       const filePath = path.join(IMAGE_DIR, finalFilename);
-
-  //       await sharp(Buffer.from(file.buffer))
-  //         .resize(1200)
-  //         .toFormat("webp", { quality: 90 })
-  //         .toFile(filePath);
-
-  //       return `/image/propertyImage/${finalFilename}`;
-  //     }),
-  //   ),
-  // );
-
    const imageUrls = await Promise.all(
     imageFiles.map((file) =>
       limit(async () => {
@@ -182,6 +165,19 @@ export async function updateListingFunction({
           })),
         });
       }
+
+      const targetingAmenities: string[] = Array.isArray(data.amenities) 
+        ? data.amenities 
+        : [];
+
+      await tx.property.update({
+        where: { id: body.propertyId },
+        data: {
+          amenities: {
+            set: targetingAmenities.map((id: string) => ({ id })),
+          },
+        },
+      });
 
       return propertyRow;
     });

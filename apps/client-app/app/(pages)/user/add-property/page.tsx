@@ -33,7 +33,8 @@ import { revalidateTagPathAction } from "../../../../actions/revalidateAction";
         tole: "",
         lat: null,
         lng: null,
-        images: []
+        images: [],
+        amenities:[]
     }
 
 

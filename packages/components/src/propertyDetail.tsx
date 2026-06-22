@@ -24,6 +24,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import DeletePropertyButton from "./deletePropertyButton";
 import AddPropertyNoteButton from "./addPropertyNoteButton";
 import NotesCard from "./notesCard";
+import DynamicIcon from "./DynamicIcon";
 
 
 export default function AdminPropertyDetailComponent() {
@@ -142,6 +143,7 @@ export default function AdminPropertyDetailComponent() {
   };
 
   const isPending = verifyPending || activePending || featurePending;
+  console.log(property);
 
   return (
     <div className="flex flex-col min-h-screen overflow-x-hidden bg-white dark:bg-secondary-900">
@@ -250,8 +252,8 @@ export default function AdminPropertyDetailComponent() {
           <button
             onClick={handleActiveToggle}
             className={`inline-flex items-center gap-1.5 px-3 py-2 border rounded-xl text-xs font-semibold transition-all duration-200 ${!property.isActive
-                ? "border-amber-500 text-amber-700 bg-amber-50/50 dark:text-amber-400 dark:bg-amber-950/20 animate-pulse shadow-sm shadow-amber-500/10" // 🔥 Staff attention focus state when inactive
-                : "border-secondary-200 dark:border-secondary-800 text-secondary-700 dark:text-secondary-300 hover:bg-secondary-50 dark:hover:bg-secondary-800" // Default neutral state when active
+              ? "border-amber-500 text-amber-700 bg-amber-50/50 dark:text-amber-400 dark:bg-amber-950/20 animate-pulse shadow-sm shadow-amber-500/10" // 🔥 Staff attention focus state when inactive
+              : "border-secondary-200 dark:border-secondary-800 text-secondary-700 dark:text-secondary-300 hover:bg-secondary-50 dark:hover:bg-secondary-800" // Default neutral state when active
               }`}
           >
             {/* Optional: Add a small visual dot indicator to enhance the layout anchor */}
@@ -396,7 +398,7 @@ export default function AdminPropertyDetailComponent() {
                 {property.description}
               </p>
             </div>
-            <NotesCard notes={property.features} header="Property Features" subheader="Specific feature of the property"/>
+            <NotesCard notes={property.features} header="Property Features" subheader="Specific feature of the property" />
             {/* Map Section */}
             {typeof (property as any).lat === "number" && typeof (property as any).lng === "number" ? (
               <div className="space-y-4">
@@ -423,7 +425,34 @@ export default function AdminPropertyDetailComponent() {
           </div>
         </div>
       </div>
-      <NotesCard notes={property.leadNotes} header="Acquisition and Owner Lead Info" subheader="Offline parameters caputred by field agent"/>
+      <NotesCard notes={property.leadNotes} header="Acquisition and Owner Lead Info" subheader="Offline parameters caputred by field agent" />
+      {
+        property.amenities.length > 0 && (
+      <div className="mt-8 p-6 border border-secondary-100 dark:border-secondary-800 rounded-2xl bg-white dark:bg-secondary-900/40 max-w-7xl mx-auto">
+        <h3 className="text-base font-bold text-secondary-900 dark:text-secondary-100 mb-4">
+          What this place offers
+        </h3>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {property.amenities.map((amenity) => (
+            <div key={amenity.id} className="flex items-center gap-3">
+
+              {/* 🌟 Dynamically renders the Lucide icon based on the DB string string */}
+              <DynamicIcon
+                name={amenity.icon}
+                className="w-5 h-5 text-primary-600 dark:text-primary-400"
+              />
+
+              <span className="text-sm font-medium">
+                {amenity.name}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+        )
+      }
     </div>
   );
 }

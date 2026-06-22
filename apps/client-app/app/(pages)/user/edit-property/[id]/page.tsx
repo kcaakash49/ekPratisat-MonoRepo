@@ -47,6 +47,8 @@ export default function EditPropertyPage() {
         );
     }
 
+    const amenities = property.amenities ? property.amenities.map((amenity) => amenity.id) : [];
+
     const initialData: PropertyFormdata = {
         title: property.title,
         description: property.description,
@@ -71,7 +73,8 @@ export default function EditPropertyPage() {
         roadSize: property.roadSize ? property.roadSize : "",
         floorLevel: property.floorLevel ? property.floorLevel : "",
         verified: property.verified,
-        images: property.images
+        images: property.images,
+        amenities
     }
 
     const userRole = user.role;

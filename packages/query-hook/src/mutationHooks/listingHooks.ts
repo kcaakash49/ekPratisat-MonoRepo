@@ -305,3 +305,24 @@ export const useAddPropertyOwnerInfo = () => {
     },
   });
 }
+
+
+export const useAddAmenity = () => {
+  return useMutation({
+    mutationFn: async (payload : {name:string,icon:string}) => {
+       return authenticatedFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/amenities/add`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload)
+        },
+      );
+    },
+     onError: (error) => {
+      toast.error(error.message || "Operation Failed!!!");
+    }
+  })
+}

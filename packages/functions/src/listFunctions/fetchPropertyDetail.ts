@@ -27,6 +27,7 @@ export async function fetchPropertyDetal(id: string) {
         roadSize: true,
         propertyCode:true,
         floorLevel: true,
+        amenities:true,
         isFeatured:true,
         leadNotes:true,
         images: {

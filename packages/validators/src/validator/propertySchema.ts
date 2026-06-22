@@ -23,6 +23,7 @@ export const createPropertySchema = z.object({
   images: z.array(z.instanceof(File)).min(1, "At least one image is required").optional(),
   lat: z.coerce.number().refine((v) => v >= -90 && v <= 90, "Invalid latitude"),
   lng: z.coerce.number().refine((v) => v >= -180 && v <= 180, "Invalid longitude"),
+  amenities:z.array(z.string()).nullable()
 });
 
 

@@ -66,7 +66,8 @@ export default function AddProperty() {
         tole: "",
         lat: null,
         lng: null,
-        images: []
+        images: [],
+        amenities:[]
     }
 
     return (

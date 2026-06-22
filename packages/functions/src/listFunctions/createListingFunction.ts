@@ -75,6 +75,7 @@ export async function createListingFunction({
 );
 
   const { images: _images, lat, lng, ...data } = parsed.data;
+  console.log(data);
 
   try {
     const listing = await prisma.$transaction(async (tx) => {
@@ -172,6 +173,17 @@ export async function createListingFunction({
           })),
         });
       }
+
+      if (data.amenities && Array.isArray(data.amenities) && data.amenities.length > 0) {
+      await tx.property.update({
+        where: { id: propertyRow.id },
+        data: {
+          amenities: {
+            connect: data.amenities.map((id: string) => ({ id })),
+          },
+        },
+      });
+    }
 
       return propertyRow;
     });

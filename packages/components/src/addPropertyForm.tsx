@@ -3,10 +3,10 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect, useRef } from "react";
 import { CategoryModal } from "./categoryModal";
 import { LocationModal } from "./locationModal";
-import { useCreateProperty, useGetCategories, useGetLocationTree } from "@repo/query-hook";
+import { useCreateProperty, useGetAmenities,useGetCategories, useGetLocationTree } from "@repo/query-hook";
 import { toast } from "sonner";
 import { CreatePropertySchema, PropertyFormdata } from "@repo/validators";
-import { Loader2, Plus, Trash2 } from "lucide-react";
+import { Check, Loader2, Plus, Trash2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
 // Mapbox
@@ -14,8 +14,13 @@ import mapboxgl from "mapbox-gl";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import { compressImage } from "./utils/image-compression";
 import { Button } from "@repo/ui/button";
+import AddAmenity from "./CreateAmenityModal";
 
-
+type Amenity = {
+  id: string;
+  name: string;
+  icon: string;
+}
 type Props = {
   user: string;
   initialData: PropertyFormdata;
@@ -291,6 +296,8 @@ function MapPicker({
     </div>
   );
 }
+
+
 export const AddPropertyForm: React.FC<Props> = ({ initialData,
   onSubmit,
   isEditing = false,
@@ -335,6 +342,9 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
 
   const { data: categories, isLoading: categoryLoading } = useGetCategories();
   const { data: locations, isLoading: locationLoading } = useGetLocationTree();
+  const { data: amenities, isLoading: amnetiesLaoding } = useGetAmenities();
+  console.log(amenities);
+
 
 
   const selectedCategory = categories?.result.find((c) => c.id === formData.categoryId);
@@ -441,9 +451,22 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
     });
   };
 
+  const handleToggleAmenity = (amenityId: string) => {
+    setFormData((prev) => {
+      const isAlreadySelected = prev.amenities.includes(amenityId);
+
+      return {
+        ...prev,
+        amenities: isAlreadySelected
+          ? prev.amenities.filter((id) => id !== amenityId) // Remove if clicked again
+          : [...prev.amenities, amenityId], // Add if not present
+      };
+    });
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
+    console.log(formData);
     if (images.length + existingImages.length - deleteImageIds.length === 0) {
       toast.error("Please add atleast 1 image");
       return;
@@ -456,7 +479,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
 
     const cleanedData = Object.fromEntries(
       Object.entries(formData)
-        .filter(([key]) => !["districtId", "municipalityId", "features"].includes(key))
+        .filter(([key]) => !["districtId", "municipalityId", "features","amenities"].includes(key))
         .map(([key, value]) => [key, value === "" ? null : value])
     ) as CreatePropertySchema;
 
@@ -471,6 +494,10 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
 
     if (deleteImageIds.length > 0) {
       form.append("deleteImageIds", JSON.stringify(deleteImageIds));
+    }
+
+    if (formData.amenities.length > 0) {
+      form.append("amenities", JSON.stringify(formData.amenities));
     }
 
     Object.entries(cleanedData).forEach(([key, value]) => {
@@ -609,7 +636,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
           </select>
         </div>
 
-        
+
 
         {/* Category */}
         <div>
@@ -667,18 +694,18 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
 
         {/* Negotiation */}
         <div className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              name="negotiable"
-              id="negotiable"
-              checked={formData.negotiable}
-              onChange={() => setFormData((prev: any) => ({ ...prev, negotiable: !prev.negotiable }))}
-              className="h-4 w-4 accent-primary-600 cursor-pointer"
-            />
-            <label htmlFor="verified" className="font-medium text-secondary-900 dark:text-secondary-50">
-              Is the pricing negotiable?
-            </label>
-          </div>
+          <input
+            type="checkbox"
+            name="negotiable"
+            id="negotiable"
+            checked={formData.negotiable}
+            onChange={() => setFormData((prev: any) => ({ ...prev, negotiable: !prev.negotiable }))}
+            className="h-4 w-4 accent-primary-600 cursor-pointer"
+          />
+          <label htmlFor="verified" className="font-medium text-secondary-900 dark:text-secondary-50">
+            Is the pricing negotiable?
+          </label>
+        </div>
 
         <div className="space-y-6">
           <div className="flex justify-between items-center">
@@ -869,6 +896,75 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
             placeholder="Enter tole/street"
             required
           />
+        </div>
+
+        <div className="flex flex-col space-y-3 p-4 border border-secondary-100 dark:border-secondary-800 rounded-2xl bg-secondary-50/50 dark:bg-secondary-900/20">
+          {/* Header section with your working modal */}
+          <div className="flex justify-between items-center">
+            <div>
+              <label className="block font-semibold text-sm text-secondary-900 dark:text-secondary-100">
+                Property Amenities
+              </label>
+              <p className="text-xs text-secondary-500">Select all amenities available at this location</p>
+            </div>
+            <AddAmenity />
+          </div>
+
+          <hr className="border-secondary-100 dark:border-secondary-800/60" />
+
+          {/* 🔄 Loading State */}
+          {amnetiesLaoding ? (
+            <div className="flex items-center gap-2 py-4 text-xs text-secondary-500">
+              <Loader2 className="w-4 h-4 animate-spin text-primary-500" />
+              <span>Loading dynamic amenities system...</span>
+            </div>
+          ) : amenities.result.length === 0 ? (
+            /* 📭 Empty State */
+            <div className="text-center py-6 border border-dashed border-secondary-200 dark:border-secondary-800 rounded-xl">
+              <p className="text-xs text-secondary-500">No amenities created yet.</p>
+              <p className="text-[11px] text-secondary-400 mt-0.5">Click "Add" above to create your first one.</p>
+            </div>
+          ) : (
+            /* 🎛️ Selectable Box Grid */
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
+              {amenities.result.map((amenity: Amenity) => {
+                const isSelected = formData.amenities?.includes(amenity.id);
+
+                return (
+                  <button
+                    key={amenity.id}
+                    type="button" // 🛡️ Crucial: Prevents parent form submission!
+                    onClick={() => handleToggleAmenity(amenity.id)}
+                    className={`group flex items-center justify-between p-3 rounded-xl border text-left transition-all duration-200 cursor-pointer ${isSelected
+                        ? "border-primary-500 bg-primary-50/40 dark:bg-primary-950/20 ring-1 ring-primary-500"
+                        : "border-secondary-200 dark:border-secondary-800 bg-white dark:bg-secondary-900 hover:border-secondary-300 dark:hover:border-secondary-700"
+                      }`}
+                  >
+                    <div className="flex items-center gap-2.5 overflow-hidden">
+                      {/* Dynamic icon string render fallback */}
+                      <span className="text-base filter grayscale group-hover:grayscale-0 transition-all">
+                        {amenity.icon || "✨"}
+                      </span>
+                      <span className={`text-xs font-medium truncate ${isSelected
+                          ? "text-primary-900 dark:text-primary-300 font-semibold"
+                          : "text-secondary-700 dark:text-secondary-300"
+                        }`}>
+                        {amenity.name}
+                      </span>
+                    </div>
+
+                    {/* Visual indicator checkbox */}
+                    <div className={`w-4 h-4 rounded-md flex items-center justify-center transition-all border ${isSelected
+                        ? "bg-primary-500 border-primary-500 text-white animate-scaleIn"
+                        : "border-secondary-300 dark:border-secondary-700 bg-transparent"
+                      }`}>
+                      {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* NEW: Map Picker */}
@@ -1090,6 +1186,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
 
           )
         }
+
 
 
         {/* Images Upload */}

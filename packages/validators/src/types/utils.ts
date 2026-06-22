@@ -68,6 +68,10 @@ interface ImageType{
   url: string;
 }
 
+interface Amenity {
+  id:string;
+}
+
 export interface PropertyFormdata{
   title: string;
   description: string;
@@ -95,6 +99,7 @@ export interface PropertyFormdata{
   floorLevel?: string;
   images: ImageType[];
   verified?: boolean;
+  amenities:string[];
 };
 
 

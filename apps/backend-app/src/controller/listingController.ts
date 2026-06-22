@@ -61,18 +61,19 @@ export const addProperty = async (req: Request, res: Response) => {
     const user = req.user;
     const body = req.body;
     const files = req.files as Express.Multer.File[];
-
+    
     const normalized = Object.fromEntries(
       Object.entries(req.body).map(([key, value]) => [
         key,
         value === "" ? null : value,
       ]),
     );
-
+    
     const parsed = {
       ...normalized,
       lat: normalized.lat ? Number(normalized.lat) : null,
       lng: normalized.lng ? Number(normalized.lng) : null,
+      amenities:normalized.amenities ? JSON.parse(normalized.amenities as string) as string[] : null,
       verified: normalized.verified === "true",
       negotiable: normalized.negotiable === "true",
       userId: user.id,
@@ -526,6 +527,7 @@ export async function updateProperty(req: Request, res: Response) {
       lat: normalized.lat ? Number(normalized.lat) : null,
       lng: normalized.lng ? Number(normalized.lng) : null,
       // verified: user.role === "admin" && normalized.verified === "true",
+      amenities:normalized.amenities ? JSON.parse(normalized.amenities as string) as string[] : null,
       verified: normalized.verified === "true",
       negotiable: normalized.negotiable === "true",
       deleteImageIds,
@@ -790,5 +792,50 @@ export async function updatePropertyOwnerInfo(req: Request, res: Response) {
     return res.status(500).json({
       message: "Internal Server Error",
     });
+  }
+}
+
+
+//getAmneties
+
+export async function getAmenities(req:Request, res:Response) {
+  try {
+    const result = await prisma.amenities.findMany({
+      select: {
+        id: true,
+        name:true,
+        icon:true
+      }
+    })
+    return res.status(200).json({
+      result,
+      ok:true
+    })
+  } catch (error) {
+    return res.status(500).json({
+      message: "Couldn't process request"
+    })
+  }
+}
+
+//create amneties
+
+export async function addAmenity(req:Request, res:Response) {
+  try {
+    const {name, icon} = req.body;
+    await prisma.amenities.create({
+      data: {
+        name,
+        icon
+      }
+    })
+
+    return res.status(200).json({
+      message: "Amenity added successfully!!!"
+    })
+  } catch (error) {
+    return res.status(200).json({
+      message: "Couldn't process request"
+    })
   }
 }
