@@ -78,14 +78,14 @@ export default function AddAmenity() {
                             <label htmlFor="name" className="text-sm font-medium text-secondary-700 dark:text-secondary-300">
                                 Name <span className="text-red-500">*</span>
                             </label>
-                            <input value={form.name} name="name" required className="w-full px-3 py-2  border  border-secondary-300 dark:border-secondary-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100" placeholder="eg: Balen Shah" onChange={handleChange} />
+                            <input value={form.name} name="name" required className="w-full px-3 py-2  border  border-secondary-300 dark:border-secondary-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100" placeholder="eg: Parking" onChange={handleChange} />
                         </div>
 
                         <div className="flex flex-col space-y-2">
                             <label htmlFor="icon" className="text-sm font-medium text-secondary-700 dark:text-secondary-300">
                                 Icon <span className="text-red-500">*</span>
                             </label>
-                            <input value={form.icon} type="text" name="icon" required className="w-full px-3 py-2  border  border-secondary-300 dark:border-secondary-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100" placeholder="eg. balenshah@gmail.com" onChange={handleChange} />
+                            <input value={form.icon} type="text" name="icon" required className="w-full px-3 py-2  border  border-secondary-300 dark:border-secondary-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100" placeholder="eg. Parking" onChange={handleChange} />
                         </div>
 
                         <hr className="border-secondary-100 dark:border-secondary-800" />
