@@ -3,7 +3,7 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect, useRef } from "react";
 import { CategoryModal } from "./categoryModal";
 import { LocationModal } from "./locationModal";
-import { useCreateProperty, useGetAmenities,useGetCategories, useGetLocationTree } from "@repo/query-hook";
+import { useCreateProperty, useGetAmenities, useGetCategories, useGetLocationTree } from "@repo/query-hook";
 import { toast } from "sonner";
 import { CreatePropertySchema, PropertyFormdata } from "@repo/validators";
 import { Check, Loader2, Plus, Trash2 } from "lucide-react";
@@ -15,6 +15,7 @@ import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import { compressImage } from "./utils/image-compression";
 import { Button } from "@repo/ui/button";
 import AddAmenity from "./CreateAmenityModal";
+import DynamicIcon from "./DynamicIcon";
 
 type Amenity = {
   id: string;
@@ -479,7 +480,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
 
     const cleanedData = Object.fromEntries(
       Object.entries(formData)
-        .filter(([key]) => !["districtId", "municipalityId", "features","amenities"].includes(key))
+        .filter(([key]) => !["districtId", "municipalityId", "features", "amenities"].includes(key))
         .map(([key, value]) => [key, value === "" ? null : value])
     ) as CreatePropertySchema;
 
@@ -907,7 +908,11 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
               </label>
               <p className="text-xs text-secondary-500">Select all amenities available at this location</p>
             </div>
-            <AddAmenity />
+            {
+              user === "admin" && (
+                <AddAmenity />
+              )
+            }
           </div>
 
           <hr className="border-secondary-100 dark:border-secondary-800/60" />
@@ -936,18 +941,19 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
                     type="button" // 🛡️ Crucial: Prevents parent form submission!
                     onClick={() => handleToggleAmenity(amenity.id)}
                     className={`group flex items-center justify-between p-3 rounded-xl border text-left transition-all duration-200 cursor-pointer ${isSelected
-                        ? "border-primary-500 bg-primary-50/40 dark:bg-primary-950/20 ring-1 ring-primary-500"
-                        : "border-secondary-200 dark:border-secondary-800 bg-white dark:bg-secondary-900 hover:border-secondary-300 dark:hover:border-secondary-700"
+                      ? "border-primary-500 bg-primary-50/40 dark:bg-primary-950/20 ring-1 ring-primary-500"
+                      : "border-secondary-200 dark:border-secondary-800 bg-white dark:bg-secondary-900 hover:border-secondary-300 dark:hover:border-secondary-700"
                       }`}
                   >
                     <div className="flex items-center gap-2.5 overflow-hidden">
                       {/* Dynamic icon string render fallback */}
-                      <span className="text-base filter grayscale group-hover:grayscale-0 transition-all">
-                        {amenity.icon || "✨"}
-                      </span>
+                      <DynamicIcon
+                        name={amenity.icon}
+                        className="w-5 h-5 text-primary-600 dark:text-primary-400"
+                      />
                       <span className={`text-xs font-medium truncate ${isSelected
-                          ? "text-primary-900 dark:text-primary-300 font-semibold"
-                          : "text-secondary-700 dark:text-secondary-300"
+                        ? "text-primary-900 dark:text-primary-300 font-semibold"
+                        : "text-secondary-700 dark:text-secondary-300"
                         }`}>
                         {amenity.name}
                       </span>
@@ -955,8 +961,8 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
 
                     {/* Visual indicator checkbox */}
                     <div className={`w-4 h-4 rounded-md flex items-center justify-center transition-all border ${isSelected
-                        ? "bg-primary-500 border-primary-500 text-white animate-scaleIn"
-                        : "border-secondary-300 dark:border-secondary-700 bg-transparent"
+                      ? "bg-primary-500 border-primary-500 text-white animate-scaleIn"
+                      : "border-secondary-300 dark:border-secondary-700 bg-transparent"
                       }`}>
                       {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                     </div>
