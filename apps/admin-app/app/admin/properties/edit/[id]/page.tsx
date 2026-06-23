@@ -9,7 +9,12 @@ import { AlertCircle } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-
+interface Amenity {
+    id:string;
+    icon:string;
+    name:string;
+    createdAt:string;
+}
 export default function EditPropertyPage() {
     const params = useParams();
     const queryClient = useQueryClient();
