@@ -304,7 +304,7 @@ export default function AdminPropertyDetailComponent() {
       {/* Thumbnail strip */}
       {images.length > 1 && (
         <div className="flex gap-2 overflow-x-auto bg-secondary-50 dark:bg-secondary-900/50 px-4 py-3 border-b border-secondary-100 dark:border-secondary-800">
-          {images.map((img, idx) => (
+          {images.map((img: {url:string,id:string}, idx:number) => (
             <button
               key={img.url}
               type="button"
@@ -434,7 +434,7 @@ export default function AdminPropertyDetailComponent() {
         </h3>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {property.amenities.map((amenity) => (
+          {property.amenities.map((amenity: {id:string,name:string,icon:string,createdAt:string}) => (
             <div key={amenity.id} className="flex items-center gap-3">
 
               {/* 🌟 Dynamically renders the Lucide icon based on the DB string string */}

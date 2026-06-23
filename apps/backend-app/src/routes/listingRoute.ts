@@ -56,9 +56,9 @@ listingRouter.put("/update-property-owner-info/:id", checkAuthentication,require
 listingRouter.get("/my-listings", checkAuthentication, getUserListings);
 listingRouter.get("/my-favourites",checkAuthentication,fetchUserFavourites);
 listingRouter.get("/get-all",checkAuthentication,requireAdminOrStaff,getAllProperties);
+listingRouter.get("/amenities", getAmenities);
 listingRouter.get("/:id", getListingById);
 
-listingRouter.get("/amenities", getAmenities);
 listingRouter.post("/amenities/add", checkAuthentication,requireAdmin, addAmenity);
 
 listingRouter.put("/mark-verified",checkAuthentication,requireAdmin,verifyListing);

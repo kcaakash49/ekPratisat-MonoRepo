@@ -47,10 +47,17 @@ export const useFetchPropertyDetail = (id: string) => {
   return useQuery({
     queryKey: ["property-detail", id],
     queryFn: async () => {
-      const res = await fetchPropertyDetailAction(id);
-      if (res.status === 200) {
-        return res.result;
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/${id}`,
+        { method: "GET" },
+      );
+      const data = await res.json();
+
+      if(!res.ok){
+        throw new Error(data?.message || "Failed to fetch listing")
       }
+
+      return data?.response?.result;
     },
     retry: 1,
     staleTime: 10 * 60 * 1000,

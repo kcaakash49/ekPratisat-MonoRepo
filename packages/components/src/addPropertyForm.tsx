@@ -344,7 +344,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
   const { data: categories, isLoading: categoryLoading } = useGetCategories();
   const { data: locations, isLoading: locationLoading } = useGetLocationTree();
   const { data: amenities, isLoading: amnetiesLaoding } = useGetAmenities();
-  console.log(amenities);
+
 
 
 
