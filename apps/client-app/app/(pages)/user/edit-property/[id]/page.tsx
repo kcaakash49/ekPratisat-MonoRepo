@@ -11,6 +11,13 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { revalidateTagPathAction } from "../../../../../actions/revalidateAction";
 
+interface Amenity{
+    id:string;
+    name:string;
+    icon:string;
+    createdAt:string;
+}
+
 
 export default function EditPropertyPage() {
     const params = useParams();
@@ -47,7 +54,7 @@ export default function EditPropertyPage() {
         );
     }
 
-    const amenities = property.amenities ? property.amenities.map((amenity) => amenity.id) : [];
+    const amenities = property.amenities ? property.amenities.map((amenity:Amenity) => amenity.id) : [];
 
     const initialData: PropertyFormdata = {
         title: property.title,
