@@ -6,6 +6,7 @@ import {
   addCategory,
   AppError,
   createListingFunction,
+  fetchPropertyDetal,
   updateListingFunction,
 } from "@repo/functions";
 import { triggerFrontendUpdate } from "../utils/revalidator.js";
@@ -836,6 +837,32 @@ export async function addAmenity(req:Request, res:Response) {
   } catch (error) {
     return res.status(200).json({
       message: "Couldn't process request"
+    })
+  }
+}
+
+// get properties by id
+
+export async function getListingById(req: Request, res: Response){
+  try {
+    const { id } = req.params;
+
+    if (!id || Array.isArray(id)) {
+      throw new AppError(400, "Invalid property id");
+    }
+
+    const response = await fetchPropertyDetal(id);
+    return res.status(response.status).json({response});
+
+
+  } catch (error) {
+    if (error instanceof AppError){
+      return res.status(error.status).json({
+        message:error.message
+      })
+    }
+    return res.status(500).json({
+      message:"Server couldn't process your request"
     })
   }
 }
