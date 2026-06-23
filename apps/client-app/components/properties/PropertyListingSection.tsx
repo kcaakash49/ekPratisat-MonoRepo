@@ -58,7 +58,7 @@ export async function PropertyListingSection({
         enableContentVisibility ? SECTION_CLASS_WITH_CV : SECTION_CLASS_BASE
       }
     >
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-[1500px] mx-auto px-6">
         <SectionHeader
           eyebrow={eyebrow}
           title={title}

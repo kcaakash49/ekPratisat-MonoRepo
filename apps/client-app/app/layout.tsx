@@ -142,6 +142,19 @@ export default function RootLayout({
                   setH(window.innerHeight);
                 }, 200);
               });
+              // Re-baseline on a genuine viewport resize (window resize, rotation,
+              // DevTools device switch) — detected by a WIDTH change. The iOS/Brave
+              // URL-bar collapse changes only HEIGHT (never width), so it won't
+              // trigger this; the grow-only path keeps the hero stable during
+              // scroll. Every genuine resize changes width → reset + re-baseline.
+              var lastIW = window.innerWidth;
+              window.addEventListener('resize', function(){
+                if (window.innerWidth !== lastIW) {
+                  lastIW = window.innerWidth;
+                  maxH = 0;
+                  setH(window.innerHeight);
+                }
+              });
             } catch(e){}
           })();`}
         </Script>
