@@ -40,7 +40,7 @@ export default function EditPropertyPage() {
         );
     }
 
-    const amenities = property.amenities ? property.amenities.map((amenity) => amenity.id) : [];
+    const amenities = property.amenities ? property.amenities.map((amenity:Amenity) => amenity.id) : [];
 
 
     const initialData: PropertyFormdata = {
