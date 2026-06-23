@@ -77,7 +77,7 @@ export default function AddProperty() {
                     toast.success(data.message || "Property added successfully!!!");
                     queryClient.invalidateQueries({ queryKey: ["all-properties"] });
                     queryClient.invalidateQueries({ queryKey: ["zone"] });
-                    // router.replace("/admin/properties")
+                    router.replace("/admin/properties")
                 }
             })}  />
         </div>
