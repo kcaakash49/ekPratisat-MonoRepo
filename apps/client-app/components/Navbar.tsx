@@ -731,7 +731,7 @@ const Navbar = () => {
       <div
         id="site-menu-panel"
         aria-hidden={!isOpen}
-        className={`fixed inset-x-0 top-[var(--site-nav-height)] z-40 overflow-y-auto border-b border-white/45 bg-[#f8f5ef] px-5 pt-5 shadow-2xl shadow-secondary-900/10 backdrop-blur-none transition-[opacity,transform,visibility] duration-300 ease-out dark:border-[rgba(229,184,62,0.10)] dark:bg-[rgba(23,21,18,0.92)] dark:shadow-black/40 sm:px-6 sm:pt-6 sm:backdrop-blur-sm lg:px-8 lg:backdrop-blur-md ${
+        className={`fixed inset-x-0 top-[var(--site-nav-height)] z-40 overflow-y-auto border-b border-white/45 bg-[#f8f5ef] px-5 pt-5 shadow-2xl shadow-secondary-900/10 backdrop-blur-none transition-[opacity,transform,visibility] duration-300 ease-out dark:border-[rgba(229,184,62,0.10)] dark:bg-[#171512] dark:shadow-black/40 sm:px-6 sm:pt-6 sm:backdrop-blur-sm lg:px-8 lg:backdrop-blur-md ${
           isOpen
             ? "visible translate-y-0 opacity-100"
             : "invisible -translate-y-6 opacity-0"
