@@ -10,7 +10,7 @@ import {
   updateListingFunction,
 } from "@repo/functions";
 import { triggerFrontendUpdate } from "../utils/revalidator.js";
-import { Prisma, prisma } from "@repo/database";
+import { DatabaseError, handlePrismaError, Prisma, prisma } from "@repo/database";
 
 // Multer middleware for single file upload
 export const uploadCategoryImageFile = uploadCategoryImage.single("image");
@@ -864,5 +864,61 @@ export async function getListingById(req: Request, res: Response){
     return res.status(500).json({
       message:"Server couldn't process your request"
     })
+  }
+}
+
+export async function updateCoverImage(req:Request, res:Response) {
+  try {
+    const user = req.user;
+    const { id } = req.params;
+    const { coverId } = req.query;
+
+    if (!id || Array.isArray(id) || !coverId) {
+      throw new AppError(400, "Property ID and Cover Image ID are required");
+    };
+
+    const existingProperty = await prisma.property.findUnique({
+      where: {id}
+    });
+
+    if (!existingProperty) {
+      throw new AppError(404, "The property you are trying to update does not exist.");
+    }
+
+    if (existingProperty?.userId !== user.id && user.role !== "admin"){
+      throw new AppError(403,"You are unauthorized to perform this operation!!!")
+    }
+
+    await prisma.property.update({
+      where: { id },
+      data: {
+        coverImageId: coverId as string
+      }
+    });
+
+    return res.status(200).json({
+      message: "Cover Image updated Successfully!!!"
+    })
+
+
+  } catch (error) {
+    if (error instanceof AppError){
+      return res.status(error.status).json({
+        message:error.message
+      })
+    }
+    try {
+      // 🚀 Automatically checks and maps standard Prisma exceptions
+      handlePrismaError(error);
+    } catch (dbError) {
+      // 🎯 Catch the parsed DatabaseError explicitly
+      if (dbError instanceof DatabaseError) {
+        return res.status(dbError.statusCode).json({ message: dbError.message });
+      }
+      
+      // Generic fallback for non-database unexpected crashes
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+    
   }
 }

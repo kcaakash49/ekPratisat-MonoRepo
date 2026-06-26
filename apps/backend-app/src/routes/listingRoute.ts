@@ -22,6 +22,7 @@ import {
   getUserListings,
   toggleActivateListing,
   toggleFavourite,
+  updateCoverImage,
   updateProperty,
   updatePropertyOwnerInfo,
   uploadCategoryImageFile,
@@ -49,9 +50,16 @@ listingRouter.post(
 listingRouter.post("/add-district", checkAuthentication, requireAdminOrStaff, addDistrictController);
 listingRouter.post("/add-municipality", checkAuthentication, requireAdminOrStaff, addMunicipalityController);
 listingRouter.post("/add-ward", checkAuthentication, requireAdminOrStaff, addWardController);
+listingRouter.post("/amenities/add", checkAuthentication,requireAdmin, addAmenity);
+listingRouter.post("/toggle-favourite", checkAuthentication, toggleFavourite);
+listingRouter.post("/check-favourite", checkFavourite)
 
 listingRouter.put("/edit-property/:id", checkAuthentication, uploadUserFiles.any(), updateProperty);
 listingRouter.put("/update-property-owner-info/:id", checkAuthentication,requireAdminOrStaff, updatePropertyOwnerInfo);
+listingRouter.put("/mark-verified",checkAuthentication,requireAdmin,verifyListing);
+listingRouter.put("/mark-featured",checkAuthentication,requireAdmin,featureListing);
+listingRouter.put("/update-cover/:id", checkAuthentication,updateCoverImage);
+listingRouter.put("/:id", checkAuthentication, requireAdmin, toggleActivateListing);
 
 listingRouter.get("/my-listings", checkAuthentication, getUserListings);
 listingRouter.get("/my-favourites",checkAuthentication,fetchUserFavourites);
@@ -59,16 +67,10 @@ listingRouter.get("/get-all",checkAuthentication,requireAdminOrStaff,getAllPrope
 listingRouter.get("/amenities", getAmenities);
 listingRouter.get("/:id", getListingById);
 
-listingRouter.post("/amenities/add", checkAuthentication,requireAdmin, addAmenity);
 
-listingRouter.put("/mark-verified",checkAuthentication,requireAdmin,verifyListing);
-listingRouter.put("/mark-featured",checkAuthentication,requireAdmin,featureListing);
-listingRouter.post("/toggle-favourite", checkAuthentication, toggleFavourite);
-listingRouter.post("/check-favourite", checkFavourite)
 
-listingRouter.delete("/:id", checkAuthentication, deactivateListing);
-listingRouter.put("/:id", checkAuthentication, requireAdmin, toggleActivateListing);
 
 listingRouter.delete("/delete/:id", checkAuthentication, requireAdmin, deleteProperty);
+listingRouter.delete("/:id", checkAuthentication, deactivateListing);
 
 export default listingRouter;

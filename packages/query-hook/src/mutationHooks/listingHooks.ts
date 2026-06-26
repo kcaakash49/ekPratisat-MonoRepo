@@ -326,3 +326,20 @@ export const useAddAmenity = () => {
     }
   })
 }
+
+//update cover image
+export const useUpdateCoverImage = (id:string) => {
+  return useMutation({
+    mutationFn: async (coverId:string) => {
+       return authenticatedFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/listing/update-cover/${id}?coverId=${coverId}`,
+        {
+          method: "PUT",
+        },
+      );
+    },
+     onError: (error) => {
+      toast.error(error.message || "Operation Failed!!!");
+    }
+  })
+}

@@ -36,6 +36,12 @@ export async function fetchPropertyDetal(id: string) {
             url: true,
           },
         },
+        coverImage: {
+          select: {
+            id:true,
+            url:true,
+          }
+        },
 
         category: {
           select: {

@@ -156,7 +156,7 @@ model Property {
   category        Category                             @relation(fields: [categoryId], references: [id])
   userId          String
   user            User                                 @relation(fields: [userId], references: [id])
-  images          Image[]
+  images          Image[]                              @relation("PropertyAllImages")
   noOfBedRooms    String?
   noOfRestRooms   String?
   landArea        String?
@@ -177,9 +177,11 @@ model Property {
   updatedAt       DateTime                             @updatedAt
   favourites      Favourite[]
   leads           Lead[]
-  amenities      Amenities[]
+  amenities       Amenities[]
   leadNotes       Json?
   features        Json?
+  coverImageId    String?                              @unique
+  coverImage      Image?                               @relation("PropertyCoverImage", fields: [coverImageId], references: [id], onDelete: SetNull)
 
   @@index([geoPoint], type: Gist)
   @@index([categoryId])
@@ -241,10 +243,11 @@ model Ward {
 }
 
 model Image {
-  id         String   @id @default(uuid())
-  url        String
-  propertyId String
-  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  id              String    @id @default(uuid())
+  url             String
+  propertyId      String
+  property        Property  @relation("PropertyAllImages", fields: [propertyId], references: [id], onDelete: Cascade)
+  coveredProperty Property? @relation("PropertyCoverImage")
 
   @@index([propertyId])
 }
@@ -345,9 +348,9 @@ model NotificationRecipient {
 }
 
 model Amenities {
-  id         String    @id @default(uuid())
-  name       String    @unique
+  id         String     @id @default(uuid())
+  name       String     @unique
   icon       String
   properties Property[]
-  createdAt  DateTime  @default(now())
+  createdAt  DateTime   @default(now())
 }

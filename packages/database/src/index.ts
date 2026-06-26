@@ -1,4 +1,7 @@
 
 
-export { prisma, Prisma } from "./singletonPrisma.js"
-// export { handlePrismaError, DatabaseError } from "./errorHandler.js";
+export { prisma, Prisma } from "./singletonPrisma.js";
+
+export { DatabaseError, handlePrismaError} from "./errorHandler.js";
+
+

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useFeatureProperty, useFetchPropertyDetail, useToggleActive, usetoggleActiveListing, useVerifyProperty } from "@repo/query-hook";
 import PageLoading from "@repo/ui/pageloading";
 import { useParams, useRouter } from "next/navigation";
@@ -25,6 +25,7 @@ import DeletePropertyButton from "./deletePropertyButton";
 import AddPropertyNoteButton from "./addPropertyNoteButton";
 import NotesCard from "./notesCard";
 import DynamicIcon from "./DynamicIcon";
+import UpdateCoverImage from "./updateCoverImage";
 
 
 export default function AdminPropertyDetailComponent() {
@@ -47,13 +48,28 @@ export default function AdminPropertyDetailComponent() {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const images = property?.images ?? [];
 
+  // Inside your parent component or right before passing props:
+  const sortedImages = useMemo(() => {
+    if (!images || images.length === 0) return [];
+
+    // If no cover image is set, keep the default order
+    if (!property?.coverImage) return images;
+
+    // Clone the array and sort: move the item matching coverImageId to the front
+    return [...images].sort((a, b) => {
+      if (a.id === property.coverImage.id) return -1;
+      if (b.id === property.coverImage.id) return 1;
+      return 0;
+    });
+  }, [images, property?.coverImage]);
+
   const openLightbox = (startIndex?: number) => {
     if (typeof startIndex === "number") setActiveImage(startIndex);
     setIsLightboxOpen(true);
   };
   const closeLightbox = () => setIsLightboxOpen(false);
-  const showNextImage = () => setActiveImage((c) => (c + 1) % images.length);
-  const showPrevImage = () => setActiveImage((c) => (c - 1 + images.length) % images.length);
+  const showNextImage = () => setActiveImage((c) => (c + 1) % sortedImages.length);
+  const showPrevImage = () => setActiveImage((c) => (c - 1 + sortedImages.length) % sortedImages.length);
 
   useEffect(() => {
     if (!isLightboxOpen) return;
@@ -70,7 +86,7 @@ export default function AdminPropertyDetailComponent() {
       window.removeEventListener("keydown", onKey);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLightboxOpen, images.length]);
+  }, [isLightboxOpen, sortedImages.length]);
 
   if (isLoading) return <PageLoading />;
 
@@ -83,7 +99,7 @@ export default function AdminPropertyDetailComponent() {
     );
   }
 
-  // --- Handlers (Placeholder for your actual API calls) ---
+
   const handleVerify = async () => {
     if (confirm("Once verified, this cannot be undone. Proceed?")) {
       verifyMutate({ propertyId: property.id }, {
@@ -143,13 +159,15 @@ export default function AdminPropertyDetailComponent() {
   };
 
   const isPending = verifyPending || activePending || featurePending;
+  console.log(sortedImages);
+  console.log(property)
 
 
   return (
     <div className="flex flex-col min-h-screen overflow-x-hidden bg-white dark:bg-secondary-900">
 
       {/* ---------------- LIGHTBOX ---------------- */}
-      {isLightboxOpen && images.length > 0 && (
+      {isLightboxOpen && sortedImages.length > 0 && (
         <div
           role="dialog"
           aria-modal="true"
@@ -166,7 +184,7 @@ export default function AdminPropertyDetailComponent() {
             <X size={22} />
           </button>
 
-          {images.length > 1 && (
+          {sortedImages.length > 1 && (
             <>
               <button
                 type="button"
@@ -190,8 +208,8 @@ export default function AdminPropertyDetailComponent() {
           <div className="relative flex h-full w-full items-center justify-center px-12 py-16 sm:px-20" onClick={(e) => e.stopPropagation()}>
             <div className="relative h-full w-full">
               <Image
-                src={`${process.env.NEXT_PUBLIC_BASE_URL}${images[activeImage]?.url}`}
-                alt={`${property.title} photo ${activeImage + 1} of ${images.length}`}
+                src={`${process.env.NEXT_PUBLIC_BASE_URL}${sortedImages[activeImage]?.url}`}
+                alt={`${property.title} photo ${activeImage + 1} of ${sortedImages.length}`}
                 fill
                 className="object-contain"
                 sizes="100vw"
@@ -201,7 +219,7 @@ export default function AdminPropertyDetailComponent() {
           </div>
 
           <div className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full border border-white/25 bg-secondary-900/90 px-4 py-1.5 text-sm font-semibold text-white">
-            {activeImage + 1} / {images.length}
+            {activeImage + 1} / {sortedImages.length}
           </div>
         </div>
       )}
@@ -264,7 +282,7 @@ export default function AdminPropertyDetailComponent() {
               {property.isActive ? "Mark Property as Inactive" : "Mark Property as Active"}
             </span>
           </button>
-
+          <UpdateCoverImage propertyId={property.id} images={images} coverImageId={property?.coverImage?.id} text="Update Cover Image" />
           <DeletePropertyButton id={property.id} isActive={property.isActive} />
 
         </div>
@@ -273,12 +291,12 @@ export default function AdminPropertyDetailComponent() {
 
       {/* ---------------- Rest of the UI (Same as your provided layout) ---------------- */}
       <div
-        className={`relative w-full aspect-[16/10] max-h-[70vh] bg-secondary-100 dark:bg-secondary-800 ${images.length > 0 ? "cursor-zoom-in" : ""}`}
-        onClick={() => images.length > 0 && openLightbox(activeImage)}
+        className={`relative w-full aspect-[16/10] max-h-[70vh] bg-secondary-100 dark:bg-secondary-800 ${sortedImages.length > 0 ? "cursor-zoom-in" : ""}`}
+        onClick={() => sortedImages > 0 && openLightbox(activeImage)}
       >
-        {images.length > 0 ? (
+        {sortedImages.length > 0 ? (
           <Image
-            src={`${process.env.NEXT_PUBLIC_BASE_URL}${images[activeImage]?.url ?? images[0]!.url}`}
+            src={`${process.env.NEXT_PUBLIC_BASE_URL}${sortedImages[activeImage]?.url ?? sortedImages[0]!.url}`}
             alt={property.title}
             fill
             priority
@@ -288,9 +306,9 @@ export default function AdminPropertyDetailComponent() {
           <div className="flex items-center justify-center h-full text-secondary-500">No Image Available</div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
-        {images.length > 1 && (
+        {sortedImages.length > 1 && (
           <span className="absolute top-4 right-4 rounded-full bg-black/55 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm">
-            {activeImage + 1} / {images.length}
+            {activeImage + 1} / {sortedImages.length}
           </span>
         )}
         <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 text-white pointer-events-none">
@@ -302,14 +320,14 @@ export default function AdminPropertyDetailComponent() {
       </div>
 
       {/* Thumbnail strip */}
-      {images.length > 1 && (
+      {sortedImages.length > 1 && (
         <div className="flex gap-2 overflow-x-auto bg-secondary-50 dark:bg-secondary-900/50 px-4 py-3 border-b border-secondary-100 dark:border-secondary-800">
-          {images.map((img: {url:string,id:string}, idx:number) => (
+          {sortedImages.map((img: { url: string, id: string }, idx: number) => (
             <button
               key={img.url}
               type="button"
               onClick={() => setActiveImage(idx)}
-              aria-label={`Show image ${idx + 1} of ${images.length}`}
+              aria-label={`Show image ${idx + 1} of ${sortedImages.length}`}
               className={`relative h-16 w-24 shrink-0 overflow-hidden rounded-lg border-2 transition-all ${idx === activeImage
                 ? "border-primary-500 ring-2 ring-primary-500/30"
                 : "border-transparent opacity-70 hover:opacity-100"
@@ -428,28 +446,28 @@ export default function AdminPropertyDetailComponent() {
       <NotesCard notes={property.leadNotes} header="Acquisition and Owner Lead Info" subheader="Offline parameters caputred by field agent" />
       {
         property.amenities.length > 0 && (
-      <div className="mt-8 p-6 border border-secondary-100 dark:border-secondary-800 rounded-2xl bg-white dark:bg-secondary-900/40 max-w-7xl mx-auto">
-        <h3 className="text-base font-bold text-secondary-900 dark:text-secondary-100 mb-4">
-          What this place offers
-        </h3>
+          <div className="mt-8 p-6 border border-secondary-100 dark:border-secondary-800 rounded-2xl bg-white dark:bg-secondary-900/40 max-w-7xl mx-auto">
+            <h3 className="text-base font-bold text-secondary-900 dark:text-secondary-100 mb-4">
+              What this place offers
+            </h3>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {property.amenities.map((amenity: {id:string,name:string,icon:string,createdAt:string}) => (
-            <div key={amenity.id} className="flex items-center gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {property.amenities.map((amenity: { id: string, name: string, icon: string, createdAt: string }) => (
+                <div key={amenity.id} className="flex items-center gap-3">
 
-              {/* 🌟 Dynamically renders the Lucide icon based on the DB string string */}
-              <DynamicIcon
-                name={amenity.icon}
-                className="w-5 h-5 text-primary-600 dark:text-primary-400"
-              />
+                  {/* 🌟 Dynamically renders the Lucide icon based on the DB string string */}
+                  <DynamicIcon
+                    name={amenity.icon}
+                    className="w-5 h-5 text-primary-600 dark:text-primary-400"
+                  />
 
-              <span className="text-sm font-medium">
-                {amenity.name}
-              </span>
+                  <span className="text-sm font-medium">
+                    {amenity.name}
+                  </span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
 
         )
       }
