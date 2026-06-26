@@ -86,7 +86,7 @@ export default function AdminPropertyDetailComponent() {
       window.removeEventListener("keydown", onKey);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLightboxOpen, sortedImages.length]);
+  }, [isLightboxOpen, sortedImages.length, images.length]);
 
   if (isLoading) return <PageLoading />;
 
@@ -159,9 +159,6 @@ export default function AdminPropertyDetailComponent() {
   };
 
   const isPending = verifyPending || activePending || featurePending;
-  console.log(sortedImages);
-  console.log(property)
-
 
   return (
     <div className="flex flex-col min-h-screen overflow-x-hidden bg-white dark:bg-secondary-900">
