@@ -1,5 +1,6 @@
 // @repo/query-hook/useZonesQuery.ts
 
+import { authenticatedFetch } from "@repo/shared-provider";
 import { useQuery } from "@tanstack/react-query";
 
 export function useZonesQuery() {
@@ -43,4 +44,18 @@ export function useZoneQueryById(zoneId: string) {
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: false
   });
+}
+
+export function useGetMyZone() {
+  return useQuery({
+    queryKey:["my-zones"],
+    queryFn: async () => {
+     return authenticatedFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/zone/get-my-zone`,
+        { method: "GET" },
+      );
+    },
+    staleTime:5 * 60 * 1000,
+    retry:false
+  })
 }

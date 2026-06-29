@@ -96,7 +96,6 @@ export const deleteZoneController = async (req: Request, res: Response) => {
 
 export const getZoneByIdController = async (req: Request, res: Response) => {
   try {
-    console.log("Received request for zone details with params:", req.params);
     const { id: zoneId } = req.params;
 
     if (!zoneId || typeof zoneId !== "string") {
@@ -218,3 +217,40 @@ export const assignZoneToAgentController = async (req: Request, res: Response) =
   } 
 };
 
+export async function getMyzones(req:Request, res:Response){
+  try {
+    const user = req.user;
+    const zones = await prisma.$queryRaw<
+      {
+        id: string;
+        name: string;
+        notes: string | null;
+        isActive: boolean;
+        geom: any;
+        createdAt: string;
+      }[]
+    >`
+      SELECT 
+        z.id,
+        z.name,
+        z.notes,
+        z."isActive",
+        z."createdAt",
+        ST_AsGeoJSON(z.geom)::json AS geom
+      FROM "GeoZone" z
+      INNER JOIN "AgentGeoZone" agz 
+        ON z.id = agz."zoneId"
+      WHERE agz."agentId" = ${user.id} AND z."isActive" = true
+      ORDER BY z."createdAt" DESC;
+    `;
+
+    return res.status(200).json({
+      zones,
+      ok:true
+    })
+  } catch (error) {
+    return res.status(500).json({
+      message: "Server couldn't process your request!!!"
+    })
+  }
+}

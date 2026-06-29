@@ -16,6 +16,7 @@ const navSections = [
 
   { name: "Geozones", path: "/admin/geo-zones", accessibleRoles: ["admin"] },
   { name: "List-Zones", path: "/admin/geo-zones/list-zones", accessibleRoles: ["admin"] },
+  { name: "My-Zones", path: "/admin/geo-zones/my-zones", accessibleRoles: ["staff"] },
 ];
 
 

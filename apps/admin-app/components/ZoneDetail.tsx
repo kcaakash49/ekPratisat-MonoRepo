@@ -79,7 +79,7 @@ export default function ZoneDetail({ id }: { id: string }) {
      </div>`
                 );
 
-                new mapboxgl.Marker({ color: "#ef4444" }) // Your red marker
+                new mapboxgl.Marker({ color: "#ef4444" }) // The red marker
                     .setLngLat([property.lng, property.lat])
                     .setPopup(popup)
                     .addTo(map);
@@ -181,7 +181,7 @@ export default function ZoneDetail({ id }: { id: string }) {
                             >
                                 <div className="flex flex-col">
                                     <Link
-                                        href={`/admin/property/${property.id}`}
+                                        href={`/admin/properties/${property.id}`}
                                         className="font-semibold text-secondary-700 dark:text-secondary-200 group-hover:text-primary-600 dark:group-hover:text-primary-dark-500 transition-colors"
                                     >
                                         {property.title}
