@@ -22,14 +22,15 @@ export default function PremiumListingCard({ listing }: { listing: PropertyListi
       className="group relative w-full h-full"
     >
       {/* Main Card - Fixed height container */}
-      <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border bg-[var(--ek-bg-card)] shadow-[var(--ek-shadow-card)] transition duration-300 group-hover:-translate-y-0.5 group-hover:border-[var(--ek-border-strong)] group-hover:shadow-[0_22px_54px_rgba(15,23,42,0.13)] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)] dark:shadow-[var(--ek-dark-shadow-card)] dark:group-hover:border-[var(--ek-dark-border-strong)]">
+      <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border bg-[var(--ek-bg-card)] shadow-[var(--ek-shadow-card)] transition duration-300 transform-gpu group-hover:-translate-y-0.5 group-hover:border-[var(--ek-border-strong)] group-hover:shadow-[0_22px_54px_rgba(15,23,42,0.13)] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)] dark:shadow-[var(--ek-dark-shadow-card)] dark:group-hover:border-[var(--ek-dark-border-strong)]">
 
         {/* Premium Ribbon Banner - Pure CSS Ribbon */}
         {listing.isFeatured && (
           <div className="absolute top-0 right-0 z-20">
             <div className="relative">
               {/* Main ribbon */}
-              <div className="relative rounded-bl-xl bg-[rgba(255,253,248,0.92)] px-4 py-2 text-[var(--ek-gold-text)] shadow-sm ring-1 ring-[var(--ek-border-soft)] backdrop-blur-sm dark:bg-[rgba(42,36,27,0.86)] dark:text-[var(--ek-dark-gold)] dark:ring-[var(--ek-dark-border)]">
+              <div className="relative rounded-bl-xl bg-gold-gradient px-4 py-2 text-[#151006] shadow-sm ring-1 ring-[var(--ek-border-soft)] backdrop-blur-sm dark:bg-none dark:bg-[rgba(42,36,27,0.86)] dark:text-[var(--ek-dark-gold)] dark:ring-[var(--ek-dark-border)]">
+
                 <div className="flex items-center gap-2">
                   <Crown className="w-4 h-4" />
                   <span className="text-xs font-bold tracking-wider">PREMIUM</span>
@@ -37,7 +38,7 @@ export default function PremiumListingCard({ listing }: { listing: PropertyListi
                 </div>
               </div>
             </div>
-          </div>
+            </div>
 
         )}
 

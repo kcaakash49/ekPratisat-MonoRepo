@@ -14,12 +14,16 @@ import {
 import FavouriteButton from "./FavouriteButton";
 import { toast } from "sonner";
 
+
 export type PropertyData = {
   id: string;
   propertyCode: number;
   title: string;
   description: string;
   price: string;
+  negotiable: boolean,
+  amenities: { id: string; name: string; icon: string }[];
+  features:unknown;
   type: string;
   category: { name: string } | null
   isFeatured: boolean;
@@ -296,6 +300,8 @@ export function PropertyDetailClient({ property }: PropertyDetailClientProps) {
               </span>
               <p className="text-4xl font-bold text-[var(--ek-gold-text)] dark:text-[var(--ek-dark-gold)]">{formattedPrice}</p>
             </div>
+            {property.negotiable && <span className="mt-1 inline-block text-xs font-semibold text-[var(--ek-gold-text)] dark:text-[var(--ek-dark-gold)]">Negotiable</span>}
+
             <div className="flex gap-3">
               <button className="rounded-xl bg-gold-gradient px-8 py-3 font-semibold text-[#151006] shadow-sm shadow-gold-800/15 transition-transform duration-200 hover:-translate-y-0.5 hover:bg-gold-gradient-hover active:translate-y-0">
                 Contact Agent

@@ -7,7 +7,7 @@ export default function ListingCard({ listing }: {listing:PropertyListing}) {
   const formattedPrice = new Intl.NumberFormat('en-IN').format(Number(listing.price));
 
   return (
-    <div className="group relative w-full overflow-hidden rounded-2xl border bg-[var(--ek-bg-card)] shadow-[var(--ek-shadow-card)] antialiased transition duration-300 hover:-translate-y-0.5 hover:border-[var(--ek-border-strong)] hover:shadow-[0_22px_54px_rgba(15,23,42,0.13)] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)] dark:shadow-[var(--ek-dark-shadow-card)] dark:hover:border-[var(--ek-dark-border-strong)]">
+    <div className="group relative w-full overflow-hidden rounded-2xl border bg-[var(--ek-bg-card)] shadow-[var(--ek-shadow-card)] antialiased transition duration-300 transform-gpu hover:-translate-y-0.5 hover:border-[var(--ek-border-strong)] hover:shadow-[0_22px_54px_rgba(15,23,42,0.13)] dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)] dark:shadow-[var(--ek-dark-shadow-card)] dark:hover:border-[var(--ek-dark-border-strong)]">
       {/* Image Section */}
       <div className="relative h-64 w-full overflow-hidden">
         {listing.images?.[0]?.url ? (
@@ -29,7 +29,8 @@ export default function ListingCard({ listing }: {listing:PropertyListing}) {
         {/* Premium crown — only for featured listings (same gold styling as PremiumListingCard) */}
         {listing.isFeatured && (
           <div className="absolute top-0 right-0 z-20">
-            <div className="relative rounded-bl-xl bg-[rgba(255,253,248,0.92)] px-2.5 py-2 text-[var(--ek-gold-text)] shadow-sm ring-1 ring-[var(--ek-border-soft)] backdrop-blur-sm dark:bg-[rgba(42,36,27,0.86)] dark:text-[var(--ek-dark-gold)] dark:ring-[var(--ek-dark-border)]">
+                        <div className="relative rounded-bl-xl bg-gold-gradient px-2.5 py-2 text-[#151006] shadow-sm ring-1 ring-[var(--ek-border-soft)] backdrop-blur-sm dark:bg-none dark:bg-[rgba(42,36,27,0.86)] dark:text-[var(--ek-dark-gold)] dark:ring-[var(--ek-dark-border)]">
+
               <Crown className="w-4 h-4" />
             </div>
           </div>
