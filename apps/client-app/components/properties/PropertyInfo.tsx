@@ -1,3 +1,4 @@
+import DynamicIcon from "@repo/components/DynamicIcon";
 import { PropertyDetailClientProps } from "./PropertyDetailClient";
 import {
   MapPinIcon,
@@ -8,6 +9,7 @@ import {
   CursorArrowRippleIcon,
   DocumentTextIcon,
 } from "@heroicons/react/24/outline";
+import NotesCard from "@repo/components/notesCard";
 
 export default function PropertyInfo({property}:PropertyDetailClientProps){
     const specifications = [
@@ -72,6 +74,33 @@ export default function PropertyInfo({property}:PropertyDetailClientProps){
                 ))}
               </div>
             </div>
+                        {/* Amenities */}
+                        {property.amenities.length > 0 && (
+              <div className="rounded-2xl border border-[var(--ek-border-soft)] bg-[var(--ek-bg-card)] p-6 shadow-sm dark:border-[var(--ek-dark-border)] dark:bg-[var(--ek-dark-surface)]">
+                <h2 className="text-xl font-semibold text-[var(--ek-text-primary)] dark:text-[var(--ek-dark-text)] mb-6">
+                  Amenities
+                </h2>
+                <div className="flex flex-wrap gap-4">
+                  {property.amenities.map((amenity) => (
+                    <div key={amenity.id} className="flex items-center gap-2 rounded-xl bg-[var(--ek-bg-card-soft)] px-4 py-2 dark:bg-[var(--ek-dark-elevated)]">
+                      <DynamicIcon name={amenity.icon} />
+                      <span className="text-sm text-[var(--ek-text-primary)] dark:text-[var(--ek-dark-text)]">{amenity.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+                        {/* Features */}
+                        {!!property.features && (
+              <NotesCard
+                notes={property.features}
+                header="Property Features"
+                subheader="Specific features of the property"
+              />
+            )}
+
+
           </div>
 
           {/* Sidebar */}

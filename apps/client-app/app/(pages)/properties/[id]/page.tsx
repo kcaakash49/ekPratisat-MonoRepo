@@ -103,6 +103,7 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
             title: true,
             description: true,
             price: true,
+            negotiable:true,
             type: true,
             category: {
                 select: {
@@ -121,6 +122,14 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
             roadSize: true,
             floorLevel: true,
             tole: true,
+            amenities: {
+                select: {
+                    id: true,
+                    name: true,
+                    icon: true,
+                },
+            },
+            features:true,
             createdAt: true,
             images: {
                 select: {
