@@ -25,7 +25,7 @@ const booleanFields: { key: keyof CategorySchema; label: string }[] = [
   { key: "isRoadSizeNeeded", label: "Road Size" },
 ];
 
-export const CategoryModal: React.FC<Props> = ({ onClose, user }) => {
+export const CategoryModal: React.FC<Props> = ({ onClose }) => {
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -69,7 +69,6 @@ export const CategoryModal: React.FC<Props> = ({ onClose, user }) => {
     }
     const form = new FormData();
     form.append("name", payload.name);
-    form.append("addedById", user);
     form.append("isLandAreaNeeded", String(payload.isLandAreaNeeded));
     form.append("isNoOfFloorsNeeded", String(payload.isNoOfFloorsNeeded));
     form.append("isNoOfRoomsNeeded", String(payload.isNoOfRoomsNeeded));
