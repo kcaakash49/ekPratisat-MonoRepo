@@ -664,7 +664,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
                 ))
               )}
             </select>
-            {user === "admin" && (
+            {/* {user === "admin" && (
               <button
                 type="button"
                 className="ek-primary-button shrink-0 px-4 py-2"
@@ -672,7 +672,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
               >
                 Add
               </button>
-            )}
+            )} */}
           </div>
         </div>
 
@@ -1264,7 +1264,7 @@ export const AddPropertyForm: React.FC<Props> = ({ initialData,
         </div>
       </form>
 
-      {showCategoryModal && <CategoryModal onClose={() => setShowCategoryModal(false)} user={user} />}
+      {/* {showCategoryModal && <CategoryModal onClose={() => setShowCategoryModal(false)}/>} */}
       {showLocationModal && (
         <LocationModal
           type={showLocationModal.type}
