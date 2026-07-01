@@ -158,11 +158,11 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
     if (!result) return notFound();
 
     return (
-        <>
+        <div className="pb-16 sm:pb-24">
             <PropertyDetailClient property={result} />
             <PropertyInfo property={result} />
             <RelatedProperties categoryId={result.category.id} categoryName={result.category.name} currentPropertyId={result.id} type={result.type}/>
-        </>
+        </div>
     )
 
 }
