@@ -120,6 +120,19 @@ export const addProperty = async (req: Request, res: Response) => {
       ...normalized,
       lat: normalized.lat ? Number(normalized.lat) : null,
       lng: normalized.lng ? Number(normalized.lng) : null,
+
+      noOfBedRooms: normalized.noOfBedRooms ? Number(normalized.noOfBedRooms) : null,
+      noOfRestRooms: normalized.noOfRestRooms
+        ? Number(normalized.noOfRestRooms)
+        : null,
+      noOfFloors: normalized.noOfFloors ? Number(normalized.noOfFloors) : null,
+      floorLevel: normalized.floorLevel ? Number(normalized.floorLevel) : null,
+      landArea: normalized.landArea ? Number(normalized.landArea) : null,
+      floorArea: normalized.floorArea ? Number(normalized.floorArea) : null,
+      roadSize: normalized.roadSize ? Number(normalized.roadSize) : null,
+      propertyAge: normalized.propertyAge ? Number(normalized.propertyAge) : null,
+      price: Number(normalized.price),
+
       amenities: normalized.amenities
         ? (JSON.parse(normalized.amenities as string) as string[])
         : null,
@@ -575,7 +588,19 @@ export async function updateProperty(req: Request, res: Response) {
       ...normalized,
       lat: normalized.lat ? Number(normalized.lat) : null,
       lng: normalized.lng ? Number(normalized.lng) : null,
-      // verified: user.role === "admin" && normalized.verified === "true",
+
+      noOfBedRooms: normalized.noOfBedRooms ? Number(normalized.noOfBedRooms) : null,
+      noOfRestRooms: normalized.noOfRestRooms
+        ? Number(normalized.noOfRestRooms)
+        : null,
+      noOfFloors: normalized.noOfFloors ? Number(normalized.noOfFloors) : null,
+      floorLevel: normalized.floorLevel ? Number(normalized.floorLevel) : null,
+      landArea: normalized.landArea ? Number(normalized.landArea) : null,
+      floorArea: normalized.floorArea ? Number(normalized.floorArea) : null,
+      roadSize: normalized.roadSize ? Number(normalized.roadSize) : null,
+      propertyAge: normalized.propertyAge ? Number(normalized.propertyAge) : null,
+      price: Number(normalized.price),
+     
       amenities: normalized.amenities
         ? (JSON.parse(normalized.amenities as string) as string[])
         : null,
